@@ -1,0 +1,28 @@
+## testing phylogenetic tree
+
+
+```{r}
+library(ape)
+library("V.PhyloMaker")
+
+```
+
+#input the species list
+```{r}
+CGCS.phylo.species.list.csv
+```
+```{r}
+### open the file
+CGCS.phylo.species.list.csv
+
+### run the function
+tree <- phylo.maker(CGCS.phylo.species.list.csv, scenarios = c("S3"))
+
+### plot the phylogenies
+library(ape)
+par(mfrow = c(1, 1))
+plot.phylo(result$scenario.3, cex = 0.25, main = "Phylogenetic tree")
+nodelabels(round(branching.times(result$scenario.3), 1), cex = 0.25)
+
+
+```
