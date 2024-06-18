@@ -1,0 +1,167 @@
+---
+title: "check_data"
+output:
+  pdf_document: default
+  html_document: default
+date: "2024-06-11"
+---
+
+## Description
+Code to check if Maynard et al. data includes environmental data and phylogeny for the species we're using.
+
+## Set up
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+### load libraries
+library(tidyverse)
+```
+
+## Open Maynard raw data
+```{r}
+## open species lookup table -- weird numbering system for species and genus
+sp_lookup <- read.csv("data/raw_data/ANGIO_GYMNO_lookup.csv")
+
+### open phylogenetic eigenvectors
+phylo_eigen <- read.csv("data/raw_data/Phylogenetic_eigenvectors.csv")
+
+### open env_names
+env_names <- read.csv("data/raw_data/env_names.csv")
+
+### open environmental covariates
+env_cov <- read.csv("data/raw_data/Environmental_covariates.csv")
+
+### trait names
+trait_names <- read.csv("data/raw_data/Trait_names.csv")
+
+### phylog tree
+phylo_tree <- ReadTntTree("data/raw_data/dichotomous_phylogenetic_tree.tree")
+
+### imputed trait data
+imputed_dat <- read.csv("data/results/Imputed_trait_data.csv")
+```
+
+## Prep our trait data
+### fix lat/lon
+```{r}
+### open data
+trait_dat <- read.csv("our_data/CGCS_Canada_traits_6_11.csv")
+
+### how many have coordinates?
+trait_dat_coords <- trait_dat %>%
+  filter(!location == "")
+
+### clean up location column
+trait_dat_coords <- trait_dat_coords %>%
+  
+  ### get rid of locations missing lat/lon
+  filter(!(location %in% c("USA",
+                        "Russia",
+                        "Netherlands",
+                        "Germany"))) %>%
+  filter(!location %in% c("34924","34924 (Essex)")) %>%
+  
+  ### fix the one with a period instead of a comma
+  mutate(location = ifelse(location == "45.76667. -89.56667",
+         "45.76667,-89.56667",
+         location))
+
+### make latitude and longitude columns
+trait_dat_coords <- trait_dat_coords %>%
+  separate_wider_delim(location, ",", names = c("latitude",
+                                                "longitude"))
+
+### clean up lat and lon columns
+trait_dat_coords <- trait_dat_coords %>%
+  
+  ### fix -92.87Lusk and Reich (2000)
+  mutate(orig_ref = ifelse(longitude == "-92.87Lusk and Reich (2000)",
+                           "Lusk and Reich (2000)",
+                           orig_ref),
+         longitude = ifelse(longitude == "-92.87Lusk and Reich (2000)",
+                            "-92.87",
+                            longitude)) %>%
+  
+  ### fix some more
+  mutate(longitude = ifelse(longitude == " -122 (Oregon)",
+                            "-122",
+                            longitude),
+         longitude = ifelse(longitude == " -122.1 (OR)",
+                            "-122.1",
+                            longitude),
+         longitude = ifelse(longitude == " -124.3 (WA)",
+                            "-124.3",
+                            longitude),
+         longitude = ifelse(longitude == " -121.7 (Oregon)",
+                            "-121.7",
+                            longitude),
+         longitude = ifelse(longitude == " -121.5 (OR)",
+                            "-121.5",
+                            longitude),
+         longitude = ifelse(longitude == " -124 (OR)",
+                            "-124",
+                            longitude),
+         longitude = ifelse(longitude == " -121.6 (OR)",
+                            "-121.6",
+                            longitude),
+         longitude = ifelse(longitude == " -124.1 (OR)",
+                            "-124.1",
+                            longitude),
+         longitude = ifelse(longitude == " -122.1 (OR)",
+                            "-122.1",
+                            longitude),
+         longitude = ifelse(longitude == " 27.6 (Belarus)",
+                            "27.6",
+                            longitude))
+
+### convert decimal/minutes
+trait_dat_coords <- trait_dat_coords %>%
+    mutate(longitude = ifelse(longitude == "83h 22m",
+                            "-83.36666667",
+                            longitude),
+           latitude = ifelse(latitude == "46h 25m",
+                             "46.41666667",
+                             latitude),
+           longitude = ifelse(longitude == "79d 27m W",
+                            "-79.45",
+                            longitude),
+           latitude = ifelse(latitude == "48d 30m N",
+                             "48.5",
+                             latitude),
+           longitude = ifelse(longitude == " 83h 22m",
+                              "-83.3666667",
+                              longitude),
+           longitude = ifelse(longitude == " 79d 27m W",
+                              "-79.45",
+                              longitude),
+           latitude = ifelse(orig_ref == "Sodhi, DS,  Livingstone, SW,  Carboni, M,  Cadotte, MW.  Plant invasion alters trait composition and diversity across habitats. Ecol Evol.  2019; 9: 6199– 6210. https://doi.org/10.1002/ece3.5130",
+                           "43.82047222",
+                           latitude),
+         longitude = ifelse(orig_ref == "Sodhi, DS,  Livingstone, SW,  Carboni, M,  Cadotte, MW.  Plant invasion alters trait composition and diversity across habitats. Ecol Evol.  2019; 9: 6199– 6210. https://doi.org/10.1002/ece3.5130",
+                           "-79.15950556",
+                           longitude),
+         latitude = ifelse(latitude == "45d 54m 45.9s N",
+                           "45.91275",
+                           latitude),
+         longitude = ifelse(longitude == "73d 17m 12.8s W",
+                            "-73.28688889", 
+                            longitude),
+           latitude = ifelse(orig_ref == "Auger, S., Shipley, B. (2012). : Interspecific and intraspecific trait variation along short environmental gradients in an old-growth temperate forest.  Journal of Vegetation Science. DOI: 1111/j.1654-1103.2012.01473.x",
+                           "45.55058872985592",
+                           latitude),
+         longitude = ifelse(orig_ref == "Auger, S., Shipley, B. (2012). : Interspecific and intraspecific trait variation along short environmental gradients in an old-growth temperate forest.  Journal of Vegetation Science. DOI: 1111/j.1654-1103.2012.01473.x",
+                           "-73.17601570975708",
+                           longitude),
+         orig_ref = ifelse(longitude == " -92.87Lusk and Reich (2000)",
+                           "Lusk and Reich (2000)",
+                           orig_ref),
+         longitude = ifelse(longitude == " -92.87Lusk and Reich (2000)",
+                           "-92.87",
+                           longitude))
+
+### convert to numeric
+trait_dat_coords <- trait_dat_coords %>%
+  mutate(lat_numeric = as.numeric(latitude),
+         long_numeric = as.numeric(longitude))
+```
+
