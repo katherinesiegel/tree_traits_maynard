@@ -75,15 +75,15 @@ trait_dat_coords <- trait_dat_coords %>%
 trait_dat_coords <- trait_dat_coords %>%
   
   ### fix -92.87Lusk and Reich (2000)
-  mutate(orig_ref = ifelse(longitude == "-92.87Lusk and Reich (2000)",
+  mutate(orig_ref = ifelse(longitude == " -92.87Lusk and Reich (2000)",
                            "Lusk and Reich (2000)",
                            orig_ref),
-         longitude = ifelse(longitude == "-92.87Lusk and Reich (2000)",
+         longitude = ifelse(longitude == " -92.87Lusk and Reich (2000)",
                             "-92.87",
                             longitude)) %>%
   
   ### fix some more
-  mutate(longitude = ifelse(longitude == " -122 (Oregon)",
+  mutate(longitude = ifelse(longitude == "-122 (Oregon)",
                             "-122",
                             longitude),
          longitude = ifelse(longitude == " -122.1 (OR)",
@@ -116,13 +116,13 @@ trait_dat_coords <- trait_dat_coords %>%
 
 ### convert decimal/minutes
 trait_dat_coords <- trait_dat_coords %>%
-    mutate(longitude = ifelse(longitude == "83h 22m",
+    mutate(longitude = ifelse(longitude == " 83h 22m",
                             "-83.36666667",
                             longitude),
            latitude = ifelse(latitude == "46h 25m",
                              "46.41666667",
                              latitude),
-           longitude = ifelse(longitude == "79d 27m W",
+           longitude = ifelse(longitude == " 79d 27m W",
                             "-79.45",
                             longitude),
            latitude = ifelse(latitude == "48d 30m N",
@@ -143,7 +143,7 @@ trait_dat_coords <- trait_dat_coords %>%
          latitude = ifelse(latitude == "45d 54m 45.9s N",
                            "45.91275",
                            latitude),
-         longitude = ifelse(longitude == "73d 17m 12.8s W",
+         longitude = ifelse(longitude == " 73d 17m 12.8s W",
                             "-73.28688889", 
                             longitude),
            latitude = ifelse(orig_ref == "Auger, S., Shipley, B. (2012). : Interspecific and intraspecific trait variation along short environmental gradients in an old-growth temperate forest.  Journal of Vegetation Science. DOI: 1111/j.1654-1103.2012.01473.x",
@@ -157,11 +157,63 @@ trait_dat_coords <- trait_dat_coords %>%
                            orig_ref),
          longitude = ifelse(longitude == " -92.87Lusk and Reich (2000)",
                            "-92.87",
-                           longitude))
+                           longitude),
+         longitude = ifelse(longitude == " -71.1-6599",
+                            "-71.16599",
+                            longitude),
+         latitude = ifelse(latitude == "35.-0213",
+                           "35.0213",
+                           ifelse(latitude == "47.-77262",
+                                  "47.77262",
+                                  latitude)))
 
 ### convert to numeric
 trait_dat_coords <- trait_dat_coords %>%
   mutate(lat_numeric = as.numeric(latitude),
          long_numeric = as.numeric(longitude))
 ```
+
+### fix trait names
+```{r}
+### make vector of trait IDs
+try_trait_id_vect <- c(3106, 3117, 47, 719, 3107, 
+                       2, 53, 928, 45, 4, 1238, 1237,
+                       281, 49, 169, 63, 3441, 364, 77, 
+                       819, 28, 24)
+
+### make vector of trait names
+trait_name <- c("Plant height vegetative", 
+                "Leaf area per leaf dry mass (specific leaf area, SLA or 1/LMA)", 
+                "Leaf dry mass per leaf fresh mass (leaf dry matter content, LDMC)",
+                "Xylem hydraulic vulnerability, xylem cavitation vulnerability, embolism vulnerability, (P20, P50, P8", 
+                "Plant height generative", 
+                       "Leaf texture (sclerophylly, physical strength, toughness)",
+                "53", 
+                "Leaf area-specific conductivity (leaf specific conductivity)", 
+                "45", 
+                "4", 
+                "Wood vessel diameter", 
+                "Wood vessel density",
+                "Stem conduit diameter (vessels, tracheids)", 
+                "Photosynthesis: intercellular CO2 concentration", 
+                "169", 
+                "63", 
+                "3441", 
+                "364", 
+                "77",
+                "819", 
+                "Dispersal syndrome", 
+                "Bark thickness")
+```
+
+
+### reshape to match Imputed_trait_data.csv
+```{r}
+### change column names
+trait_ref <- trait_dat_coords %>%
+  dplyr::select(LAT = lat_numeric,
+                LON = long_numeric,
+                )
+```
+
 
