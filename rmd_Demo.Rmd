@@ -175,45 +175,101 @@ trait_dat_coords <- trait_dat_coords %>%
 
 ### fix trait names
 ```{r}
-### make vector of trait IDs
-try_trait_id_vect <- c(3106, 3117, 47, 719, 3107, 
-                       2, 53, 928, 45, 4, 1238, 1237,
-                       281, 49, 169, 63, 3441, 364, 77, 
-                       819, 28, 24)
+### open try trait table (IDs and names)
+try_ids <- read.csv("data/raw_data/try_trait_id_table.csv")
 
-### make vector of trait names
-trait_name <- c("Plant height vegetative", 
-                "Leaf area per leaf dry mass (specific leaf area, SLA or 1/LMA)", 
-                "Leaf dry mass per leaf fresh mass (leaf dry matter content, LDMC)",
-                "Xylem hydraulic vulnerability, xylem cavitation vulnerability, embolism vulnerability, (P20, P50, P8", 
-                "Plant height generative", 
-                       "Leaf texture (sclerophylly, physical strength, toughness)",
-                "53", 
-                "Leaf area-specific conductivity (leaf specific conductivity)", 
-                "45", 
-                "4", 
-                "Wood vessel diameter", 
-                "Wood vessel density",
-                "Stem conduit diameter (vessels, tracheids)", 
-                "Photosynthesis: intercellular CO2 concentration", 
-                "169", 
-                "63", 
-                "3441", 
-                "364", 
-                "77",
-                "819", 
-                "Dispersal syndrome", 
-                "Bark thickness")
+### simplify and change column names
+try_ids <- try_ids %>%
+  dplyr::select(try_trait_id = TraitID,
+                trait_name = Trait)
+
+### subset trait_dat_coords based on whether or not there are trait names
+trait_dat_1 <- trait_dat_coords %>%
+  filter(!trait_name == "")
+trait_dat_2 <- trait_dat_coords %>%
+  filter(trait_name == "")
+
+### drop trait name from trait_dat_2
+trait_dat_2 <- trait_dat_2 %>%
+  dplyr::select(-trait_name)
+
+### merge in trait names for trait_dat_2
+trait_dat_2 <- merge(x = trait_dat_2,
+                     y = try_ids,
+                     by = "try_trait_id",
+                     all.x = TRUE)
+
+### fix column order
+trait_dat_2 <- trait_dat_2 %>%
+  dplyr::select(species, common_name,
+                trait_name, try_species_id,
+                try_trait_id, value,
+                unit, value_kind, number_of_observations,
+                latitude, longitude, orig_ref,
+                try_notes, lat_numeric, long_numeric)
+
+### combine
+trait_dat_coords <- rbind(trait_dat_1,
+                          trait_dat_2)
+
+### shorten trait names
+trait_dat_coords <- trait_dat_coords %>%
+  mutate(trait_name_short = ifelse(trait_name == "Xylem water potential at which 50% of conductivity is lost (P50)", "xylem_p50", ifelse(trait_name == "Xylem embolism: Shape parameter for the vulnerability curve, a", "xylem_embolism", ifelse(trait_name == "Plant height vegetative", "plant_height_veg", ifelse(trait_name == "water potential 50% loss of conductivity (MPa)", "water_potential_50", ifelse(trait_name == "Leaf dry matter content per leaf water-saturated mass (LDMC)", "ldmc_water", ifelse(trait_name == "Leaf dry mass per leaf fresh mass (leaf dry matter content, LDMC)", "ldmc_fresh", ifelse(trait_name == "Plant growth rate relative (plant relative growth rate, RGR)", "plant_rel_growth_rate", ifelse(trait_name == "Leaf texture (sclerophylly, physical strength, toughness)", "leaf_texture", ifelse(trait_name == "Stem specific density (SSD, stem dry mass per stem fresh volume) or wood density", "stem_specific_density", ifelse(trait_name == "Bark thickness", "bark_thick", ifelse(trait_name == "Dispersal syndrome", "disp_syndrome", ifelse(trait_name == "Stomata conductance per leaf area", "stomata_conduct", ifelse(trait_name == "Photosynthesis: intercellular CO2 concentration", "photosynth_co2", ifelse(trait_name == "Photosynthesis rate per leaf area", "photosynth_rate", ifelse(trait_name == "Stomata density", "stomata_dens", ifelse(trait_name == "Stem conduit density (vessels and tracheids)", "stem_conduit_dens", ifelse(trait_name == "Stem conduit diameter (vessels, tracheids)", "stem_conduit_diam", ifelse(trait_name == "Plant height of lowest branch", "height_lowest_branch", ifelse(trait_name == "Xylem hydraulic vulnerability, xylem cavitation vulnerability, embolism vulnerability, (P20, P50, P8", "xylem_hydraul_vuln", ifelse(trait_name == "Plant resprouting capacity", "resprout_capacity", ifelse(trait_name == "Leaf area-specific conductivity (leaf specific conductivity)", "leaf_area_conduct", ifelse(trait_name == "Wood vessel density", "wood_vessel_dens", ifelse(trait_name == "Wood vessel diameter", "wood_vessel_diam", ifelse(trait_name == "Plant height generative", "plant_height_gen", ifelse(trait_name == "Leaf area per leaf dry mass (specific leaf area, SLA or 1/LMA): undefined if petiole is in- or exclu", "specific_leaf_area", ifelse(trait_name == "Plant biomass and allometry: Leaf dry mass per plant", "leaf_dry_mass_plant", trait_name)))))))))))))))))))))))))))
 ```
-
 
 ### reshape to match Imputed_trait_data.csv
 ```{r}
-### change column names
+### simplify cols
 trait_ref <- trait_dat_coords %>%
   dplyr::select(LAT = lat_numeric,
                 LON = long_numeric,
-                )
+                accepted_bin = species,
+                trait_name_short,
+                value)
+
+### remove wind/long-distance (disp_syndrome) and "yes" (resprout_capacity, wood_vessel_dens, wood_vessel_diam)
+trait_ref <- trait_ref %>%
+  filter(!value %in% c("yes", "wind/long-distance"))
+
+### convert value to numeric
+trait_ref <- trait_ref %>%
+  mutate(value_num = as.numeric(value))
+
+### get mean values for observations from the same lat/long
+trait_ref <- trait_ref %>%
+  group_by(LAT, 
+           LON, 
+           accepted_bin,
+           trait_name = trait_name_short) %>%
+  summarise(mean_value = mean(value_num, na.rm = TRUE))
+
+### change column names
+trait_ref <- trait_ref %>%
+  dplyr::select(LAT,
+                LON,
+                trait_name, 
+                mean_value,
+                accepted_bin) 
+
+### are there duplicate rows?
+trait_ref <- trait_ref %>%
+  distinct()
+
+### reshape
+trait_ref <- trait_ref %>%
+  pivot_wider(names_from = trait_name,
+              values_from = mean_value)
+
+### reorder cols
+trait_final <- trait_ref %>%
+  dplyr::select(LAT, LON,
+                specific_leaf_area:xylem_p50,
+                leaf_dry_mass_plant:stomata_dens,
+                accepted_bin)
+
+### write out
+write_csv(trait_final,
+          "our_data/cgcs_canada_reshaped.csv")
 ```
 
 
