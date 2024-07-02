@@ -1,0 +1,77 @@
+---
+title: "merge_AB_stp_data"
+output: html_document
+date: "2024-07-02"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+## open AB stp files: tree, species composition, relative abundance, site info
+```{r}
+AB_stp_rel_abundance <- read.csv("C:/Users/krist/Downloads/CGCS KH/relevant_time_data/ab_gp_rel_abundance_smtree.csv")
+AB_site_info <- read.csv("C:/Users/krist/Downloads/CGCS KH/relevant_time_data/ab_gp_site_info.csv")
+AB_stp_species_comp <- read.csv("C:/Users/krist/Downloads/CGCS KH/relevant_time_data/ab_gp_stp_tree_species_comp.csv")
+AB_stp_tree <- read.csv("C:/Users/krist/Downloads/CGCS KH/relevant_time_data/ab_gp_stp_tree.csv")
+
+
+```
+## check dimensions of files
+```{r}
+dim(AB_stp_rel_abundance)
+dim(AB_site_info)
+dim(AB_stp_species_comp)
+dim(AB_stp_tree)
+
+## column names
+names(AB_stp_rel_abundance)
+names(AB_stp_species_comp)
+
+## merge same columns
+intersect(names(AB_stp_rel_abundance), names(AB_stp_species_comp))
+
+```
+
+## merge AB relative abundance and species composition based on intersecting headers
+```{r}
+merge1 <- merge(AB_stp_rel_abundance, AB_stp_species_comp)
+
+```
+
+## merge merge1 with site info based on intersecting headers
+```{r}
+intersect(names(merge1), names(AB_site_info))
+merge2 <- merge(merge1, AB_site_info)
+
+#remove unnecessary columns
+AB_stp_time_data_merged <- select(merge2, nfi_plot:meas_date, utm_n, utm_e)
+```
+
+## save as csv
+```{r}
+write.csv(AB_stp_time_data_merged, "AB_stp_time_data_merged.csv")
+setwd()
+```
+
+
