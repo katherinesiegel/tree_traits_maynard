@@ -1,0 +1,63 @@
+---
+title: "time_data"
+output: html_document
+date: "2024-07-02"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r cars}
+summary(cars)
+```
+
+
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+## open files: species composition, relative abundance, site info
+```{r}
+MB_stp_species_comp <- read.csv("C:/Users/krist/Downloads/CGCS KH/relevant_time_data/mb_gp_stp_tree_species_comp.csv")
+MB_stp_rel_abundance <- read.csv("C:/Users/krist/Downloads/CGCS KH/relevant_time_data/mb_gp_rel_abundance_smtree.csv")
+MB_site_info <- read.csv("C:/Users/krist/Downloads/CGCS KH/relevant_time_data/mb_gp_site_info.csv")
+```
+
+## check dimensions and labels
+```{r}
+# check dimensions
+dim(MB_stp_species_comp)
+dim(MB_stp_rel_abundance)
+dim(MB_site_info)
+
+# check column names
+names(MB_stp_species_comp)
+names(MB_stp_rel_abundance)
+
+# check same column names
+intersect(names(MB_stp_species_comp), names(MB_stp_rel_abundance))
+
+```
+## merge relative abundance and species composition based on similar headers
+```{r}
+MBmergeS1 <- merge(MB_stp_species_comp, MB_stp_rel_abundance)
+```
+
+## merge merge1 with site info based on similar headers
+```{r}
+intersect(names(MBmergeS1), names(MB_site_info))
+MBmergeS2 <- merge(MBmergeS1, MB_site_info)
+
+# remove unnecessary columns
+MB_stp_data_merged <- select(MBmergeS2, nfi_plot:meas_date, utm_n, utm_e)
+```
+## save as csv file
+```{r}
+write.csv(MB_stp_data_merged, "MB_stp_data_merged.csv")
+```
+
