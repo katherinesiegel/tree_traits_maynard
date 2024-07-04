@@ -61,3 +61,23 @@ MB_stp_data_merged <- select(MBmergeS2, nfi_plot:meas_date, utm_n, utm_e)
 write.csv(MB_stp_data_merged, "MB_stp_data_merged.csv")
 ```
 
+### figure out which plots have remeasurement 
+And drop plots without resurvey
+```{r}
+### demo with MB stp
+mb_stp_summary <- MB_stp_data_merged %>%
+  group_by(nfi_plot) %>%
+  summarise(n_surveys = length(unique(meas_date)))
+
+### how many plots were resurveyed?
+table(mb_stp_summary$n_surveys)
+
+### drop plots without resurvey
+mb_stp_summary <- mb_stp_summary %>%
+  filter(n_surveys > 1)
+
+### subset stp to resurveyed plots
+mb_stp_resurveyed <- MB_stp_data_merged %>%
+  filter(nfi_plot %in% mb_stp_summary$nfi_plot)
+```
+
