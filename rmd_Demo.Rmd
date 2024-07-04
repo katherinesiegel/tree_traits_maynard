@@ -46,6 +46,11 @@ imputed_dat <- read.csv("data/results/Imputed_trait_data.csv")
 ```{r}
 ### open data
 trait_dat <- read.csv("our_data/CGCS_Canada_traits_6_11.csv")
+trait_dat_2 <- read.csv("our_data/CGCS_Canada_traits_0702.csv")
+
+### combine
+trait_dat <- rbind(trait_dat,
+                   trait_dat_2)
 
 ### how many have coordinates?
 trait_dat_coords <- trait_dat %>%
@@ -165,7 +170,13 @@ trait_dat_coords <- trait_dat_coords %>%
                            "35.0213",
                            ifelse(latitude == "47.-77262",
                                   "47.77262",
-                                  latitude)))
+                                  latitude)),
+         latitude = ifelse(orig_ref == "Pierce S., Brusa G., Vagge I., Cerabolini B.E.L. (2013) Allocating CSR plant functional types: the use of leaf economics and size traits to classify woody and herbaceous vascular plants. Functional Ecology, 27(4): 1002-1010",
+                           "45.8",
+                           latitude),
+         longitude = ifelse(orig_ref == "Pierce S., Brusa G., Vagge I., Cerabolini B.E.L. (2013) Allocating CSR plant functional types: the use of leaf economics and size traits to classify woody and herbaceous vascular plants. Functional Ecology, 27(4): 1002-1010",
+                            "8.88333",
+                            longitude))
 
 ### convert to numeric
 trait_dat_coords <- trait_dat_coords %>%
@@ -216,6 +227,21 @@ trait_dat_coords <- rbind(trait_dat_1,
 trait_dat_coords <- trait_dat_coords %>%
   mutate(trait_name_short = ifelse(trait_name == "Xylem water potential at which 50% of conductivity is lost (P50)", "xylem_p50", ifelse(trait_name == "Xylem embolism: Shape parameter for the vulnerability curve, a", "xylem_embolism", ifelse(trait_name == "Plant height vegetative", "plant_height_veg", ifelse(trait_name == "water potential 50% loss of conductivity (MPa)", "water_potential_50", ifelse(trait_name == "Leaf dry matter content per leaf water-saturated mass (LDMC)", "ldmc_water", ifelse(trait_name == "Leaf dry mass per leaf fresh mass (leaf dry matter content, LDMC)", "ldmc_fresh", ifelse(trait_name == "Plant growth rate relative (plant relative growth rate, RGR)", "plant_rel_growth_rate", ifelse(trait_name == "Leaf texture (sclerophylly, physical strength, toughness)", "leaf_texture", ifelse(trait_name == "Stem specific density (SSD, stem dry mass per stem fresh volume) or wood density", "stem_specific_density", ifelse(trait_name == "Bark thickness", "bark_thick", ifelse(trait_name == "Dispersal syndrome", "disp_syndrome", ifelse(trait_name == "Stomata conductance per leaf area", "stomata_conduct", ifelse(trait_name == "Photosynthesis: intercellular CO2 concentration", "photosynth_co2", ifelse(trait_name == "Photosynthesis rate per leaf area", "photosynth_rate", ifelse(trait_name == "Stomata density", "stomata_dens", ifelse(trait_name == "Stem conduit density (vessels and tracheids)", "stem_conduit_dens", ifelse(trait_name == "Stem conduit diameter (vessels, tracheids)", "stem_conduit_diam", ifelse(trait_name == "Plant height of lowest branch", "height_lowest_branch", ifelse(trait_name == "Xylem hydraulic vulnerability, xylem cavitation vulnerability, embolism vulnerability, (P20, P50, P8", "xylem_hydraul_vuln", ifelse(trait_name == "Plant resprouting capacity", "resprout_capacity", ifelse(trait_name == "Leaf area-specific conductivity (leaf specific conductivity)", "leaf_area_conduct", ifelse(trait_name == "Wood vessel density", "wood_vessel_dens", ifelse(trait_name == "Wood vessel diameter", "wood_vessel_diam", ifelse(trait_name == "Plant height generative", "plant_height_gen", ifelse(trait_name == "Leaf area per leaf dry mass (specific leaf area, SLA or 1/LMA): undefined if petiole is in- or exclu", "specific_leaf_area", ifelse(trait_name == "Plant biomass and allometry: Leaf dry mass per plant", "leaf_dry_mass_plant", trait_name)))))))))))))))))))))))))))
 ```
+
+### trait units
+```{r}
+### which units are there for each trait?
+trait_units <- trait_dat_coords %>%
+  group_by(trait_name_short, unit) %>%
+  summarise(n_rows = n())
+
+### fix units
+trait_dat_fix <- trait_dat_coords %>%
+  
+  ### drop ldmc_fresh with unit = SLA cm2/g
+  filter(!(trait_name_short == "ldmc_fresh" & unit == "SLA cm2/g"))
+```
+
 
 ### reshape to match Imputed_trait_data.csv
 ```{r}
