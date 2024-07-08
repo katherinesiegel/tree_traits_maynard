@@ -1,0 +1,96 @@
+---
+title: "MB_biomass_summary"
+output: html_document
+date: "2024-07-08"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+```{r cars}
+summary(cars)
+```
+
+
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+### sum of biomass for each nfi plot (ltp)
+```{r}
+### open large tree plot tree file
+MB_ltp_tree <- read.csv("C:/Users/krist/Downloads/CGCS KH/relevant_time_data/mb_gp_ltp_tree.csv")
+
+
+names(MB_ltp_tree)
+
+### select only relevant data columns
+MB_ltp_biomass <- select(MB_ltp_tree, nfi_plot, meas_date, meas_num, biomass_total)
+
+### replace NA values as 0
+MB_ltp_biomass[is.na(MB_ltp_biomass)] <- 0
+
+### biomass sums grouped by nfi plot and meas_date
+MB_ltp_biomass_sum <- MB_ltp_biomass %>%
+  group_by(nfi_plot, meas_date) %>%
+  summarise(biomass_total =sum(biomass_total))
+
+```
+
+### merge biomass and resurveyed files (ltp)
+```{r}
+names(MB_ltp_biomass_sum)
+names(MB_ltp_resurveyed)
+
+### check similarities between file headers
+intersect(names(MB_ltp_biomass_sum), names(MB_ltp_resurveyed))
+
+### merge files based on nfi plot and meas_date
+MB_ltp_biomass_merged <- merge(MB_ltp_biomass_sum, MB_ltp_resurveyed) %>%
+  mutate(percent / 100) %>%
+  mutate(percent/100 * biomass_total)
+
+### save as csv
+write.csv(MB_ltp_biomass_merged, "MB_ltp_biomass_merged.csv")
+
+```
+
+
+### sum of biomass for each nfi plot (stp)
+```{r}
+### open stp tree files
+MB_stp_tree <- read.csv("C:/Users/krist/Downloads/CGCS KH/relevant_time_data/mb_gp_stp_tree.csv")
+
+names(MB_stp_tree)
+
+### select relevant data columns
+MB_stp_biomass <- select(MB_stp_tree, nfi_plot, meas_date, smtree_biomass)
+
+### biomass sums grouped by nfi plot and meas_date
+MB_stp_biomass_sum <- MB_stp_biomass %>%
+  group_by(nfi_plot, meas_date) %>%
+  summarise(smtree_biomass =sum(smtree_biomass))
+
+```
+
+### merge biomass summary and resurveyed files
+```{r}
+names(MB_stp_resurveyed)
+names(MB_stp_biomass_sum)
+
+### check similarities between file headers
+intersect(names(MB_stp_resurveyed), names(MB_stp_biomass_sum))
+
+### merge files based on nfi plot and meas_date
+MB_stp_biomass_merged <- merge(MB_stp_biomass_sum, MB_stp_resurveyed) %>%
+  mutate(smtree_percent / 100) %>%
+  mutate(smtree_percent/100 * smtree_biomass)
+
+### save as csv
+write.csv(MB_stp_biomass_merged, "MB_stp_biomass_merged.csv")
+```
+

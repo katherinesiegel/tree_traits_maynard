@@ -1,0 +1,213 @@
+---
+title: "time_data"
+output: html_document
+date: "2024-07-02"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r cars}
+summary(cars)
+```
+
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+## open files: species composition, relative abundance, site info
+```{r}
+AB_ltp_species_comp <- read.csv("C:/Users/krist/Downloads/CGCS KH/relevant_time_data/ab_gp_ltp_tree_species_comp.csv")
+AB_ltp_rel_abundance <- read.csv("C:/Users/krist/Downloads/CGCS KH/relevant_time_data/ab_gp_rel_abundance_lgtree.csv")
+AB_site_info <- read.csv("C:/Users/krist/Downloads/CGCS KH/relevant_time_data/ab_gp_site_info.csv")
+```
+
+## check dimensions and labels
+```{r}
+# check dimensions
+dim(AB_ltp_species_comp)
+dim(AB_ltp_rel_abundance)
+dim(AB_site_info)
+
+# check column names
+names(AB_ltp_species_comp)
+names(AB_ltp_rel_abundance)
+
+# check same column names
+intersect(names(AB_ltp_species_comp), names(AB_ltp_rel_abundance))
+
+```
+
+## merge relative abundance and species composition based on similar headers
+```{r}
+ABmergeL1 <- merge(AB_ltp_species_comp, AB_ltp_rel_abundance)
+```
+
+## merge merge1 with site info based on similar headers
+```{r}
+intersect(names(ABmergeL1), names(AB_site_info))
+ABmergeL2 <- merge(ABmergeL1,AB_site_info)
+
+# remove unnecessary columns
+AB_ltp_data_merged <- select(ABmergeL2, nfi_plot:meas_date, utm_n, utm_e)
+```
+
+## save as csv file
+```{r}
+write.csv(AB_ltp_data_merged, "AB_ltp_data_merged.csv")
+```
+
+### figure out which plots have remeasurement 
+And drop plots without resurvey
+```{r}
+### demo with MB stp
+mb_stp_summary <- MB_stp_data_merged %>%
+  group_by(nfi_plot) %>%
+  summarise(n_surveys = length(unique(meas_date)))
+
+### how many plots were resurveyed?
+table(mb_stp_summary$n_surveys)
+
+### drop plots without resurvey
+mb_stp_summary <- mb_stp_summary %>%
+  filter(n_surveys > 1)
+
+### subset stp to resurveyed plots
+mb_stp_resurveyed <- MB_stp_data_merged %>%
+  filter(nfi_plot %in% mb_stp_summary$nfi_plot)
+
+### download csv file
+write.csv(mb_stp_resurveyed, "MB_stp_resurveyed.csv")
+```
+
+### BC ltp remeasurement
+```{r}
+BC_ltp_summary <- BC_ltp_data_merged %>%
+  group_by(nfi_plot) %>%
+  summarise(n_surveys = length(unique(meas_date)))
+
+
+table(BC_ltp_summary$n_surveys)
+
+BC_ltp_summary <- BC_ltp_summary %>%
+  filter(n_surveys > 1)
+
+BC_ltp_resurveyed <- BC_ltp_data_merged %>%
+  filter(nfi_plot %in% BC_ltp_summary$nfi_plot)
+
+write.csv(BC_ltp_resurveyed, "BC_ltp_resurveyed.csv")
+```
+
+### BC stp remeasurement
+```{r}
+BC_stp_summary <- BC_stp_data_merged %>%
+  group_by(nfi_plot) %>%
+  summarise(n_surveys = length(unique(meas_date)))
+
+
+table(BC_stp_summary$n_surveys)
+
+BC_stp_summary <- BC_stp_summary %>%
+  filter(n_surveys > 1)
+
+BC_stp_resurveyed <- BC_stp_data_merged %>%
+  filter(nfi_plot %in% BC_stp_summary$nfi_plot)
+
+write.csv(BC_stp_resurveyed, "BC_stp_resurveyed.csv")
+```
+
+### MB ltp remeasurement
+```{r}
+MB_ltp_summary <- MB_ltp_data_merged %>%
+  group_by(nfi_plot) %>%
+  summarise(n_surveys = length(unique(meas_date)))
+
+
+table(MB_ltp_summary$n_surveys)
+
+MB_ltp_summary <- MB_ltp_summary %>%
+  filter(n_surveys > 1)
+
+MB_ltp_resurveyed <- MB_ltp_data_merged %>%
+  filter(nfi_plot %in% MB_ltp_summary$nfi_plot)
+
+write.csv(MB_ltp_resurveyed, "MB_ltp_resurveyed.csv")
+```
+
+### NT ltp remeasurement
+```{r}
+NT_ltp_summary <- NT_ltp_data_merged %>%
+  group_by(nfi_plot) %>%
+  summarise(n_surveys = length(unique(meas_date)))
+
+
+table(NT_ltp_summary$n_surveys)
+
+NT_ltp_summary <- NT_ltp_summary %>%
+  filter(n_surveys > 1)
+
+NT_ltp_resurveyed <- NT_ltp_data_merged %>%
+  filter(nfi_plot %in% NT_ltp_summary$nfi_plot)
+
+write.csv(NT_ltp_resurveyed, "NT_ltp_resurveyed.csv")
+```
+
+### NT stp remeasurement
+```{r}
+NT_stp_summary <- NT_stp_data_merged %>%
+  group_by(nfi_plot) %>%
+  summarise(n_surveys = length(unique(meas_date)))
+
+
+table(NT_stp_summary$n_surveys)
+
+NT_stp_summary <- NT_stp_summary %>%
+  filter(n_surveys > 1)
+NT_stp_resurveyed <- NT_stp_data_merged %>%
+  filter(nfi_plot %in% NT_stp_summary$nfi_plot)
+
+write.csv(NT_stp_resurveyed, "NT_stp_resurveyed.csv")
+```
+
+### SK ltp remeasurement
+```{r}
+SK_ltp_summary <- SK_ltp_data_merged %>%
+  group_by(nfi_plot) %>%
+  summarise(n_surveys = length(unique(meas_date)))
+
+
+table(SK_ltp_summary$n_surveys)
+
+SK_ltp_summary <- SK_ltp_summary %>%
+  filter(n_surveys > 1)
+
+SK_ltp_resurveyed <- SK_ltp_data_merged %>%
+  filter(nfi_plot %in% SK_ltp_summary$nfi_plot)
+
+write.csv(SK_ltp_resurveyed, "SK_ltp_resurveyed.csv")
+```
+
+### SK stp remeasurement
+```{r}
+SK_stp_summary <- SK_stp_data_merged %>%
+  group_by(nfi_plot) %>%
+  summarise(n_surveys = length(unique(meas_date)))
+
+
+table(SK_stp_summary$n_surveys)
+
+SK_stp_summary <- SK_stp_summary %>%
+  filter(n_surveys > 1)
+SK_stp_resurveyed <- SK_stp_data_merged %>%
+  filter(nfi_plot %in% SK_stp_summary$nfi_plot)
+
+write.csv(SK_stp_resurveyed, "SK_stp_resurveyed.csv")
+```
+
+```
+
