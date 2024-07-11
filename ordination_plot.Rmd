@@ -1,0 +1,57 @@
+---
+title: "ordination plot"
+output: html_document
+date: "2024-07-10"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+```{r}
+library("ggplot2")
+install.packages("phyloseq")
+library("plyr")
+library("vegan")
+
+```
+```{r}
+MB_ord_biomass <- read.csv("C:/Users/krist/OneDrive/Desktop/R/tree_traits_maynard/our_data/biomass_materials/MB_biomass_total.csv")
+
+taxa <- unique(MB_ord_biomass$species)
+samples <- sort(unique(MB_ord_biomass$nfi_plot))
+
+data1 <- matrix(nrow = length(samples), ncol = length(taxa), dimnames = list (samples, taxa))
+
+for(r in 1:nrow(MB_ord_biomass)){
+  samp <- MB_ord_biomass[r, 2]
+  tax <- MB_ord_biomass[r, 8]
+  data1[samp, tax] <- MB_ord_biomass[r, 14]
+}
+
+```
+### sites for ordination plot tutorials
+https://www.rpubs.com/RGrieger/533895 
+https://cran.r-project.org/web/packages/vegan/vignettes/intro-vegan.pdf
+https://ourcodingclub.github.io/tutorials/ordination/
+
