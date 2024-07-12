@@ -58,6 +58,18 @@ write.csv(SK_ltp_biomass_merged, "SK_ltp_biomass_merged.csv")
 
 ```
 
+### introducing diversity, evenness, and richness indexes (ltp)
+```{r}
+SK_ltp_header <- read.csv("C:/Users/krist/Downloads/CGCS KH/relevant_time_data/sk_gp_ltp_header.csv")
+
+### select only relevant columns
+names(SK_ltp_header)
+
+SK_ltp_index <- select(SK_ltp_header, nfi_plot, meas_date, meas_num, bindex_ltshannon, bindex_lteven, bindex_ltmargalef)
+
+### replace NA values as 0
+SK_ltp_index[is.na(SK_ltp_index)] <- 0
+```
 
 ### sum of biomass for each nfi plot (stp)
 ```{r}
@@ -93,3 +105,23 @@ SK_stp_biomass_merged <- merge(SK_stp_biomass_sum, SK_stp_resurveyed) %>%
 write.csv(SK_stp_biomass_merged, "SK_stp_biomass_merged.csv")
 ```
 
+### introducing diversity, evenness, and richness indexes (stp)
+```{r}
+SK_stp_header <- read.csv("C:/Users/krist/Downloads/CGCS KH/relevant_time_data/sk_gp_stp_header.csv")
+
+### select relevant columns
+names(SK_stp_header)
+
+SK_stp_index <- select(SK_stp_header, nfi_plot, meas_date, meas_num, bindex_stshannon, bindex_steven, bindex_stmargalef)
+
+### replace NA with 0
+SK_stp_index[is.na(SK_stp_index)] <- 0
+```
+
+### merge index files
+```{r}
+SK_indeces <- merge(SK_ltp_index, SK_stp_index)
+
+write.csv(SK_indeces, "SK_indeces.csv")
+
+```

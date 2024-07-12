@@ -34,8 +34,8 @@ Note that the `echo = FALSE` parameter was added to the code chunk to prevent pr
 library(ape)
 maynardtree <- read.tree("C:/Users/krist/OneDrive/Desktop/R/tree_traits_maynard/data/raw_data/dichotomous_phylogenetic_tree.tree")
 maynardtree <- ape::read.tree("C:/Users/krist/OneDrive/Desktop/R/tree_traits_maynard/data/raw_data/dichotomous_phylogenetic_tree.tree")
-plot(maynardtree,type="fan",ps=0.1,lwd=1, no.margin=TRUE)
-plot(maynardtree,no.margin=TRUE,edge.width = 0.5)
+plot(maynardtree,type="fan",cex=0.1,lwd=0.5, no.margin=TRUE)
+plot(maynardtree,no.margin=TRUE,edge.width = 0.5, cex=0.2)
 
 ```
 
