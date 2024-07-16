@@ -1,0 +1,111 @@
+---
+title: "new merged files"
+output: html_document
+date: "2024-07-16"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### merge BC stp and ltp biomass data
+```{r}
+read.csv("C:/Users/krist/OneDrive/Desktop/R/tree_traits_maynard/our_data/biomass_materials/BC_biomass_total.csv")
+
+### change empty varieties to blank
+BC_biomass_total <- BC_biomass_total %>%
+  mutate_at(c("variety"), ~replace_na(., ""))
+ 
+### combine genus, species, variety into one category
+BC_biomass_total <- unite(BC_biomass_total, col='NFI_species', c('genus', 'species', 'variety'), sep=' ')
+
+### sum of biomass compositions for each nfi plot and measurement date
+BC_biomass_combined <- BC_biomass_total %>%
+  group_by(nfi_plot, meas_date, NFI_species, utm_n, utm_e) %>%
+  summarise(biomass_composition =sum(biomass_composition))
+
+### save as csv
+write.csv(BC_biomass_combined, "BC_biomass_combined.csv")
+
+
+```
+
+### merge MB stp and ltp biomass data
+```{r}
+read.csv("our_data/biomass_materials/MB_biomass_total.csv")
+
+### change empty varieties to blank
+MB_biomass_total <- MB_biomass_total %>%
+  mutate_at(c("variety"), ~replace_na(., " "))
+
+### combine genus, species, variety into one category
+MB_biomass_total <- unite(MB_biomass_total, col="NFI_species", c("genus", "species", "variety"), sep=" ")
+
+### sum of biomass compositions for each nfi plot and measurement date
+MB_biomass_combined <- MB_biomass_total %>%
+  group_by(nfi_plot, meas_date, NFI_species, utm_n, utm_e) %>%
+  summarise(biomass_composition =sum(biomass_composition))
+
+### save as csv
+write.csv(MB_biomass_combined, "MB_biomass_combined.csv")
+```
+
+### merge NT stp and ltp biomass data
+```{r}
+read.csv("our_data/biomass_materials/NT_biomass_total.csv")
+
+### change empty varieties to blank
+NT_biomass_total <- NT_biomass_total %>%
+  mutate_at(c("variety"), ~replace_na(., " "))
+
+### combine genus, species, variety into one category
+NT_biomass_total <- unite(NT_biomass_total, col="NFI_species", c("genus", "species", "variety"), sep=" ")
+
+### sum of biomass compositions for each nfi plot and measurement date
+NT_biomass_combined <- NT_biomass_total %>%
+  group_by(nfi_plot, meas_date, NFI_species, utm_n, utm_e) %>%
+  summarise(biomass_composition =sum(biomass_composition))
+
+### save as csv
+write.csv(NT_biomass_combined, "NT_biomass_combined.csv")
+```
+
+### merge SK stp and ltp biomass data
+```{r}
+read.csv("our_data/biomass_materials/SK_biomass_total.csv")
+
+### remove empty varieties
+SK_biomass_total$variety <- NULL  #variety column was NA throughout and usual code was not working
+
+### combine genus and species into one category
+SK_biomass_total <- unite(SK_biomass_total, col="NFI_species", c("genus", "species"), sep=" ")
+
+### sum of biomass compositions for each nfi plot and measurement date
+SK_biomass_combined <- SK_biomass_total %>%
+  group_by(nfi_plot, meas_date, NFI_species, utm_n, utm_e) %>%
+  summarise(biomass_composition =sum(biomass_composition))
+
+### save as csv
+write.csv(SK_biomass_combined, "SK_biomass_combined.csv")
+
+```
+
+### merge all provinces together
+```{r}
+### open all files
+read.csv("our_data/biomass_materials/SK_biomass_combined.csv")
+read.csv("our_data/biomass_materials/NT_biomass_combined.csv")
+read.csv("our_data/biomasS_materials/MB_biomass_combined.csv")
+read.csv("our_data/biomass_materials/BC_biomass_combined.csv")
+
+### merge provinces into 1 file
+wcan_biomass <- rbind(SK_biomass_combined, NT_biomass_combined, MB_biomass_combined, BC_biomass_combined)
+
+### save as csv
+write.csv(wcan_biomass, "wcan_biomass_total.csv")
+
+```
+
+
+```
+
