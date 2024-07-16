@@ -1,0 +1,50 @@
+---
+title: "mapping"
+output: html_document
+date: "2024-07-16"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(sf)
+library(terra)
+```
+
+## demo british columbia
+```{r}
+### open data
+bc_data_resurveyed <- read.csv("our_data/BC_ltp_resurveyed.csv")
+
+### convert to spatial
+spat_bc <- st_as_sf(bc_data_resurveyed,
+                    coords = c(13:14),
+                    crs = 4269) 
+
+### subset columns
+bc_plots <- spat_bc %>%
+  dplyr::select(nfi_plot,
+                geometry) %>%
+  distinct()
+  
+### open richness/evenness data
+bc_richeven <- read.csv("our_data/BC_indeces.csv")
+
+### combine with richness and evenness data
+bc_richeven <- merge(bc_plots,
+                     bc_richeven,
+                     by = "nfi_plot",
+                     all.y = TRUE)
+
+### reduce columns
+bc_richeven <- bc_richeven %>%
+  dplyr::select(nfi_plot,
+                meas_date,
+                bindex_ltshannon:geometry)
+
+### try plotting
+bc_richeven %>%
+  ggplot() +
+  geom_sf()
+```
