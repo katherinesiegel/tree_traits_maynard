@@ -1,0 +1,313 @@
+---
+title: "traits_cleaned"
+output: html_document
+date: "2024-07-18"
+---
+
+## Set up
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+### load libraries
+library(tidyverse)
+library(stringr)
+```
+
+## Species present
+Which species are present in the resurveyed NFI data?
+```{r}
+### open combined biomass data, restrict to species
+nfi_dat <- read.csv("our_data/biomass_materials/wcan_biomass_total.csv") %>%
+  dplyr::select(., NFI_species)
+
+### get list of unique species
+nfi_dat <- nfi_dat %>%
+  distinct()
+
+### remove all spaces from species codes
+nfi_dat <- nfi_dat %>%
+  mutate(NFI_species = str_replace_all(NFI_species, " ", "")) %>%
+  distinct()
+
+### vector of species codes
+sp_codes <- sort(unique(nfi_dat$NFI_species))
+
+### make df of full species name
+vect_sp_codes <- c("ABIEAMA", "ABIEBAL", "ABIEGRA", 
+                   "ABIELAS", "ACERMAC", "ACERNEG", 
+                   "ACERSPI", "ALNUCRI", "ALNUINC", 
+                   "ALNURUB", "ALNURUG", "ALNUSPP", 
+                   "AMELALN", "BETUGLA", "BETUNAN", 
+                   "BETUNEO", "BETUOCC", "BETUPAP", 
+                   "BETUPAPNEO", "BETUPAPPAP", "BETUPUM", 
+                   "BETUSPP", "BETUWIN", "CHAMNOO", 
+                   "CORNSTO", "CORYCOR", "GENCSPP", 
+                   "JUNISCO", "JUNISPP", "LARILAR", 
+                   "LARILYA", "LARIOCC", "PICEENG", 
+                   "PICEENGGLA", "PICEGLA", "PICELUTX", 
+                   "PICEMAR", "PICESIT", "PICESPP", 
+                   "PINUALB", "PINUBAN", "PINUCON", 
+                   "PINUCONCON", "PINUCONLAT", "PINUMON",
+                   "PINUPON", "POPUBAL", "POPUBALBAL",
+                   "POPUSPP", "POPUTRE", "POPUTRI", 
+                   "PRUNPEN", "PRUNSPP", "PRUNVIR", 
+                   "PSEUMEN", "PSEUMENGLA", "PSEUMENMEN", 
+                   "QUERMAC", "SALIGLA", "SALIMAC",
+                   "SALIPLA", "SALISCO", "SALISPP", 
+                   "SHEPCAN", "TAXUBRE", "THUJPLI", 
+                   "TSUGHET", "TSUGMER", "TSUGMERHET")
+
+vect_sp_names <- c("Abies amabilis", "Abies balsamea", "Abies grandis", 
+                   "Abies lasiocarpa", "Acer macrophyllum", "Acer negundo", 
+                   "Acer spicatum", "Alnus viridis", "Alnus incana", 
+                   "Alnus rubra", "Alnus rugosa", "Alnus spp.", 
+                   "Amelanchier alnifolia", "Betula glandulosa", "Betula nana", 
+                   "Betula neoalaskana", "Betula occidentalis", "Betula papyrifera", 
+                   "Betula papyrifera", 
+                   "Betula papyrifera", "Betula pumila", 
+                   "Betula spp.", "Betula xwinteri", "Chamaecyparis nootkatensis", 
+                   "Cornus stolonifera", 
+                   "CORYCOR", 
+                   "Unknown conifer", 
+                   "Juniperus scopulorum", "Juniperus spp.", "Larix laricina", 
+                   "Larix lyallii", "Larix occidentalis", "Picea engelmannii", 
+                   "Picea engelmannii", "Picea glauca", 
+                   "PICELUTX", 
+                   "Picea mariana", "Picea sitchensis", "Picea spp.", 
+                   "Pinus albicaulis", "Pinus banksiana", "Pinus contorta", 
+                   "Pinus contorta", "Pinus contorta", 
+                   "Pinus monticola",
+                   "Pinus ponderosa", "Populus balsamifera", 
+                   "Populus balsamifera",
+                   "Populus spp.", "Populus tremuloides", "Populus trichocarpa", 
+                   "Prunus pensylvanica", "Prunus spp.", "Prunus virginiana", 
+                   "Pseudotsuga menziesii", "Pseudotsuga menziesii", 
+                   "Pseudotsuga menziesii", 
+                   "Quercus macrocarpa", "Salix glauca", "Salix maccalliana",
+                   "Salix planifolia", "Salix scouleriana", "Salix spp.", 
+                   "Shepherdia canadensis", "Taxus brevifolia", "Thuja plicata", 
+                   "Tsuga heterophylla", "Tsuga mertensiana", "Tsuga mertensiana")
+
+sp_codes_names <- cbind.data.frame(vect_sp_codes, vect_sp_names)
+
+### clean up
+rm(vect_sp_codes, vect_sp_names)
+```
+
+## Combine and clean trait data
+### Canada FIA data
+```{r}
+### open data
+trait_dat <- read.csv("our_data/CGCS_Canada_traits_6_11.csv")
+trait_dat_2 <- read.csv("our_data/CGCS_Canada_traits_0702.csv")
+
+### combine
+trait_dat <- rbind(trait_dat,
+                   trait_dat_2)
+
+### clean up 
+rm(trait_dat_2)
+
+### add last col
+trait_dat <- trait_dat %>%
+  mutate(data_source = "try database")
+```
+
+### US FIA data
+```{r}
+### open data
+us_traits <- read.csv("C:/Users/kjsie/Documents/noaa_cgc_proj/noaa_fia/try_fia_all_us.csv")
+
+### remove extra col
+us_traits <- us_traits %>%
+  dplyr::select(-bien_database)
+```
+
+### Combine
+```{r}
+### combine traits
+all_traits <- rbind(trait_dat,
+                    us_traits)
+
+### subset to NFI species
+nfi_traits <- all_traits %>%
+  filter(species %in% sp_codes_names$vect_sp_names)
+
+### are there species in NFI missing from this?
+sp_missing <- sp_codes_names %>%
+  filter(!vect_sp_names %in% nfi_traits$species)
+```
+
+#### NFI species without trait data
+"Alnus viridis"         
+"Alnus spp."            
+"Betula glandulosa"     
+"Betula nana"           
+"Betula neoalaskana"   
+"Betula pumila"         
+"Betula spp."           
+"Betula xwinteri"       
+"CORYCOR"               
+"Unknown conifer"      
+"Juniperus spp."        
+"PICELUTX"              
+"Picea spp."            
+"Populus spp."          
+"Populus trichocarpa"  
+"Prunus pensylvanica"   
+"Prunus spp."           
+"Salix glauca"          
+"Salix maccalliana"     
+"Salix planifolia"     
+"Salix spp."            
+"Shepherdia canadensis"
+
+### Clean traits
+#### Trait names
+```{r}
+### what trait names are there?
+sort(unique(nfi_traits$trait_name))
+
+### clean up trait names
+nfi_traits <- nfi_traits %>%
+  filter(! trait_name == "") %>%
+  mutate(trait_name = ifelse(trait_name == "Dispersal syndrome", "dispersal syndrome", ifelse(trait_name == "Leaf area per leaf dry mass (specific leaf area, SLA or 1/LMA): undefined if petiole is in- or excluded", "specific leaf area", ifelse(trait_name == "Leaf dry mass per leaf fresh mass (leaf dry matter content, LDMC)", "leaf dry matter content", ifelse(trait_name == "Leaf dry matter content per leaf water-saturated mass (LDMC)", "leaf dry matter content", ifelse(trait_name == "Leaf water content per leaf water-saturated mass (LWC, 1-LDMC)", "leaf water content", ifelse(trait_name == "Plant growth rate relative (plant relative growth rate, RGR)", "relative growth rate", ifelse(trait_name == "Plant height vegetative", "plant height, vegetative", ifelse(trait_name == "Seed (seedbank) longevity", "seedbank density", ifelse(trait_name == "Stem specific density (SSD, stem dry mass per stem fresh volume) or wood density", "wood (or stem-specific) density", ifelse(trait_name == "water potential 50% loss of conductivity (MPa)", "water potential at 50% loss of stem hydraulic conductivity", ifelse(trait_name == "leaf force to punch per area", "leaf force to punch", ifelse(trait_name == "stomatal conductance per leaf area", "stomatal conductance", ifelse(trait_name == "stomatal conductance to water vapor", "stomatal conductance", trait_name))))))))))))))
+```
+
+#### Units
+```{r}
+### change unit = "" to NA
+nfi_traits <- nfi_traits %>%
+  mutate(unit = ifelse(unit == "", NA, unit))
+
+### different units per trait?
+trait_units <- nfi_traits %>%
+  group_by(trait_name, unit) %>%
+  summarise(n_obs = n())
+
+### trait values with different units
+
+### cone serotiny: "type", NA
+nfi_traits <- nfi_traits %>%
+  mutate(value = ifelse(trait_name == "cone serotiny" & value == "no",
+                        "non-serotinous", 
+                        value))
+
+### dispersal syndrome: "vector", NA
+nfi_traits <- nfi_traits %>%
+  mutate(value = ifelse(trait_name == "dispersal syndrome" & value == "diaspore is blown by wind", "wind", ifelse(trait_name == "dispersal syndrome" & value == "ethelochor", "human", ifelse(trait_name == "dispersal syndrome" & value == "dysochor", "animals, general", ifelse(trait_name == "dispersal syndrome" & value == "nautochor", "water", ifelse(trait_name == "dispersal syndrome" & value == "animal", "animals, general", ifelse(trait_name == "dispersal syndrome" & value == "diaspore is eaten intentionally", "animals, general", ifelse(trait_name == "dispersal syndrome" & value == "mammals (non-bat) + birds", "animals, general", ifelse(trait_name == "dispersal syndrome" & value == "combination: wind+water", "wind and water", value)))))))))
+
+
+### leaf dry matter content: g/g, mg g-1, mg/g -- convert all to g/g
+nfi_traits <- nfi_traits %>%
+  mutate(value = ifelse(trait_name == "leaf dry matter content" & unit == "mg g-1", as.numeric(value)/1000,
+                        ifelse(trait_name == "leaf dry matter content" & unit == "mg/g", as.numeric(value)/1000,
+                               value)),
+         unit = ifelse(trait_name == "leaf dry matter content", "g/g", unit))
+
+### leaf force to punch: N/mm2, kN/m
+nfi_traits <- nfi_traits %>%
+  mutate(value = ifelse(trait_name == "leaf force to punch" & value < 1, as.numeric(value)*10,
+                               value),
+         unit = ifelse(trait_name == "leaf force to punch", "N/mm2", unit))
+
+### leaf mass area: g/m2, kg
+### kg values are from Falster et al. 2015: https://doi.org/10.1890/14-1889.1
+### metadata here: https://www.esapubs.org/archive/ecol/E096/128/metadata.php. leaf mass per area is in kg/m2
+nfi_traits <- nfi_traits %>%
+  mutate(value = ifelse(trait_name == "leaf mass area" & unit == "kg", as.numeric(value)*1000,
+                               value),
+         unit = ifelse(trait_name == "leaf mass area", "g/m2", unit))
+
+### maximum height: feet, ft, m, meters
+nfi_traits <- nfi_traits %>%
+  mutate(value = ifelse(trait_name == "maximum height" & unit == "feet", as.numeric(value)/3.281,
+                        ifelse(trait_name == "maximum height" & unit == "ft", as.numeric(value)/3.281,
+                               value)),
+         unit = ifelse(trait_name == "maximum height", "meters", unit))
+
+### photosynthetic water use efficiency: micromol/m2/s, umol/mmol
+nfi_traits <- nfi_traits %>%
+  filter(!(trait_name == "photosynthetic water use efficiency" & unit == "micromol/m2/s"))
+
+### relative growth rate: g/g/d, g/g/day, NA
+### get rid of NA -- they are non-numeric
+nfi_traits <- nfi_traits %>%
+  filter(!(trait_name == "relative growth rate" & is.na(unit))) %>%
+  mutate(unit = ifelse(trait_name == "relative growth rate",
+         "g/g/d",
+         unit))
+
+### seedbank density: seeds/acre, NA
+### get rid of NA -- it is non-numeric
+nfi_traits <- nfi_traits %>%
+  filter(!(trait_name == "seedbank density" & is.na(unit))) %>%
+  mutate(value = ifelse(value == "0.5 million",
+                        "500000",
+                        ifelse(value == "2.2-294 million",
+                               "2200000",
+                               value)))
+
+### make additional row for upper end of range
+row_add_cols <- colnames(nfi_traits) 
+row_add_vals <- c("Larix occidentalis", "western larch", "seedbank density",
+                  "32376", "1111", "294000000", "seeds/acre", "mean",
+                  NA, NA, 
+                  "Schmidt, Wyman C.; Shearer, Raymond C. 1990. Larix occidentalis Nutt. western larch. In: Burns, Russell M.; Honkala, Barbara H., technical coordinators. Silvics of North America. Volume 1. Conifers. Agric. Handb. 654. Washington, DC: U.S. Department of Agriculture, Forest Service: 160-172. [13381]",
+                  NA,
+                  "Scher, Janette S. 2002. Larix occidentalis. In: Fire Effects Information System, [Online]. U.S. Department of Agriculture, Forest Service, Rocky Mountain Research Station, Fire Sciences Laboratory (Producer). Available: https://www.fs.usda.gov/database/feis/plants/tree/larlya/all.html [2023, April 28].")
+row_add <- rbind.data.frame(row_add_cols, row_add_vals)
+names(row_add) <- row_add[1, ]
+row_add <- row_add[2, ]
+
+### combine
+nfi_traits <- rbind(nfi_traits,
+                    row_add)
+
+### seedbank duration: year, years
+nfi_traits <- nfi_traits %>%
+  mutate(unit = ifelse(trait_name == "seedbank duration",
+         "years",
+         unit))
+
+### specific leaf area: mm2/mg, NA
+### NAs are from LEDA Traitbase: Kleyer et al. 2008 https://doi.org/10.1111/j.1365-2745.2008.01430.x
+### according to the accompanying paper, units are mm2 mg−1
+nfi_traits <- nfi_traits %>%
+  mutate(unit = ifelse(trait_name == "specific leaf area",
+         "mm2/mg",
+         unit))
+
+### stem conduit density (vessels and tracheids): #/ mm2, 1/mm^2, mm-2
+nfi_traits <- nfi_traits %>%
+  mutate(unit = ifelse(trait_name == "stem conduit density (vessels and tracheids)",
+         "per mm2",
+         unit))
+
+### stomata density: Number/mm2, mm-2, stom/mm2
+nfi_traits <- nfi_traits %>%
+  mutate(unit = ifelse(trait_name == "stomata density",
+         "per mm2",
+         unit))
+
+### stomatal conductance: mmol/m2/s, mol/m2/s, mmol/m2/s
+nfi_traits <- nfi_traits %>%
+  mutate(value = ifelse(trait_name == "stomatal conductance" & unit == "mol/m2/s", 
+                        as.numeric(value)*1000, value),
+         unit = ifelse(trait_name == "stomatal conductance", "mmol/m2/s", unit))
+
+
+### water potential at 50% loss of stem hydraulic conductivity: MPa, NA
+nfi_traits <- nfi_traits %>%
+  mutate(unit = ifelse(trait_name == "water potential at 50% loss of stem hydraulic conductivity",
+         "MPa",
+         unit))
+
+### wood (or stem-specific) density: kg/m3, mg/mm3, NA
+nfi_traits <- nfi_traits %>%
+  filter(!(trait_name == "wood (or stem-specific) density" & is.na(unit)))
+
+### write out
+write_csv(nfi_traits,
+          "our_data/nfi_trait_dat_clean.csv")
+```
