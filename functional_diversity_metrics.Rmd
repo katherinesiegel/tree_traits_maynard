@@ -1,0 +1,2058 @@
+---
+title: "fd_metrics"
+output: html_document
+date: "2023-07-20"
+editor_options: 
+  chunk_output_type: inline
+---
+
+## Set up
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+### Load packages
+library(tidyverse)
+library(sf)
+library(FD)
+library(data.table)
+```
+
+## Prep tree/plot data
+```{r}
+### Open data
+dat_resamp <- read.csv("E:/fia_sql/data_resampled_for_traits.csv")
+
+### fix Cornus nuttalli
+dat_resamp <- dat_resamp %>%
+  mutate(species_name = ifelse(species_name == "Cornus nuttallii",
+                               "Cornus nuttalli",
+                               species_name))
+
+### simplify
+dat_resamp_simp <- dat_resamp %>%
+  dplyr::select(PLOT.x, state_name,
+                INVYR, species_name,
+                SPCD, Genus, Species, 
+                VARIETY, STATUSCD, status_code) %>%
+  group_by(PLOT.x, state_name,
+           INVYR, species_name,
+           SPCD, Genus, Species, 
+           VARIETY, STATUSCD, status_code) %>%
+  summarise(n_individs = n())
+
+### Reorder cols
+dat_resamp_simp$SPCD <- NULL
+dat_resamp_simp$VARIETY <- NULL
+dat_resamp_simp$STATUSCD <- NULL
+```
+### Plots with live trees in t1 and t2
+```{r}
+### open csv of plots with live trees in t1 and t2 (from fia_summary.Rmd)
+live_trees <- read.csv("plots_live_trees_t1_t2.csv")
+
+### make plot_state column for dat_resamp_simp
+dat_resamp_simp <- dat_resamp_simp %>%
+  mutate(plot_state = paste0(PLOT.x, "_", state_name))
+
+### subset to plots in live_trees
+dat_resamp_live <- dat_resamp_simp %>%
+  filter(plot_state %in% live_trees$plot_state)
+```
+
+### Prep time steps for FD
+```{r}
+### Number of temporal observations per plot/cond
+dat_summ <- dat_resamp_live %>%
+  group_by(PLOT.x, state_name, plot_state) %>%
+  summarise(n_surveyed = length(unique(INVYR)))
+table(dat_summ$n_surveyed)
+### 17817 plots have 2 obs, 115 have 3
+
+### Add # of observations to data
+dat_resamp_live <- merge(dat_resamp_live,
+                         dat_summ,
+                         by = c("PLOT.x",
+                                "state_name",
+                                "plot_state"))
+
+### Drop 84177_Montana because it wasn't resurveyed
+dat_resamp_live <- dat_resamp_live %>%
+  filter(!plot_state == "84177_Montana")
+
+### Set t(min) and t(max)
+dat_t <- dat_resamp_live %>%
+  group_by(PLOT.x, state_name, plot_state) %>%
+  summarise(min_year = min(INVYR),
+            max_year = max(INVYR))
+
+### Merge in
+dat_resamp_live <- merge(dat_resamp_live,
+                         dat_t,
+                         by = c("PLOT.x",
+                                "state_name",
+                                "plot_state"))
+
+### Add time step
+dat_resamp_live <- dat_resamp_live %>%
+  mutate(time_step = ifelse(INVYR == min_year, "t1", 
+                            ifelse(INVYR == max_year & n_surveyed == 2, "t2", 
+                                   ifelse(INVYR == max_year & n_surveyed == 3, "t3", 
+                                          "t2"))))
+
+### Make df of plot/INVYR/time_step for later
+time_year <- dat_resamp_live %>%
+  dplyr::select(PLOT.x, state_name,
+                plot_state,
+                INVYR, time_step) %>%
+  distinct()
+write_csv(time_year, "plot_year_t_july20.csv")
+
+### Drop t1 dead trees
+dat_resamp_live <- dat_resamp_live %>%
+  filter(!(time_step == "t1" & status_code %in%
+             c("No status", "Dead tree", "Removed by humans")))
+
+### Make df just of t1 plots
+dat_t1 <- dat_resamp_live %>%
+  filter(time_step == "t1")
+
+### From Meghan's code
+# ### Species cover per plot. Each row is a species x plot x year combination
+# cover_spp <- fread("data_for_analysis_2018-2021.csv")
+# ### this csv has a row for each species in each plot and year with its level of plot cover and then the species' functional traits
+
+### Simplify
+dat_t1 <- dat_t1 %>%
+  dplyr::select(PLOT.x, state_name,
+                plot_state,
+                INVYR, time_step,
+                species_name, n_individs)
+
+### Total trees per plot
+plot_tot <- dat_t1 %>%
+  group_by(PLOT.x, state_name, plot_state, INVYR) %>%
+  summarise(total_trees_plot = sum(n_individs))
+
+### Merge
+dat_t1 <- merge(dat_t1, plot_tot,
+               by = c("PLOT.x", "state_name", "plot_state", "INVYR"))
+
+### percent of trees
+dat_t1 <- dat_t1 %>%
+  mutate(pct_trees = n_individs/total_trees_plot)
+
+### Write out
+write_csv(dat_t1,
+          "dat_t1_plots.csv")
+```
+
+### Add traits
+```{r}
+### Open trait csvs
+cat_summ <- read.csv("categorical_traits.csv")
+cont_summ <- read.csv("continuous_traits.csv")
+
+### Need to reshape: species, trait1, trait2, trait3...
+cat_wide <- cat_summ %>%
+  dplyr::select(species, trait_name,
+                mean_value)
+cat_wide <- cat_wide %>%
+  pivot_wider(names_from = trait_name,
+              values_from = mean_value)
+
+### Reshape cont data
+cont_wide <- cont_summ %>%
+  dplyr::select(species, trait_name,
+                mean_value)
+
+### fix issue with repeated values in cont_wide
+cont_wide <- cont_wide %>%
+  group_by(species, trait_name) %>%
+  summarise(mean_value = mean(mean_value))
+cont_wide <- cont_wide %>%
+  spread(key = "trait_name",
+         value = "mean_value")
+
+### Merge cont and cat
+all_traits <- merge(x = cat_wide,
+                    y = cont_wide,
+                    by = "species",
+                    all = TRUE)
+
+### write out full trait data
+write_csv(all_traits,
+          "all_trees_all_traits_july13.csv")
+
+### Merge with t1 plot data
+dat_t1_traits <- merge(x = dat_t1,
+                       y = all_traits,
+                       by.x = "species_name",
+                       by.y = "species",
+                       all.x = TRUE)
+
+### Write out
+write_csv(dat_t1_traits,
+          "dat_t1_trees_traits_july20.csv")
+### this is cover_spp in Meghan's data
+### all_traits ("co_all_trees_all_traits.csv") is traits_all in Meghan's data
+```
+
+## FUNCTIONAL DIVERSITY
+### t1
+#### prep for FD package
+FD package requires 2 inputs:  
+* matrix of species' cover/abundance by plot  
+* matrix of trait values by species  
+```{r}
+### Matrix for one year of data
+### Create species' cover matrix: each row is a plot, each column is a species, values are cover/abundance
+### subset to just species, cover, and plot ID
+cover_wide <- dat_t1 %>%
+  dplyr::select(plot = PLOT.x, 
+                state = state_name,
+                species = species_name,
+                cover = n_individs)
+
+### make plot_state
+cover_wide <- cover_wide %>%
+  mutate(plot = paste0(plot, "_", state))
+
+# ### Filter out Gleditsia triacanthos b/c no trait data
+# cover_wide <- cover_wide %>%
+#   filter(!species == "Gleditsia triacanthos")
+
+### reshape to wide
+cover_wide <- reshape2::dcast(cover_wide, 
+                              plot ~ species,
+                              value.var = "cover",
+                              mean) 
+
+### NA --> 0
+cover_wide[is.na(cover_wide)] <- 0 
+
+# ### drop plot with no trees
+# cover_wide <- cover_wide %>%
+#   filter(!plot == 23060)
+
+### rename rows with plot ID
+rownames(cover_wide) <- cover_wide$plot 
+
+### drop plot ID column
+cover_wide <- cover_wide %>%
+  dplyr::select(-plot)
+
+### Create matrix of species' traits: each row is a species, each column is a trait, values are trait values
+### traits of all species included in matrix
+traits_sub <- dat_t1_traits %>%
+  dplyr::select(-PLOT.x, -state_name, -INVYR,
+                -plot_state,
+                -time_step, -n_individs,
+                -total_trees_plot, -pct_trees)
+traits_sub <- distinct(traits_sub)
+
+# ### Drop Gleditsia triacanthos because no trait data
+# traits_sub <- traits_sub %>%
+#   filter(!species_name == "Gleditsia triacanthos")
+
+### drop species grouped at genus level, "Tree unknown"
+traits_sub <- traits_sub %>%
+  filter(!species_name %in% c("Eucalyptus spp.",
+                              "Prunus spp.",
+                              "Tree unknown"))
+
+### Format data so both datasets contain same set of species, names match and are in same order
+a <- cover_wide[, c(colnames(cover_wide) %in%
+                      traits_sub$species_name)]
+a <- a[,order(colnames(a))]
+
+### list of species in matrix
+spec <- colnames(a) 
+b <- traits_sub %>%
+  filter(species_name %in% spec)
+b <- b[order(b$species_name), ]
+b <- b %>% remove_rownames %>%
+  column_to_rownames(var = "species_name")
+
+### b: make resprout numeric
+b$resprouting.ability <- as.numeric(b$resprouting.ability)
+
+### b: make evergreen/decid categorical 0, 1, 2, 3
+b$foliage.type..deciduous.or.evergreen.[b$foliage.type..deciduous.or.evergreen. == "evergreen"] <- 3
+b$foliage.type..deciduous.or.evergreen.[b$foliage.type..deciduous.or.evergreen. == "evergreen but drought deciduous"] <- 2
+b$foliage.type..deciduous.or.evergreen.[b$foliage.type..deciduous.or.evergreen. == "semi-evergreen"] <- 1
+b$foliage.type..deciduous.or.evergreen.[b$foliage.type..deciduous.or.evergreen. == "deciduous"] <- 0
+b$foliage.type..deciduous.or.evergreen. <- as.numeric(b$foliage.type..deciduous.or.evergreen.)
+
+### make clonal growth numeric
+b$clonal.growth.form[b$clonal.growth.form == "underground"] <- 3
+b$clonal.growth.form[b$clonal.growth.form == "basal"] <- 2
+b$clonal.growth.form[b$clonal.growth.form == "abovegound"] <- 1
+b$clonal.growth.form[b$clonal.growth.form == "none"] <- 0
+b$clonal.growth.form <- as.numeric(b$clonal.growth.form)
+
+### make coarse root rooting depth numeric
+b$coarse.root.rooting.depth[b$coarse.root.rooting.depth == "shallow"] <- 0
+b$coarse.root.rooting.depth[b$coarse.root.rooting.depth == "shallow_moderate"] <- 1
+b$coarse.root.rooting.depth[b$coarse.root.rooting.depth == "varying"] <- 2
+b$coarse.root.rooting.depth[b$coarse.root.rooting.depth == "deep"] <- 3
+b$coarse.root.rooting.depth <- as.numeric(b$coarse.root.rooting.depth)
+
+### make cone serotiny numeric
+b$cone.serotiny[b$cone.serotiny == "non-serotinous"] <- 0
+b$cone.serotiny[b$cone.serotiny == "variable"] <- 1
+b$cone.serotiny[b$cone.serotiny == "serotinous and semi-serotinous"] <- 2
+b$cone.serotiny[b$cone.serotiny == "serotinous"] <- 3
+b$cone.serotiny <- as.numeric(b$cone.serotiny)
+
+### make dispersal syndrome numeric
+b$dispersal.syndrome[b$dispersal.syndrome == "unassisted"] <- 0
+b$dispersal.syndrome[b$dispersal.syndrome == "animals and unassisted"] <- 1
+b$dispersal.syndrome[b$dispersal.syndrome == "water and animals"] <- 3
+b$dispersal.syndrome[b$dispersal.syndrome == "animals, general"] <- 2
+b$dispersal.syndrome[b$dispersal.syndrome == "birds and mammals"] <- 2
+b$dispersal.syndrome[b$dispersal.syndrome == "wind, rain"] <- 4
+b$dispersal.syndrome[b$dispersal.syndrome == "wind and animals"] <- 5
+b$dispersal.syndrome[b$dispersal.syndrome == "wind and birds"] <- 5
+b$dispersal.syndrome[b$dispersal.syndrome == "wind"] <- 6
+b$dispersal.syndrome <- as.numeric(b$dispersal.syndrome)
+
+### make leaf texture (coarseness) numeric
+b$leaf.texture..coarseness.[b$leaf.texture..coarseness. == "fine"] <- 0
+b$leaf.texture..coarseness.[b$leaf.texture..coarseness. == "medium"] <- 1
+b$leaf.texture..coarseness.[b$leaf.texture..coarseness. == "coarse"] <- 2
+b$leaf.texture..coarseness. <- as.numeric(b$leaf.texture..coarseness.)
+
+### make relative growth rate numeric
+b$relative.growth.rate[b$relative.growth.rate == "slow"] <- 0
+b$relative.growth.rate[b$relative.growth.rate == "moderate"] <- 1
+b$relative.growth.rate[b$relative.growth.rate == "fast"] <- 2
+b$relative.growth.rate <- as.numeric(b$relative.growth.rate)
+
+### make degree of self-pruning numeric
+b$degree.of.self.pruning[b$degree.of.self.pruning == "none"] <- 0
+b$degree.of.self.pruning[b$degree.of.self.pruning == "low"] <- 1
+b$degree.of.self.pruning[b$degree.of.self.pruning == "moderate"] <- 2
+b$degree.of.self.pruning[b$degree.of.self.pruning == "high"] <- 3
+b$degree.of.self.pruning <- as.numeric(b$degree.of.self.pruning)
+
+### Troubleshoot issues with dbFD command
+### try with subset of traits with the fewest NA values to deal with binary variable issue
+# b_na <- b %>%
+#   summarise_all(funs(sum(is.na(.))))
+# b1 <- b %>%
+#   dplyr::select(`foliage type (deciduous or evergreen)`,
+#                 `bark thickness`,
+#                 `plant height, vegetative`,
+#                 `specific leaf area`,
+#                 `dispersal syndrome`,
+#                 # `leaf texture (sclerophylly, physical strength, toughness)`,
+#                 `resprouting ability`)
+
+
+# # ### try without bud burst timing to see if it fixes the binary variable issue
+# b1 <- b
+# b1$`bud burst timing` <- NULL
+# b1$`specific leaf conductivity` <- NULL
+# # 
+# # ### which columns have lots of NAs?
+# b1_na <- b1 %>%
+#   summarise_all(funs(sum(is.na(.))))
+# # 
+# ### only keep columns with >15 species
+# b1 <- b1[, c(1, 3:7, 9:11, 14:16)]
+# 
+# b1 <- b1[, c(2:6, 8:12)]
+# 
+# b1 <- b1[, c(3, 8, 9)]
+```
+
+#### sites with no trees
+```{r}
+### figure out which plot has no trees
+a_check <- a 
+a_check <- a_check %>%
+  rowid_to_column()
+a_check$sum_trees <- rowSums(a_check) - a_check$rowid 
+a_check <- a_check %>%
+  filter(sum_trees < 1)
+
+# ### drop plot with no trees
+# a[!(row.names(a) %in% "31650"), ]
+
+### try again
+a <- a %>% 
+  filter_all(any_vars(. != 0))
+```
+
+
+#### Calculate functional diversity
+```{r}
+## get rid of NAs in the distance matrix
+a <- a[rowSums(is.na(a)) == 0,
+       colSums(is.na(a)) == 0,
+       drop = FALSE]
+# as.dist(x)
+
+### syntax: dbFD(trait_matrix, species_matrix, corr = c("corr_method"))
+FD_calc <- dbFD(b, 
+                a,
+                
+                ### add calculations
+                calc.FRic = TRUE,
+                calc.FDiv = TRUE,
+                calc.CWM = TRUE,
+                
+                ## weight by sp abund
+                w.abun = TRUE,
+                
+                ## correction for distance matrix
+                corr = "cailliez") 
+# quality =  (R2-like metric)
+### output from running the command
+# FEVe: Could not be calculated for communities with <3 functionally singular species.
+# FDis: Equals 0 in communities with only one functionally singular species. 
+# FRic: To respect s > t, FRic could not be calculated for communities with <3 functionally singular species. 
+# FRic: Dimensionality reduction was required. The last 115 PCoA axes (out of 117 in total) were removed. 
+# FRic: Quality of the reduced-space representation (based on corrected distance matrix) = 0.0818792 
+# FDiv: Could not be calculated for communities with <3 functionally singular species.
+
+### Extract output to dataframe
+
+### extract evenness to dataframe
+feven <- as.data.frame(FD_calc[["FEve"]]) 
+
+### extract diversity to dataframe
+fdiv <- as.data.frame(FD_calc[["FDiv"]]) 
+
+### extract richness to dataframe
+fric <- as.data.frame(FD_calc[["FRic"]]) 
+
+### extract community weighted means to dataframe
+fcwm <- as.data.frame(FD_calc[["CWM"]])
+
+# ### extract Rao's Q to dataframe
+# frao <- as.data.frame(FD_calc[["RQao"]]) 
+# 
+# ### extract functional group richness to dataframe
+# fgr <- as.data.frame(FD_calc[["FGR"]]) 
+
+### extract dissimilarity to dataframe
+fdis <- as.data.frame(FD_calc[["FDis"]]) 
+
+### Combine above into single data table
+df_list <- c(feven, fdiv, fric, fdis, fcwm)
+fd_metrics <- as.data.table(df_list)
+fd_metrics <- fd_metrics %>% 
+  # remove_rownames %>% 
+  # column_to_rownames(var="Row.names") %>%
+  rename('fdiv' = "FD_calc[[\"FDiv\"]]",
+         'feven' = "FD_calc[[\"FEve\"]]",
+         'fric' = "FD_calc[[\"FRic\"]]",
+         'fdis' = "FD_calc[[\"FDis\"]]")
+fd_metrics$plot_state <- row.names(fdis)
+
+### write out
+write_csv(fd_metrics,
+          "fd_metrics_t1_12_july20.csv")
+
+### CWM
+fcwm <- fcwm %>%
+  rownames_to_column()
+
+### write out
+write_csv(fcwm,
+          "fcwm_t1_12_july20.csv")
+```
+
+##### correlations
+```{r}
+### correlation functions
+cor.prob <- function (X, dfr = nrow(X) - 2) {
+  R <- cor(X, use="pairwise.complete.obs")
+  above <- row(R) < col(R)
+  r2 <- R[above]^2
+  Fstat <- r2 * dfr/(1 - r2)
+  R[above] <- 1 - pf(Fstat, 1, dfr)
+  R[row(R) == col(R)] <- NA
+  R
+}
+flattenSquareMatrix <- function(m) {
+  if( (class(m) != "matrix") | (nrow(m) != ncol(m))) stop("Must be a square matrix.") 
+  if(!identical(rownames(m), colnames(m))) stop("Row and column names must be equal.")
+  ut <- upper.tri(m)
+  data.frame(i = rownames(m)[row(m)[ut]],
+             j = rownames(m)[col(m)[ut]],
+             cor=t(m)[ut],
+             p=m[ut])
+}
+
+### fix resprouting ability
+fcwm$resprouting.ability <- as.numeric(fcwm$resprouting.ability)
+
+```
+
+### t1 top traits
+Only include traits that have coverage of at least 75 species (but leave out "tolerance" scores)
+```{r}
+### only include top traits
+b_tt <- b %>%
+  dplyr::select(cone.serotiny,
+                dispersal.syndrome,
+                foliage.type..deciduous.or.evergreen.,
+                plant.height..vegetative,
+                resprouting.ability,
+                clonal.growth.form,
+                bark.thickness,
+                leaf.texture..coarseness.,
+                relative.growth.rate,
+                specific.leaf.area,
+                wood..or.stem.specific..density)
+```
+
+#### Calculate functional diversity
+```{r}
+### syntax: dbFD(trait_matrix, species_matrix, corr = c("corr_method"))
+FD_calc_tt <- dbFD(b_tt, 
+                   a,
+                   
+                   ### add calculations
+                   calc.FRic = TRUE,
+                   calc.FDiv = TRUE,
+                   calc.CWM = TRUE,
+                   
+                   ## weight by sp abund
+                   w.abun = TRUE,
+                   
+                   ## correction for distance matrix
+                   corr = "cailliez") 
+# quality =  (R2-like metric)
+### output from running the command
+# FEVe: Could not be calculated for communities with <3 functionally singular species.
+# FDis: Equals 0 in communities with only one functionally singular species. 
+# FRic: To respect s > t, FRic could not be calculated for communities with <3 functionally singular species. 
+# FRic: Dimensionality reduction was required. The last 115 PCoA axes (out of 117 in total) were removed. 
+# FRic: Quality of the reduced-space representation (based on corrected distance matrix) = 0.0920913  
+# FDiv: Could not be calculated for communities with <3 functionally singular species.
+
+### Extract output to dataframe
+
+### extract evenness to dataframe
+feven_tt <- as.data.frame(FD_calc_tt[["FEve"]]) 
+
+### extract diversity to dataframe
+fdiv_tt <- as.data.frame(FD_calc_tt[["FDiv"]]) 
+
+### extract richness to dataframe
+fric_tt <- as.data.frame(FD_calc_tt[["FRic"]]) 
+
+### extract community weighted means to dataframe
+fcwm_tt <- as.data.frame(FD_calc_tt[["CWM"]])
+
+### extract dissimilarity to dataframe
+fdis_tt <- as.data.frame(FD_calc_tt[["FDis"]]) 
+
+### Combine above into single data table
+df_list_tt <- c(feven_tt, fdiv_tt, fric_tt, fdis_tt, fcwm_tt)
+fd_metrics_tt <- as.data.table(df_list_tt)
+fd_metrics_tt <- fd_metrics_tt %>% 
+  # remove_rownames %>% 
+  # column_to_rownames(var="Row.names") %>%
+  rename('fdiv' = "FD_calc_tt[[\"FDiv\"]]",
+         'feven' = "FD_calc_tt[[\"FEve\"]]",
+         'fric' = "FD_calc_tt[[\"FRic\"]]",
+         'fdis' = "FD_calc_tt[[\"FDis\"]]")
+fd_metrics_tt$plot_state <- row.names(fdis_tt)
+
+### write out
+write_csv(fd_metrics_tt,
+          "fd_metrics_t1_toptraits_july20.csv")
+
+### CWM
+fcwm_tt <- fcwm_tt %>%
+  rownames_to_column()
+
+### write out
+write_csv(fcwm_tt,
+          "fcwm_t1_toptraits_july20.csv")
+```
+
+### t2
+#### time steps and traits
+```{r}
+### Make df just of t2 plots
+dat_t2 <- dat_resamp_live %>%
+  filter(time_step == "t2")
+
+### Make df just of t3 plots
+dat_t3 <- dat_resamp_live %>%
+  filter(time_step == "t3")
+
+### From Meghan's code
+# ### Species cover per plot. Each row is a species x plot x year combination
+# cover_spp <- fread("data_for_analysis_2018-2021.csv")
+# ### this csv has a row for each species in each plot and year with its level of plot cover and then the species' functional traits
+
+### Simplify
+dat_t2 <- dat_t2 %>%
+  dplyr::select(PLOT.x, state_name,
+                plot_state,
+                INVYR, time_step,
+                species_name, status_code,
+                n_individs)
+
+### Total trees per plot
+plot_tot_2 <- dat_t2 %>%
+  group_by(PLOT.x, state_name, 
+           plot_state, INVYR) %>%
+  summarise(total_trees_plot = sum(n_individs))
+
+### Merge
+dat_t2 <- merge(dat_t2, plot_tot_2,
+               by = c("PLOT.x", "state_name", 
+                      "plot_state", "INVYR"))
+
+### percent of trees
+dat_t2 <- dat_t2 %>%
+  mutate(pct_trees = n_individs/total_trees_plot)
+
+### Write out
+write_csv(dat_t2,
+          "dat_t2_plots_july20.csv")
+
+### repeat for t3
+### Simplify
+dat_t3 <- dat_t3 %>%
+  dplyr::select(PLOT.x, state_name,
+                plot_state,
+                INVYR, time_step,
+                species_name, status_code,
+                n_individs)
+
+### Total trees per plot
+plot_tot_3 <- dat_t3 %>%
+  group_by(PLOT.x, state_name, plot_state, INVYR) %>%
+  summarise(total_trees_plot = sum(n_individs))
+
+### Merge
+dat_t3 <- merge(dat_t3, plot_tot_3,
+               by = c("PLOT.x", "state_name",
+                      "plot_state", "INVYR"))
+
+### percent of trees
+dat_t3 <- dat_t3 %>%
+  mutate(pct_trees = n_individs/total_trees_plot)
+
+### Write out
+write_csv(dat_t3,
+          "dat_t3_plots_july20.csv")
+```
+
+#### check for live trees
+plots without live trees in t3: plot_t3_no_live_trees.csv
+```{r}
+
+
+### Are there plots that only have dead/unmeasured/removed trees in t3?
+### make df
+live_check <- dat_resamp_live %>%
+  filter(time_step == "t3")
+
+### number of live trees per plot
+live_trees <- live_check %>%
+  filter(status_code == "Live tree") %>%
+  group_by(PLOT.x, state_name, 
+           plot_state, INVYR) %>%
+  summarize(total_trees = sum(n_individs))
+
+### make rows for missing live trees
+t3_live_missing <- live_check %>%
+  dplyr::select(PLOT.x, plot_state, state_name) %>%
+  distinct()
+
+### missing
+t3_live_missing <- t3_live_missing %>%
+  filter(!plot_state %in% live_trees$plot_state)
+
+### combine
+live_trees <- merge(x = live_trees,
+                    y = t3_live_missing,
+                    by = c("PLOT.x", 
+                           "state_name",
+                           "plot_state"),
+                    all = TRUE)
+
+### NA to 0
+live_trees <- live_trees %>%
+  mutate(total_trees = ifelse(is.na(total_trees),
+                              0, total_trees))
+
+### Which plots have no live trees in t3?
+t3_no_live <- live_trees %>%
+  filter(total_trees < 1) %>%
+  mutate(time_step = "t3",
+         status_code = "Live tree")
+write_csv(t3_no_live, "plot_t3_no_live_trees.csv")
+### there 8 plots without live trees in t3
+```
+
+#### Prep t2
+```{r}
+### Restrict to live trees
+dat_t2 <- dat_t2 %>%
+  filter(status_code == "Live tree") %>%
+  dplyr::select(PLOT.x, state_name, plot_state,
+                INVYR, time_step,
+                species_name, n_individs)
+
+### Total trees per plot
+plot_tot <- dat_t2 %>%
+  group_by(PLOT.x, state_name, plot_state, INVYR) %>%
+  summarise(n_trees = sum(n_individs))
+
+### Merge
+dat_t2 <- merge(dat_t2, plot_tot,
+               by = c("PLOT.x", "state_name",
+                      "plot_state", "INVYR"))
+
+### Merge with t1 plot data
+t2_traits <- merge(x = dat_t2,
+                   y = all_traits,
+                   by.x = "species_name",
+                   by.y = "species",
+                   all.x = TRUE)
+
+### Write out
+write_csv(t2_traits,
+          "t2_trees_traits_july20.csv")
+```
+
+#### prep for FD package
+```{r}
+### Matrix for one year of data
+### Create species' cover matrix: each row is a plot, each column is a species, values are cover/abundance
+### subset to just species, cover, and plot ID
+cover_wide_2 <- dat_t2 %>%
+  dplyr::select(plot = PLOT.x, 
+                state = state_name,
+                plot_state = plot_state,
+                species = species_name,
+                cover = n_individs)
+
+### Filter out Gleditsia triacanthos b/c no trait data
+# cover_wide_2 <- cover_wide_2 %>%
+#   filter(!species == "Gleditsia triacanthos")
+
+### reshape to wide
+cover_wide_2 <- reshape2::dcast(cover_wide_2, 
+                              plot_state ~ species,
+                              value.var = "cover",
+                              mean) 
+
+### NA --> 0
+cover_wide_2[is.na(cover_wide_2)] <- 0 
+
+### rename rows with plot ID
+rownames(cover_wide_2) <- cover_wide_2$plot_state 
+
+### drop plot ID column
+cover_wide_2 <- cover_wide_2 %>%
+  dplyr::select(-plot_state)
+
+### Create matrix of species' traits: each row is a species, each column is a trait, values are trait values
+### traits of all species included in matrix
+traits_sub_2 <- t2_traits %>%
+  dplyr::select(-PLOT.x, -INVYR,
+                -plot_state, -state_name,
+                -time_step, -n_individs,
+                -n_trees)
+traits_sub_2 <- distinct(traits_sub_2)
+
+# ### Drop Gleditsia triacanthos because no trait data
+# traits_sub_2 <- traits_sub_2 %>%
+#   filter(!species_name == "Gleditsia triacanthos")
+
+### Format data so both datasets contain same set of species, names match and are in same order
+a2 <- cover_wide_2[, c(colnames(cover_wide_2) %in%
+                      traits_sub_2$species_name)]
+a2 <- a2[,order(colnames(a2))]
+
+### list of species in matrix
+spec_2 <- colnames(a2) 
+b2 <- traits_sub_2 %>%
+  filter(species_name %in% spec_2)
+b2 <- b2[order(b2$species_name), ]
+b2 <- b2 %>% remove_rownames %>%
+  column_to_rownames(var = "species_name")
+
+### b: make resprout numeric
+b2$resprouting.ability <- as.numeric(b2$resprouting.ability)
+
+### b: make evergreen/decid categorical 0, 1, 2, 3
+b2$foliage.type..deciduous.or.evergreen.[b2$foliage.type..deciduous.or.evergreen. == "evergreen"] <- 3
+b2$foliage.type..deciduous.or.evergreen.[b2$foliage.type..deciduous.or.evergreen. == "evergreen but drought deciduous"] <- 2
+b2$foliage.type..deciduous.or.evergreen.[b2$foliage.type..deciduous.or.evergreen. == "semi-evergreen"] <- 1
+b2$foliage.type..deciduous.or.evergreen.[b2$foliage.type..deciduous.or.evergreen. == "deciduous"] <- 0
+b2$foliage.type..deciduous.or.evergreen. <- as.numeric(b2$foliage.type..deciduous.or.evergreen.)
+
+### make clonal growth numeric
+b2$clonal.growth.form[b2$clonal.growth.form == "underground"] <- 3
+b2$clonal.growth.form[b2$clonal.growth.form == "basal"] <- 2
+b2$clonal.growth.form[b2$clonal.growth.form == "abovegound"] <- 1
+b2$clonal.growth.form[b2$clonal.growth.form == "none"] <- 0
+b2$clonal.growth.form <- as.numeric(b2$clonal.growth.form)
+
+### make coarse root rooting depth numeric
+b2$coarse.root.rooting.depth[b2$coarse.root.rooting.depth == "shallow"] <- 0
+b2$coarse.root.rooting.depth[b2$coarse.root.rooting.depth == "shallow_moderate"] <- 1
+b2$coarse.root.rooting.depth[b2$coarse.root.rooting.depth == "varying"] <- 2
+b2$coarse.root.rooting.depth[b2$coarse.root.rooting.depth == "deep"] <- 3
+b2$coarse.root.rooting.depth <- as.numeric(b2$coarse.root.rooting.depth)
+
+### make cone serotiny numeric
+b2$cone.serotiny[b2$cone.serotiny == "non-serotinous"] <- 0
+b2$cone.serotiny[b2$cone.serotiny == "variable"] <- 1
+b2$cone.serotiny[b2$cone.serotiny == "serotinous and semi-serotinous"] <- 2
+b2$cone.serotiny[b2$cone.serotiny == "serotinous"] <- 3
+b2$cone.serotiny <- as.numeric(b2$cone.serotiny)
+
+### make dispersal syndrome numeric
+b2$dispersal.syndrome[b2$dispersal.syndrome == "unassisted"] <- 0
+b2$dispersal.syndrome[b2$dispersal.syndrome == "animals and unassisted"] <- 1
+b2$dispersal.syndrome[b2$dispersal.syndrome == "water and animals"] <- 3
+b2$dispersal.syndrome[b2$dispersal.syndrome == "animals, general"] <- 2
+b2$dispersal.syndrome[b2$dispersal.syndrome == "birds and mammals"] <- 2
+b2$dispersal.syndrome[b2$dispersal.syndrome == "birds"] <- 2
+b2$dispersal.syndrome[b2$dispersal.syndrome == "wind, rain"] <- 4
+b2$dispersal.syndrome[b2$dispersal.syndrome == "wind and rain"] <- 4
+b2$dispersal.syndrome[b2$dispersal.syndrome == "wind and animals"] <- 5
+b2$dispersal.syndrome[b2$dispersal.syndrome == "wind and birds"] <- 5
+b2$dispersal.syndrome[b2$dispersal.syndrome == "wind"] <- 6
+b2$dispersal.syndrome <- as.numeric(b2$dispersal.syndrome)
+
+### make leaf texture (coarseness) numeric
+b2$leaf.texture..coarseness.[b2$leaf.texture..coarseness. == "fine"] <- 0
+b2$leaf.texture..coarseness.[b2$leaf.texture..coarseness. == "medium"] <- 1
+b2$leaf.texture..coarseness.[b2$leaf.texture..coarseness. == "coarse"] <- 2
+b2$leaf.texture..coarseness. <- as.numeric(b2$leaf.texture..coarseness.)
+
+### make relative growth rate numeric
+b2$relative.growth.rate[b2$relative.growth.rate == "slow"] <- 0
+b2$relative.growth.rate[b2$relative.growth.rate == "moderate"] <- 1
+b2$relative.growth.rate[b2$relative.growth.rate == "fast"] <- 2
+b2$relative.growth.rate <- as.numeric(b2$relative.growth.rate)
+
+### make degree of self-pruning numeric
+b2$degree.of.self.pruning[b2$degree.of.self.pruning == "none"] <- 0
+b2$degree.of.self.pruning[b2$degree.of.self.pruning == "low"] <- 1
+b2$degree.of.self.pruning[b2$degree.of.self.pruning == "moderate"] <- 2
+b2$degree.of.self.pruning[b2$degree.of.self.pruning == "high"] <- 3
+b2$degree.of.self.pruning <- as.numeric(b2$degree.of.self.pruning)
+
+### Troubleshoot issues with dbFD command
+### try with subset of traits with the fewest NA values to deal with binary variable issue
+# b2 <- b2 %>%
+#   dplyr::select(foliage.type..deciduous.or.evergreen.,
+#                 bark.thickness,
+#                 plant.height..vegetative,
+#                 specific.leaf.area,
+#                 dispersal.syndrome,
+#                 # leaf.texture..sclerophylly..physical.strength..toughness.,
+#                 resprouting.ability)
+```
+
+#### Calculate functional diversity
+```{r}
+### syntax: dbFD(trait_matrix, species_matrix, corr = c("corr_method"))
+FD_calc_2 <- dbFD(b2, 
+                a2,
+                
+                ### add calculations
+                calc.FRic = TRUE,
+                calc.FDiv = TRUE,
+                calc.CWM = TRUE,
+                
+                ## weight by sp abund
+                w.abun = TRUE,
+                
+                ## correction for distance matrix
+                corr = "cailliez") 
+# quality =  (R2-like metric)
+# FEVe: Could not be calculated for communities with <3 functionally singular species. 
+# FDis: Equals 0 in communities with only one functionally singular species. 
+# FRic: To respect s > t, FRic could not be calculated for communities with <3 functionally singular species. 
+# FRic: Dimensionality reduction was required. The last 115 PCoA axes (out of 117 in total) were removed. 
+# Zero distance(s)Warning: Zero distance(s)FRic: Quality of the reduced-space representation (based on corrected distance matrix) = 0.08897018 
+# Zero distance(s)FDiv: Could not be calculated for communities with <3 functionally singular species. 
+
+### Extract output to dataframe
+
+### extract evenness to dataframe
+feven <- as.data.frame(FD_calc_2[["FEve"]]) 
+
+### extract diversity to dataframe
+fdiv <- as.data.frame(FD_calc_2[["FDiv"]]) 
+
+### extract richness to dataframe
+fric <- as.data.frame(FD_calc_2[["FRic"]]) 
+
+### extract community weighted means to dataframe
+fcwm <- as.data.frame(FD_calc_2[["CWM"]])
+
+### extract dissimilarity to dataframe
+fdis <- as.data.frame(FD_calc_2[["FDis"]]) 
+
+### Combine above into single data table
+df_list <- c(feven, fdiv, fric, fdis)
+fd_metrics <- as.data.table(df_list)
+fd_metrics <- fd_metrics %>% 
+  # remove_rownames %>% 
+  # column_to_rownames(var="Row.names") %>%
+  rename('fdiv' = "FD_calc_2[[\"FDiv\"]]",
+         'feven' = "FD_calc_2[[\"FEve\"]]",
+         'fric' = "FD_calc_2[[\"FRic\"]]",
+         'fdis' = "FD_calc_2[[\"FDis\"]]")
+fd_metrics$newplotid <- row.names(fdis)
+
+### write out
+write_csv(fd_metrics,
+          "fd_metrics_t2_july20.csv")
+
+### CWM
+fcwm <- fcwm %>%
+  rownames_to_column()
+
+### write out
+write_csv(fcwm,
+          "fcwm_t2_july20.csv")
+```
+
+### t2 top traits
+Only include traits that have coverage of at least 75 species (but leave out "tolerance" scores)
+```{r}
+### only include top traits
+b2_tt <- b2 %>%
+  dplyr::select(cone.serotiny,
+                dispersal.syndrome,
+                foliage.type..deciduous.or.evergreen.,
+                plant.height..vegetative,
+                resprouting.ability,
+                clonal.growth.form,
+                bark.thickness,
+                leaf.texture..coarseness.,
+                relative.growth.rate,
+                specific.leaf.area,
+                wood..or.stem.specific..density)
+
+### syntax: dbFD(trait_matrix, species_matrix, corr = c("corr_method"))
+FD_calc_2_tt <- dbFD(b2_tt, 
+                   a2,
+                   
+                   ### add calculations
+                   calc.FRic = TRUE,
+                   calc.FDiv = TRUE,
+                   calc.CWM = TRUE,
+                   
+                   ## weight by sp abund
+                   w.abun = TRUE,
+                   
+                   ## correction for distance matrix
+                   corr = "cailliez") 
+# quality =  (R2-like metric)
+### output from running the command
+# FEVe: Could not be calculated for communities with <3 functionally singular species.
+# FDis: Equals 0 in communities with only one functionally singular species. 
+# FRic: To respect s > t, FRic could not be calculated for communities with <3 functionally singular species. 
+# FRic: Dimensionality reduction was required. The last 115 PCoA axes (out of 117 in total) were removed. 
+# FRic: Quality of the reduced-space representation (based on corrected distance matrix) = 0.1053831  
+# FDiv: Could not be calculated for communities with <3 functionally singular species.
+
+### Extract output to dataframe
+
+### extract evenness to dataframe
+feven_tt <- as.data.frame(FD_calc_2_tt[["FEve"]]) 
+
+### extract diversity to dataframe
+fdiv_tt <- as.data.frame(FD_calc_2_tt[["FDiv"]]) 
+
+### extract richness to dataframe
+fric_tt <- as.data.frame(FD_calc_2_tt[["FRic"]]) 
+
+### extract community weighted means to dataframe
+fcwm_tt <- as.data.frame(FD_calc_2_tt[["CWM"]])
+
+### extract dissimilarity to dataframe
+fdis_tt <- as.data.frame(FD_calc_2_tt[["FDis"]]) 
+
+### Combine above into single data table
+df_list_tt <- c(feven_tt, fdiv_tt, fric_tt, fdis_tt, fcwm_tt)
+fd_metrics_tt <- as.data.table(df_list_tt)
+fd_metrics_tt <- fd_metrics_tt %>% 
+  # remove_rownames %>% 
+  # column_to_rownames(var="Row.names") %>%
+  rename('fdiv' = "FD_calc_2_tt[[\"FDiv\"]]",
+         'feven' = "FD_calc_2_tt[[\"FEve\"]]",
+         'fric' = "FD_calc_2_tt[[\"FRic\"]]",
+         'fdis' = "FD_calc_2_tt[[\"FDis\"]]")
+fd_metrics_tt$plot_state <- row.names(fdis_tt)
+
+### write out
+write_csv(fd_metrics_tt,
+          "fd_metrics_t2_toptraits_july20.csv")
+
+### CWM
+fcwm_tt <- fcwm_tt %>%
+  rownames_to_column()
+
+### write out
+write_csv(fcwm_tt,
+          "fcwm_t2_toptraits_july20.csv")
+```
+
+
+### trend over time?
+FD outputs:  
+* FRic: functional richness  
+* FEve: functional evenness  
+* FDiv: functional divergence  
+* FDis: functional dispersion  
+* Rao's quadratic entropy  
+* fgr: posteriori functional group richness  
+* CWN: community-level weighted means of trait values (index of functional composition)
+```{r}
+### Open t1 and make column for t1
+fd_t1 <- read.csv("fd_metrics_t1_12_july20.csv") %>%
+  mutate(., time_step = "t1") %>%
+  dplyr::select(., plot_state,
+                feven, fdiv, fric, fdis,
+                time_step)
+
+### Open t2 and make column for t2
+fd_t2 <- read.csv("fd_metrics_t2_july20.csv") %>%
+  mutate(., time_step = "t2") %>%
+  dplyr::select(., plot_state = newplotid,
+                feven, fdiv, fric, fdis,
+                time_step)
+
+# ### change plot name
+# fd_t1 <- fd_t1 %>%
+#   separate(newplotid,
+#            into = c("newplotid",
+#                     "state_name"),
+#            sep = "_")
+# fd_t1$state_name <- NULL
+  
+
+### rbind
+fd_all <- rbind(fd_t1,
+                fd_t2)
+
+## write out
+write_csv(fd_all,
+          "fd_output_time_series_july20.csv")
+
+### Make long
+fd_long <- fd_all %>% 
+  gather(metric, value, feven:fdis)
+
+# ### Plot
+# fd_long %>%
+#   filter(metric == "fdis") %>%
+#   ggplot() +
+#   geom_line(aes(x = INVYR,
+#                 y = value,
+#                 group = newplotid)) +
+#   xlab("Sample year") +
+#   ylab("Functional dispersion")
+# 
+# ggsave("functional_dispersion_time.png")
+
+## CWM Time Series
+
+### Open CWM dfs
+cwm_t1 <- read.csv("fcwm_t1_12_july20.csv") %>%
+  mutate(time_step = "t1")
+cwm_t2 <- read.csv("fcwm_t2_july20.csv") %>%
+  mutate(time_step = "t2")
+
+### rbind
+cwm_all <- rbind(cwm_t1,
+                 cwm_t2)
+
+### fix names
+cwm_all <- cwm_all %>%
+  dplyr::select(plot_state = rowname,
+                time_step,
+                clonal_growth_form = clonal.growth.form,
+                coarse_root_depth = coarse.root.rooting.depth,
+                cone_serotiny = cone.serotiny,
+                dispersal_syndrome = dispersal.syndrome,
+                foliage = foliage.type..deciduous.or.evergreen.,
+                leaf_text_coarse = leaf.texture..coarseness.,
+                rel_growth_rate = relative.growth.rate,
+                resprout_ability = resprouting.ability,
+                self_pruning = degree.of.self.pruning,
+                bark_thickness = bark.thickness,
+                bud_burst_mean = bud.burst.timing..mean.month.,
+                bud_burst_early = earliest.bud.burst.timing..month.,
+                bud_burst_late = latest.bud.burst.timing..month.,
+                cold_tolerance,
+                drought_tolerance,
+                hydraulic_safety_margin_50 = hydraulic.safety.margin.50.,
+                hydraulic_safety_margin_88 = hydraulic.safety.margin.88., 
+                leaf_dry_matter_content = leaf.dry.matter.content,
+                leaf_force_punch = leaf.force.to.punch,
+                leaf_force_punch_area = leaf.force.to.punch.per.area,
+                leaf_mass_area = leaf.mass.area,
+                leaf_photosyn_rate = leaf.photosynthetic.rate,
+                leaf_thickness = leaf.thickness,
+                leaf_length,
+                max_height = maximum.height,
+                min_midday_xylem = minimum.midday.xylem.pressure.potential,
+                min_predawn_xylem = minimum.predawn.xylem.pressure.potential,
+                plant_height_veg = plant.height..vegetative,
+                shade_tolerance,
+                slope_vulnerability_curve = slope.of.vulnerability.curve,
+                specific_leaf_area = specific.leaf.area,
+                specific_leaf_conduct = specific.leaf.conductivity,
+                stem_conduit_dens = stem.conduit.density..vessels.and.tracheids.,
+                stem_conduit_diam = stem.conduit.diameter..vessels.and.tracheids.,
+                stem_xylem_vulnerability_p50 = stem.xylem.embolism.vulnerability..P50,
+                stomatal_conduct_leaf_area = stomatal.conductance.per.leaf.area,
+                water_potential_12_loss_stem = water.potential.at.12..loss.of.stem.hydraulic.conductivity,
+                water_potential_50_loss_stem = water.potential.at.50..loss.of.stem.hydraulic.conductivity,
+                water_potential_88_loss_stem = water.potential.at.88..loss.of.stem.hydraulic.conductivity,
+                waterlogging_tolerance,
+                wood_density = wood..or.stem.specific..density)
+
+### write out
+write_csv(cwm_all,
+          "cwm_time_series_july20.csv")
+
+### Make continuous variables long
+cwm_long <- cwm_all %>% 
+  # dplyr::select(-leaf_texture) %>%
+  gather(trait, value, clonal_growth_form:wood_density)
+
+### NA --> 0
+cwm_long <- cwm_long %>%
+  mutate(value = ifelse(is.na(value), 
+                        0, 
+                        value))
+
+### Get mean vals
+cwm_summ <- cwm_long %>%
+  # filter(!trait == "leaf_text_coarse") %>%
+  group_by(time_step, trait) %>%
+  summarise(mean_trait_val = mean(value,
+                                  na.rm = TRUE),
+            sd_trait_val = sd(value,
+                              na.rm = TRUE))
+
+### write out
+write_csv(cwm_summ,
+          "change_mean_trait_vals.csv")
+
+### time step
+cwm_summ$time_step <- as.factor(cwm_summ$time_step)
+
+# ### visualize
+# cwm_summ %>%
+#   ggplot() +
+#   geom_point(aes(x = time_step,
+#                  y = mean_trait_val)) +
+#   # geom_errorbar(aes(x = time_step,
+#   #                   ymin = mean_trait_val - sd_trait_val,
+#   #                   ymax = mean_trait_val + sd_trait_val),
+#   #               width = 0.1) +
+#   xlab("Time step") +
+#   # ylab("Mean bark thickness (mm)") +
+#   facet_wrap(~trait,
+#              scales = "free")
+# ggsave("cwm_traits_t1_t2.png",
+#        width = 20, height = 15)
+
+cwm_summ %>%
+  filter(trait %in% c("bud_burst_mean",
+                      "bud_burst_early",
+                      "bud_burst_late")) %>%
+  ggplot() +
+  geom_point(aes(x = time_step,
+                 y = mean_trait_val)) +
+  geom_errorbar(aes(x = time_step,
+                    ymin = mean_trait_val - sd_trait_val,
+                    ymax = mean_trait_val + sd_trait_val),
+                width = 0.1) +
+  xlab("Time step") +
+  ylab("Bud burst timing (month)") +
+  facet_wrap(~trait,
+             scales = "free")
+ggsave("cwm_traits_bbt_t1_t2.png",
+       width = 10, height = 7)
+
+cwm_summ %>%
+  filter(trait == "bark_thickness") %>%
+  ggplot() +
+  geom_point(aes(x = time_step,
+                 y = mean_trait_val)) +  
+  # geom_errorbar(aes(x = time_step,
+  #                   ymin = mean_trait_val - sd_trait_val,
+  #                   ymax = mean_trait_val + sd_trait_val),
+  #               width = 0.1) +
+  xlab("Time step") +
+  ylab("Mean bark thickness (mm)") +
+  # facet_wrap(~trait,
+  #            scales = "free") +
+  NULL
+ggsave("cwm_traits_bark_t1_t2.png",
+       width = 10, height = 7)
+
+cwm_summ %>%
+  filter(trait %in% c("hydraulic_safety_margin_50",
+                      "hydraulic_safety_margin_88")) %>%
+  ggplot() +
+  geom_point(aes(x = time_step,
+                 y = mean_trait_val)) +
+  xlab("Time step") +
+  ylab("Hydraulic safety margin (MPa)") +
+  facet_wrap(~trait,
+             scales = "free") +
+  NULL
+ggsave("cwm_traits_hsm_t1_t2.png")
+
+```
+
+#### density plots
+```{r}
+cwm_long %>%
+  filter(trait == "dispersal_syndrome") %>%
+  ggplot(aes(x = value,
+             fill = time_step)) +
+  geom_density(alpha = 0.4) +
+  theme_bw() +
+  # xlab("Dispersal distance (m)") +
+  # ylab("Density") +
+  # labs(fill = 'Time step') +
+  NULL
+# ggsave("disp_distance.png")
+```
+### look at some more plots
+```{r}
+### color palette
+cb_palette <- c("#996633", "#009E73","#999999")
+
+### pick a plot
+check <- dat_resamp_live %>%
+  filter(plot_state == "50002_Washington") %>%
+  ungroup() %>%
+   dplyr::select(INVYR, 
+                 species_name,
+                 status_code,
+                 n_individs)
+
+### Combine
+check <- check %>%
+  group_by(INVYR, 
+           species_name,
+           status_code) %>%
+  summarise(n_individs = sum(n_individs))
+
+unique(check$species_name)
+
+### make column for species code
+check <- check %>%
+  mutate(species_code = ifelse(species_name == "Abies grandis",
+                               "ABGR",
+                               ifelse(species_name == "Abies lasiocarpa",
+                                      "ABLA",
+                                      ifelse(species_name == "Pseudotsuga menziesii",
+                                             "PSME",
+                                             ifelse(species_name == "Thuja plicata",
+                                                    "THPL",
+                                                    "PIEN")))))
+
+### visualize
+check %>%
+  ggplot(aes(x = species_code,
+               y = n_individs,
+               fill = status_code)) +
+  # geom_bar(stat = "identity",
+  #          position = "dodge") +
+  geom_col(position = position_dodge2(width = 0.9, preserve = "single")) +
+  facet_wrap(~INVYR) +
+  scale_fill_manual(values = cb_palette) +
+  theme_bw(base_size = 15) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  xlab("Species") +
+  ylab("Number of individuals") +
+  guides(fill = guide_legend(title = "Tree status")) +
+  NULL
+ggsave("burned_plot_wa50002.png")
+
+
+### pick a plot
+check <- dat_resamp_live %>%
+  filter(plot_state == "85676_Colorado") %>%
+  ungroup() %>%
+   dplyr::select(INVYR, 
+                 species_name,
+                 status_code,
+                 n_individs)
+
+### Combine
+check <- check %>%
+  group_by(INVYR, 
+           species_name,
+           status_code) %>%
+  summarise(n_individs = sum(n_individs))
+
+unique(check$species_name)
+
+### make column for species code
+check <- check %>%
+  mutate(species_code = ifelse(species_name == "Picea engelmannii",
+                               "PIEN",
+                               ifelse(species_name == "Abies lasiocarpa",
+                                      "ABLA",
+                                      ifelse(species_name == "Pinus contorta",
+                                             "PICO",
+                                             "POTR"))))
+
+### visualize
+check %>%
+  ggplot(aes(x = species_code,
+               y = n_individs,
+               fill = status_code)) +
+  # geom_bar(stat = "identity",
+  #          position = "dodge") +
+  geom_col(position = position_dodge2(width = 0.9, preserve = "single")) +
+  facet_wrap(~INVYR) +
+  scale_fill_manual(values = cb_palette) +
+  theme_bw(base_size = 15) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  xlab("Species") +
+  ylab("Number of individuals") +
+  guides(fill = guide_legend(title = "Tree status")) +
+  NULL
+ggsave("burned_plot_co85676.png")
+
+
+### pick a plot
+check <- dat_resamp_live %>%
+  filter(plot_state == "99690_Oregon") %>%
+  ungroup() %>%
+   dplyr::select(INVYR, 
+                 species_name,
+                 status_code,
+                 n_individs)
+
+### Combine
+check <- check %>%
+  group_by(INVYR, 
+           species_name,
+           status_code) %>%
+  summarise(n_individs = sum(n_individs))
+
+unique(check$species_name)
+
+### make column for species code
+check <- check %>%
+  mutate(species_code = ifelse(species_name == "Abies concolor", "ABCO", ifelse(species_name == "Abies grandis", "ABGR", ifelse(species_name == "Pinus contorta", "PICO", ifelse(species_name == "Juniperus scopulorum", "JUSC", ifelse(species_name == "Larix occidentalis", "LAOC", ifelse(species_name == "Pinus contorta", "PICO", ifelse(species_name == "Pinus ponderosa", "PIPO", "PSME"))))))))
+
+### visualize
+check %>%
+  ggplot(aes(x = species_code,
+               y = n_individs,
+               fill = status_code)) +
+  # geom_bar(stat = "identity",
+  #          position = "dodge") +
+  geom_col(position = position_dodge2(width = 0.9, preserve = "single")) +
+  facet_wrap(~INVYR) +
+  scale_fill_manual(values = cb_palette) +
+  theme_bw(base_size = 15) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  xlab("Species") +
+  ylab("Number of individuals") +
+  guides(fill = guide_legend(title = "Tree status")) +
+  NULL
+ggsave("burned_plot_or99690.png")
+```
+
+## DIDN'T DO THIS YET
+### t3
+#### Prep t3
+```{r}
+### Restrict to live trees
+dat_t3 <- dat_t3 %>%
+  filter(status_code == "Live tree")
+
+### plots from t2 that don't have live trees in t3?
+missing_trees_3 <- dat_t2 %>% filter(!(PLOT.x %in% dat_t3$PLOT.x))
+length(unique(missing_trees_3$PLOT.x)) 
+dat_no_trees_t3 <- as.data.frame(unique(missing_trees_3$PLOT.x))
+dat_no_trees_t3 <- dat_no_trees_t3 %>%
+  rownames_to_column()
+write_csv(dat_no_trees_t3,
+          "dat_no_live_trees_t3.csv")
+### Simplify
+dat_t3 <- dat_t3 %>%
+  dplyr::select(PLOT.x, INVYR, time_step,
+                species_name, n_individs)
+
+### Total trees per plot
+plot_tot <- dat_t3 %>%
+  group_by(PLOT.x, INVYR) %>%
+  summarise(n_trees = sum(n_individs))
+
+### Merge
+dat_t3 <- merge(dat_t3, plot_tot,
+               by = c("PLOT.x", "INVYR"))
+
+### Open full trait data
+all_traits <- read.csv("all_trees_all_traits_july13.csv")
+
+### Merge with t1 plot data
+dat_t3_traits <- merge(x = dat_t3,
+                       y = all_traits,
+                       by.x = "species_name",
+                       by.y = "species",
+                       all.x = TRUE)
+
+### Write out
+write_csv(dat_t3_traits,
+          "dat_t3_trees_traits.csv")
+```
+
+#### prep for FD package
+```{r}
+### Matrix for one year of data
+### Create species' cover matrix: each row is a plot, each column is a species, values are cover/abundance
+### subset to just species, cover, and plot ID
+cover_wide_3 <- dat_t3 %>%
+  dplyr::select(plot = PLOT.x, 
+                species = species_name,
+                cover = n_individs)
+
+# ### Filter out Gleditsia triacanthos b/c no trait data
+# cover_wide_3 <- cover_wide_3 %>%
+#   filter(!species == "Gleditsia triacanthos")
+
+### reshape to wide
+cover_wide_3 <- reshape2::dcast(cover_wide_3, 
+                              plot ~ species,
+                              value.var = "cover",
+                              mean) 
+
+### NA --> 0
+cover_wide_3[is.na(cover_wide_3)] <- 0 
+
+### rename rows with plot ID
+rownames(cover_wide_3) <- cover_wide_3$plot 
+
+### drop plot ID column
+cover_wide_3 <- cover_wide_3 %>%
+  dplyr::select(-plot)
+
+### Create matrix of species' traits: each row is a species, each column is a trait, values are trait values
+### traits of all species included in matrix
+traits_sub_3 <- dat_t3_traits %>%
+  dplyr::select(-PLOT.x, -INVYR,
+                -time_step, -n_individs,
+                -n_trees)
+traits_sub_3 <- distinct(traits_sub_3)
+
+# ### Drop Gleditsia triacanthos because no trait data
+# traits_sub_3 <- traits_sub_3 %>%
+#   filter(!species_name == "Gleditsia triacanthos")
+
+### Format data so both datasets contain same set of species, names match and are in same order
+a3 <- cover_wide_3[, c(colnames(cover_wide_3) %in%
+                      traits_sub_3$species_name)]
+a3 <- a3[,order(colnames(a3))]
+
+### list of species in matrix
+spec_3 <- colnames(a3) 
+b3 <- traits_sub_3 %>%
+  filter(species_name %in% spec_3)
+b3 <- b3[order(b3$species_name), ]
+b3 <- b3 %>% remove_rownames %>%
+  column_to_rownames(var = "species_name")
+
+### b: make resprout numeric
+b3$resprouting.ability <- as.numeric(b3$resprouting.ability)
+
+### b: make evergreen/decid categorical 0, 1, 2, 3
+b3$foliage.type..deciduous.or.evergreen.[b3$foliage.type..deciduous.or.evergreen. == "evergreen"] <- 3
+b3$foliage.type..deciduous.or.evergreen.[b3$foliage.type..deciduous.or.evergreen. == "evergreen but drought deciduous"] <- 2
+b3$foliage.type..deciduous.or.evergreen.[b3$foliage.type..deciduous.or.evergreen. == "semi-evergreen"] <- 1
+b3$foliage.type..deciduous.or.evergreen.[b3$foliage.type..deciduous.or.evergreen. == "deciduous"] <- 0
+b3$foliage.type..deciduous.or.evergreen. <- as.numeric(b3$foliage.type..deciduous.or.evergreen.)
+
+### make clonal growth numeric
+b3$clonal.growth.form[b3$clonal.growth.form == "underground"] <- 3
+b3$clonal.growth.form[b3$clonal.growth.form == "basal"] <- 2
+b3$clonal.growth.form[b3$clonal.growth.form == "abovegound"] <- 1
+b3$clonal.growth.form[b3$clonal.growth.form == "none"] <- 0
+b3$clonal.growth.form <- as.numeric(b3$clonal.growth.form)
+
+### make coarse root rooting depth numeric
+b3$coarse.root.rooting.depth[b3$coarse.root.rooting.depth == "shallow"] <- 0
+b3$coarse.root.rooting.depth[b3$coarse.root.rooting.depth == "shallow_moderate"] <- 1
+b3$coarse.root.rooting.depth[b3$coarse.root.rooting.depth == "varying"] <- 2
+b3$coarse.root.rooting.depth[b3$coarse.root.rooting.depth == "deep"] <- 3
+b3$coarse.root.rooting.depth <- as.numeric(b3$coarse.root.rooting.depth)
+
+### make cone serotiny numeric
+b3$cone.serotiny[b3$cone.serotiny == "non-serotinous"] <- 0
+b3$cone.serotiny[b3$cone.serotiny == "variable"] <- 1
+b3$cone.serotiny[b3$cone.serotiny == "serotinous and semi-serotinous"] <- 2
+b3$cone.serotiny[b3$cone.serotiny == "serotinous"] <- 3
+b3$cone.serotiny <- as.numeric(b3$cone.serotiny)
+
+### make dispersal syndrome numeric
+b3$dispersal.syndrome[b3$dispersal.syndrome == "unassisted"] <- 0
+b3$dispersal.syndrome[b3$dispersal.syndrome == "animals and unassisted"] <- 1
+b3$dispersal.syndrome[b3$dispersal.syndrome == "water and animals"] <- 3
+b3$dispersal.syndrome[b3$dispersal.syndrome == "animals, general"] <- 2
+b3$dispersal.syndrome[b3$dispersal.syndrome == "birds and mammals"] <- 2
+b3$dispersal.syndrome[b3$dispersal.syndrome == "wind, rain"] <- 4
+b3$dispersal.syndrome[b3$dispersal.syndrome == "wind and animals"] <- 5
+b3$dispersal.syndrome[b3$dispersal.syndrome == "wind and birds"] <- 5
+b3$dispersal.syndrome[b3$dispersal.syndrome == "wind"] <- 6
+b3$dispersal.syndrome <- as.numeric(b3$dispersal.syndrome)
+
+### make leaf texture (coarseness) numeric
+b3$leaf.texture..coarseness.[b3$leaf.texture..coarseness. == "fine"] <- 0
+b3$leaf.texture..coarseness.[b3$leaf.texture..coarseness. == "medium"] <- 1
+b3$leaf.texture..coarseness.[b3$leaf.texture..coarseness. == "coarse"] <- 2
+b3$leaf.texture..coarseness. <- as.numeric(b3$leaf.texture..coarseness.)
+
+### make relative growth rate numeric
+b3$relative.growth.rate[b3$relative.growth.rate == "slow"] <- 0
+b3$relative.growth.rate[b3$relative.growth.rate == "moderate"] <- 1
+b3$relative.growth.rate[b3$relative.growth.rate == "fast"] <- 2
+b3$relative.growth.rate <- as.numeric(b3$relative.growth.rate)
+
+### make degree of self-pruning numeric
+b3$degree.of.self.pruning[b3$degree.of.self.pruning == "none"] <- 0
+b3$degree.of.self.pruning[b3$degree.of.self.pruning == "low"] <- 1
+b3$degree.of.self.pruning[b3$degree.of.self.pruning == "moderate"] <- 2
+b3$degree.of.self.pruning[b3$degree.of.self.pruning == "high"] <- 3
+b3$degree.of.self.pruning <- as.numeric(b3$degree.of.self.pruning)
+```
+
+#### Calculate functional diversity
+```{r}
+### syntax: dbFD(trait_matrix, species_matrix, corr = c("corr_method"))
+FD_calc_3 <- dbFD(b3, 
+                a3,
+                
+                ### add calculations
+                calc.FRic = TRUE,
+                calc.FDiv = TRUE,
+                calc.CWM = TRUE,
+                
+                ## weight by sp abund
+                w.abun = TRUE,
+                
+                ## correction for distance matrix
+                corr = "cailliez", 
+                calc.FGR = TRUE) 
+# quality =  (R2-like metric)
+
+### Extract output to dataframe
+
+### extract evenness to dataframe
+feven <- as.data.frame(FD_calc_3[["FEve"]]) 
+
+### extract diversity to dataframe
+fdiv <- as.data.frame(FD_calc_3[["FDiv"]]) 
+
+### extract richness to dataframe
+fric <- as.data.frame(FD_calc_3[["FRic"]]) 
+
+### extract community weighted means to dataframe
+fcwm <- as.data.frame(FD_calc_3[["CWM"]])
+
+### extract Rao's Q to dataframe
+frao <- as.data.frame(FD_calc_3[["RQao"]]) 
+
+### extract functional group richness to dataframe
+fgr <- as.data.frame(FD_calc_3[["FGR"]]) 
+
+### extract dissimilarity to dataframe
+fdis <- as.data.frame(FD_calc_3[["FDis"]]) 
+
+### Combine above into single data table
+df_list <- c(feven, fdiv, fric, frao, fgr, fdis)
+fd_metrics <- as.data.table(df_list)
+fd_metrics <- fd_metrics %>% 
+  # remove_rownames %>% 
+  # column_to_rownames(var="Row.names") %>%
+  rename('fdiv' = "FD_calc_3[[\"FDiv\"]]",
+         'feven' = "FD_calc_3[[\"FEve\"]]",
+         'fric' = "FD_calc_3[[\"FRic\"]]",
+         'fgr' = "FD_calc_3[[\"FGR\"]]",
+         'fdis' = "FD_calc_3[[\"FDis\"]]")
+fd_metrics$newplotid <- row.names(fdis)
+
+### make plots without live trees a df
+t3_no_live <- as.data.frame(t3_no_live)
+t3_no_live$PLOT.x <- as.character(t3_no_live$PLOT.x)
+
+### merge with fd_metrics
+fd_metrics <- merge(fd_metrics,
+                    t3_no_live,
+                    by.x = "newplotid",
+                    by.y = "PLOT.x",
+                    all = TRUE)
+
+### write out
+write_csv(fd_metrics,
+          "fd_metrics_t3.csv")
+
+### CWM
+fcwm <- fcwm %>%
+  rownames_to_column()
+
+### merge with t3_no_live
+fcwm <- merge(fcwm,
+              t3_no_live,
+              by.x = "rowname",
+              by.y = "PLOT.x",
+              all = TRUE)
+
+### write out
+write_csv(fcwm,
+          "fcwm_t3.csv")
+```
+
+## FD Time Series
+FD outputs:  
+* FRic: functional richness  
+* FEve: functional evenness  
+* FDiv: functional divergence  
+* FDis: functional dispersion  
+* Rao's quadratic entropy  
+* fgr: posteriori functional group richness  
+* CWN: community-level weighted means of trait values (index of functional composition)
+```{r}
+### Open t1 and make column for t1
+fd_t1 <- read.csv("fd_metrics_t1.csv") %>%
+  mutate(., time_step = "t1") %>%
+  dplyr::select(., newplotid,
+                feven, fdiv, fric, fgr, fdis,
+                time_step)
+
+### Open t2 and make column for t2
+fd_t2 <- read.csv("fd_metrics_t2.csv") %>%
+  mutate(., time_step = "t2")
+
+### Open t3 and make column for t3
+fd_t3 <- read.csv("fd_metrics_t3.csv") %>%
+  mutate(., time_step = "t3")
+fd_t3 <- fd_t3 %>%
+  dplyr::select(newplotid, feven, fdiv, fric, fgr, fdis, time_step)
+
+### rbind
+fd_all <- rbind(fd_t1,
+                fd_t2,
+                fd_t3)
+
+### Open df of plot/INVYR/time_step
+time_year <- read.csv("plot_year_t.csv")
+
+### Merge
+fd_all <- merge(fd_all,
+                time_year,
+                by.x = c("newplotid", "time_step"),
+                by.y = c("PLOT.x", "time_step"),
+                all = TRUE)
+
+### Drop NA INVYR
+fd_all <- fd_all %>%
+  filter(!(is.na(INVYR)))
+
+## write out
+write_csv(fd_all,
+          "fd_output_time_series.csv")
+
+### Make long
+fd_long <- fd_all %>% 
+  gather(metric, value, feven:fdis)
+
+# ### Plot
+# fd_long %>%
+#   filter(metric == "fdis") %>%
+#   ggplot() +
+#   geom_line(aes(x = INVYR, 
+#                 y = value,
+#                 group = newplotid)) +
+#   xlab("Sample year") +
+#   ylab("Functional dispersion")
+# 
+# ggsave("functional_dispersion_time.png")
+```
+
+## JULY 18 THROUGH HERE!
+
+### burned vs unburned
+```{r}
+### Open csv
+co_burned <- read.csv("burned_btw_surveys_colorado.csv")
+
+### merge
+fd_long <- merge(fd_long,
+                 co_burned,
+                 by.x = "newplotid",
+                 by.y = "plot",
+                 all.x = TRUE)
+
+### NA to 0
+fd_long <- fd_long %>%
+  mutate(fire_t1_t2 = ifelse(is.na(fire_t1_t2),
+                             0,
+                             fire_t1_t2))
+
+### Make factors
+fd_long$time_step <- as.factor(fd_long$time_step)
+fd_long$fire_t1_t2 <- as.factor(fd_long$fire_t1_t2)
+
+### Change to burned/unburned
+fd_long <- fd_long %>%
+  mutate(fire_t1_t2 = ifelse(fire_t1_t2 == "0",
+                             "Unburned",
+                             "Burned"))
+
+### Make fed/priv column
+# fd_long <- fd_long %>%
+#   mutate(land_own = ifelse(own_name %in% c("Bureau of Land Management", "National Grassland", "Department of Defense/Energy", "National Park Service"),
+#                            "Federal",
+#                            ifelse(own_name == "Undifferentiated private", "Private", "Other")))
+fd_long <- fd_long %>%
+  mutate(land_own = ifelse(OWNGRPCD < 21, "Federal",
+                           ifelse(OWNGRPCD > 35,
+                                  "Private",
+                                  "Other")))
+
+### Column for management + burned combination
+fd_long <- fd_long %>%
+  mutate(land_burn = paste(land_own, "_", fire_t1_t2))
+
+### Boxplots
+fd_long %>%
+  filter(metric == "fric") %>%
+  filter(time_step %in% c("t1", "t2")) %>%
+  filter(land_own %in% c("Federal",
+                         "Private")) %>%
+  ggplot(aes(x = time_step,
+             y = value,
+             fill = fire_t1_t2)) +
+  geom_boxplot() +
+  theme_bw() +
+  xlab("Time step") +
+  ylab("Functional richness") +
+  labs(fill = 'Burned') +
+  # scale_fill_brewer(palette = "Dark2") +
+  NULL
+ggsave("functional_richness_burned_12_1.png",
+       width = 10, height = 7)
+
+### can't do boxplot of evenness
+
+### functional diverenge
+fd_long %>%
+  filter(metric == "fdiv") %>%
+  filter(time_step %in% c("t1", "t2")) %>%
+  filter(land_own %in% c("Federal",
+                         "Private")) %>%
+  ggplot(aes(x = time_step,
+             y = value,
+             fill = fire_t1_t2)) +
+  geom_boxplot() +
+  theme_bw() +
+  xlab("Time step") +
+  ylab("Functional divergence") +
+  labs(fill = 'Burned') +
+  # scale_fill_brewer(palette = "Dark2") +
+  NULL
+ggsave("functional_divergence_burned_12_1.png",
+       width = 10, height = 7)
+```
+
+## CWM Time Series
+```{r}
+### Open CWM dfs
+cwm_t1 <- read.csv("fcwm_t1.csv") %>%
+  mutate(time_step = "t1")
+cwm_t2 <- read.csv("fcwm_t2.csv") %>%
+  mutate(time_step = "t2")
+cwm_t3 <- read.csv("fcwm_t3.csv") %>%
+  mutate(time_step = "t3")
+
+### rbind
+cwm_all <- rbind(cwm_t1,
+                 cwm_t2,
+                 cwm_t3)
+
+### fix names
+cwm_all <- cwm_all %>%
+  dplyr::select(plot_id = rowname,
+                time_step,
+                foliage = foliage.type..deciduous.or.evergreen.,
+                leaf_texture = leaf.texture..sclerophylly..physical.strength..toughness.,
+                resprout_ability = resprouting.ability,
+                bark_thickness = bark.thickness,
+                dispersal_dist = dispersal.distance,
+                height_lowest_branch = height.of.lowest.branch,
+                leaf_dry_matter_content = leaf.dry.matter.content,
+                leaf_mass_area = leaf.mass.area,
+                leaf_photosyn_rate = leaf.photosynthetic.rate,
+                max_height = maximum.height,
+                photosyn_wue = photosynthetic.water.use.efficiency,
+                plant_height_veg = plant.height..vegetative,
+                rel_growth_rate = relative.growth.rate,
+                specific_leaf_area = specific.leaf.area,
+                specific_leaf_conduct = specific.leaf.conductivity,
+                stem_conduit_dens = stem.conduit.density..vessels.and.tracheids.,
+                stem_conduit_diam = stem.conduit.diameter..vessels.and.tracheids.,
+                stomatal_conduct_leaf_area = stomatal.conductance.per.leaf.area,
+                stomatal_conduct_water = stomatal.conductance.to.water.vapor,
+                wood_density = wood..or.stem.specific..density,
+                xylem = xylem.hydraulic.vulnerability..xylem.cavitation.vulnerability..embolism.vulnerability)
+
+### Open df of plot/INVYR/time_step
+time_year <- read.csv("plot_year_t.csv")
+
+### Merge
+cwm_all <- merge(cwm_all,
+                 time_year,
+                 by.x = c("plot_id", "time_step"),
+                 by.y = c("PLOT.x", "time_step"),
+                 all = TRUE)
+
+### Drop NA INVYR
+cwm_all <- cwm_all %>%
+  filter(!(is.na(INVYR)))
+
+### write out
+write_csv(cwm_all,
+          "cwm_time_series.csv")
+
+### Make continuous variables long
+cwm_long <- cwm_all %>% 
+  dplyr::select(-leaf_texture) %>%
+  gather(trait, value, foliage:xylem)
+
+### NA --> 0
+cwm_long <- cwm_long %>%
+  mutate(value = ifelse(is.na(value), 
+                        0, 
+                        value))
+
+### Plot
+cwm_long %>%
+  filter(trait == "bark_thickness") %>%
+  ggplot(aes(x = INVYR, 
+                y = value,
+                group = plot_id)) +
+  geom_line() +
+  geom_smooth(method = "lm", 
+              color = "red") +
+  xlab("Sample year") +
+  ylab("Bark thickness")
+
+ggsave("bark_thickness_time.png")
+
+### Get mean vals
+cwm_summ <- cwm_long %>%
+  filter(!trait == "leaf_texture") %>%
+  group_by(time_step, trait) %>%
+  summarise(mean_trait_val = mean(value,
+                                  na.rm = TRUE),
+            sd_trait_val = sd(value,
+                              na.rm = TRUE))
+
+### write out
+write_csv(cwm_summ,
+          "change_mean_trait_vals.csv")
+```
+
+### Change in CWM over time
+```{r}
+cwm_all %>%
+  filter(!time_step == "t3") %>%
+  ggplot(aes(x = specific_leaf_area,
+             fill = time_step)) +
+  geom_density(alpha = 0.4) +
+  theme_bw() +
+  xlab("Specific leaf area (cm2/g)") +
+  ylab("Density") +
+  labs(fill = 'Time step') +
+  NULL
+ggsave("sla_time.png")
+
+cwm_all %>%
+  filter(!time_step == "t3") %>%
+  ggplot(aes(x = dispersal_dist,
+             fill = time_step)) +
+  geom_density(alpha = 0.4) +
+  theme_bw() +
+  xlab("Dispersal distance (m)") +
+  ylab("Density") +
+  labs(fill = 'Time step') +
+  NULL
+ggsave("disp_distance.png")
+```
+
+## Which plots burned between surveys?
+```{r}
+### Open csv
+co_burned <- read.csv("burned_btw_surveys_colorado.csv")
+
+### merge
+co_cwm <- merge(cwm_long,
+                co_burned,
+                by.x = "plot_id",
+                by.y = "plot",
+                all.x = TRUE)
+
+### write out
+write_csv(co_cwm,
+          "co_cwm_burned_owner.csv")
+
+### NA to 0
+co_cwm <- co_cwm %>%
+  mutate(fire_t1_t2 = ifelse(is.na(fire_t1_t2),
+                             0,
+                             fire_t1_t2))
+
+### Make factors
+co_cwm$time_step <- as.factor(co_cwm$time_step)
+co_cwm$fire_t1_t2 <- as.factor(co_cwm$fire_t1_t2)
+
+### Change to burned/unburned
+co_cwm <- co_cwm %>%
+  mutate(fire_t1_t2 = ifelse(fire_t1_t2 == "0",
+                             "Unburned",
+                             "Burned"))
+
+### Boxplots
+co_cwm %>%
+  filter(trait == "bark_thickness") %>%
+  filter(time_step %in% c("t1", "t2")) %>%
+  ggplot(aes(x = time_step,
+             y = value,
+             fill = fire_t1_t2)) +
+  geom_boxplot() +
+  theme_bw() +
+  xlab("Time step") +
+  ylab("Bark thickness (mm)") +
+  labs(fill = 'Burned between t1 and t2') +
+  NULL
+ggsave("boxplots_bark_thickness.png")
+
+### Boxplots
+co_cwm %>%
+  filter(trait == "leaf_dry_matter_content") %>%
+  filter(time_step %in% c("t1", "t2")) %>%
+  ggplot(aes(x = time_step,
+             y = value,
+             fill = fire_t1_t2)) +
+  geom_boxplot() +
+  theme_bw() +
+  xlab("Time step") +
+  ylab("Leaf dry matter content (mg/mg)") +
+  labs(fill = 'Burned between t1 and t2') +
+  NULL
+ggsave("boxplots_leaf_drymatter.png")
+```
+
+#### fed vs. priv
+```{r}
+### Make fed/priv column
+# co_cwm <- co_cwm %>%
+#   mutate(land_own = ifelse(own_name %in% c("Bureau of Land Management", "National Grassland", "Department of Defense/Energy", "National Park Service"),
+#                            "Federal",
+#                            ifelse(own_name == "Undifferentiated private", "Private", "Other")))
+
+co_cwm <- co_cwm %>%
+  mutate(land_own = ifelse(OWNGRPCD < 21, "Federal",
+                           ifelse(OWNGRPCD > 35,
+                                  "Private",
+                                  "Other")))
+
+### Column for management + burned combination
+co_cwm <- co_cwm %>%
+  mutate(land_burn = paste(land_own, "_", fire_t1_t2))
+
+### Boxplots
+co_cwm %>%
+  filter(trait == "bark_thickness") %>%
+  filter(time_step %in% c("t1", "t2")) %>%
+  filter(land_own %in% c("Federal",
+                         "Private")) %>%
+  ggplot(aes(x = time_step,
+             y = value,
+             fill = land_burn)) +
+  geom_boxplot() +
+  theme_bw() +
+  xlab("Time step") +
+  ylab("Bark thickness (mm)") +
+  labs(fill = 'Land ownership') +
+  scale_fill_brewer(palette = "Dark2") +
+  NULL
+ggsave("boxplots_bark_thickness_fed_burn.png",
+       width = 10, height = 7)
+
+### Boxplots
+co_cwm %>%
+  filter(trait == "specific_leaf_area") %>%
+  filter(time_step %in% c("t1", "t2")) %>%
+  filter(land_own %in% c("Federal",
+                         "Private")) %>%
+  ggplot(aes(x = time_step,
+             y = value,
+             fill = land_burn)) +
+  geom_boxplot() +
+  theme_bw() +
+  xlab("Time step") +
+  ylab("Specific leaf area (cm2/g)") +
+  labs(fill = 'Land ownership') +
+  scale_fill_brewer(palette = "Dark2") +
+  NULL
+ggsave("boxplots_specific_leaf_area_fed_burn.png",
+       width = 10, height = 7)
+```
+
+
+#### sumary stats
+```{r}
+### total number of plots
+length(unique(co_cwm$plot_id)) ## 3161
+
+### plots on FED land
+fed <- co_cwm %>%
+  filter(land_own == "Federal") %>%
+  dplyr::select(plot_id, fire_t1_t2) %>%
+  distinct()
+
+### number of plots on fed land
+length(unique(fed$plot_id)) ## 2294
+
+## fed burned
+land_own_burned <- co_cwm %>%
+  dplyr::select(plot_id, land_own, fire_t1_t2) %>%
+  distinct() %>%
+  group_by(land_own, fire_t1_t2) %>%
+  summarise(n_obs = n())
+
+### plots on private land
+priv <- co_cwm %>%
+  filter(land_own == "Private") %>%
+  dplyr::select(plot_id, fire_t1_t2) %>%
+  distinct()
+
+### number of plots on fed land
+length(unique(priv$plot_id)) ## 833
+```
+
