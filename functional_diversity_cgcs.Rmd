@@ -20,6 +20,7 @@ install.packages("fundiversity")
 
 data(package = "fundiversity")
 ```
+
 ### prep trait data
 ```{r}
 ### open data
@@ -48,9 +49,120 @@ trait_wide <- trait_wide %>%
   pivot_wider(names_from = trait_name,
               values_from = value)
 
+### make dispersal syndrome numeric
+dispersal <- filter(nfi_trait_dat_clean, trait_name == "dispersal syndrome") 
+unique(dispersal$value) # lists unique dispersal syndrome methods
+
+X$dispersal syndrome[X$dispersal syndrome == "animals, general"] <- 2
+X$dispersal syndrome[X$dispersal syndrome == "birds"] <- 2
+X$dispersal syndrome[X$dispersal syndrome == "mammals"] <- 2
+X$dispersal syndrome[X$dispersal syndrome == "human"] <- 2
+X$dispersal syndrome[X$dispersal syndrome == "water"] <- 3
+X$dispersal syndrome[X$dispersal syndrome == "wind and water"] <- 4
+X$dispersal syndrome[X$dispersal syndrome == "wind"] <- 6
+X$dispersal syndrome <- as.numeric(X$dispersal syndrome)
+# where X is the trait file name <- inputted once edited file is pulled
+
+
 ```
 
-### prep site data
+### prep time data
+```{r}
+### number of time-period observations per plot
+install.packages("lubridate")
+
+trait_summ <- wcan_biomass_total %>%
+  group_by(nfi_plot) %>%
+  summarise(n_surveyed = length(unique(meas_date)))
+table(trait_summ$n_surveyed)
+# 17 surveyed once, 378 surveyed twice, 36 surveyed three times
+
+### drop plots surveyed once
+once <- c("1100981", "1114666", "1128941","1162841","1218396","1225241","1232216", "1273466", "1279961", "1294161", "1328041", "1335371", "1410761", "1424456", "1445166", "1452066")
+
+wcan_dat <- wcan_biomass_total %>%
+  filter(!nfi_plot %in% once)
+
+### simplify data
+wcan_dat_simp <- wcan_dat %>%
+  dplyr::select(nfi_plot,
+                meas_date,
+                NFI_species,
+                biomass_composition) %>%
+  group_by(nfi_plot,
+           meas_date,
+           NFI_species,
+           biomass_composition)
+                
+
+### add survey numbers to data
+wcan_dat <- merge(wcan_dat_simp,
+                  trait_summ,
+                  by = "nfi_plot")
+
+### change meas_date to ymd form
+library("lubridate")
+
+wcan_dat$meas_date <- ymd(wcan_dat$meas_date)
+
+### set t(min) and t(max)
+trait_t <- wcan_dat %>%
+  group_by(nfi_plot) %>%
+  summarise(min_year = min(meas_date),
+            max_year = max(meas_date))
+
+### merge with wcan_dat
+wcan_dat <- merge(wcan_dat,
+                  trait_t,
+                  by = "nfi_plot")
+
+### add time steps
+wcan_dat <- wcan_dat %>%
+  mutate(time_step = ifelse(meas_date ==min_year, "t1",
+                            ifelse(meas_date == max_year & n_surveyed == 2, "t2",
+                                   ifelse(meas_date == max_year & n_surveyed == 3, "t3", 
+                                          "t2"))))
+### df of time step and plots
+wcan_time_step <- wcan_dat %>%
+  dplyr::select(nfi_plot, meas_date, time_step) %>%
+  distinct()
+write.csv(wcan_time_step, "wcan_time_step.csv")
+
+### make df for t1 plots
+wcan_t1 <- wcan_dat %>%
+  filter(time_step == "t1")
+
+wcan_t1 <- wcan_t1 %>%
+  dplyr::select(nfi_plot,
+                meas_date,
+                NFI_species,
+                time_step,
+                biomass_composition)
+
+### total biomass per plot
+plot_biomass_tot <- wcan_t1 %>%
+  group_by(nfi_plot, meas_date) %>%
+  summarise(total_biomass_plot = sum(biomass_composition))
+
+### merge 
+wcan_t1 <- merge(wcan_t1, plot_biomass_tot,
+                 by = c("nfi_plot", "meas_date"))
+
+### percent biomass (per plot)
+wcan_t1 <- wcan_t1 %>%
+  mutate(pct_biomass = biomass_composition/total_biomass_plot)
+
+### save as csv
+write.csv(wcan_t1, "wcan_t1.csv")
+```
+
+### add traits
+```{r}
+
+
+```
+
+
 ```{r}
 ### forms site-species matrix (reshape data)
 site_dat <- read.csv("our_data/biomass_materials/wcan_biomass_total.csv")
