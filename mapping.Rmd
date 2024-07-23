@@ -11,8 +11,12 @@ library(tidyverse)
 library(sf)
 library(terra)
 ```
+### resources for mapping
+https://rpubs.com/jdlecy/making_maps_in_r 
+https://methodenlehre.github.io/intro-to-rstats/plotting-with-ggplot2.html 
+  ## good option for plotting functional diversity
 
-## demo british columbia
+## demo british columbia - KS
 ```{r}
 ### open data
 bc_data_resurveyed <- read.csv("our_data/BC_ltp_resurveyed.csv")
@@ -48,3 +52,102 @@ bc_richeven %>%
   ggplot() +
   geom_sf()
 ```
+
+### BC - KH
+```{r}
+### merge stp and ltp resurveyed files
+bc_ltp_data_resurveyed <- read.csv("our_data/BC_ltp_resurveyed.csv") 
+bc_ltp_data_resurveyed$X <- NULL
+bc_ltp_data_resurveyed$...1 <- NULL
+
+
+bc_stp_data_resurveyed <- read.csv("our_data/BC_stp_resurveyed.csv")
+bc_stp_data_resurveyed$X <- NULL
+
+colnames(bc_ltp_data_resurveyed)[9] <- "species_rel"
+colnames(bc_stp_data_resurveyed)[8] <- "percent"
+colnames(bc_stp_data_resurveyed)[9] <- "species_rel"
+
+bc_data_resurveyed <- rbind(bc_ltp_data_resurveyed, bc_stp_data_resurveyed)
+
+names(bc_ltp_data_resurveyed)
+names(bc_stp_data_resurveyed)
+
+
+### convert to spatial
+spat_bc <- st_as_sf(bc_data_resurveyed,
+                    coords = c(11:12),
+                    crs = 4269) 
+
+### subset columns
+bc_plots <- spat_bc %>%
+  dplyr::select(nfi_plot,
+                geometry) %>%
+  distinct()
+  
+### open richness/evenness data
+bc_richeven <- read.csv("our_data/BC_indeces.csv")
+
+### combine with richness and evenness data
+bc_richeven <- merge(bc_plots,
+                     bc_richeven,
+                     by = "nfi_plot",
+                     all.y = TRUE)
+
+### reduce columns
+bc_richeven <- bc_richeven %>%
+  dplyr::select(nfi_plot,
+                meas_date,
+                bindex_ltshannon:geometry)
+
+### try plotting
+bc_richeven %>%
+  ggplot() +
+  geom_sf() 
+  #error message:
+  Warning in st_is_longlat(x) :
+  bounding box has potentially an invalid value range for longlat data
+  Error: Invalid index: field name 'x_start' not found
+
+### testing map 2.0 -> does not work
+world <- map_data("world")
+
+NFI_map <- ggplot(data = bc_data_resurveyed, aes(x = "utm_e", y = "utm_n", colour = factor(nfi_plot)), size = 1) +
+  geom_polygon()
+
+### AI corrected
+NFI_map <- ggplot(data = bc_data_resurveyed, aes(x = utm_e, y = utm_n, colour = factor(nfi_plot))) +
+  geom_point(size = 1)
+
+NFI_map <- print(ggplot)
+
+map_data <- 
+  world +
+  geom_point(data=bc_data_resurveyed, 
+             aes(x=utm_e, y=utm_n), colour="Deep Pink", 
+             fill="Pink",pch=21, size=5, alpha=I(0.7))
+
+bc_data_resurveyed2 <- bc_data_resurveyed(utm_e = utm_e, utm_n = utm_n)
+
+nfi_map_data <- 
+  world + 
+  geom_point(data=bc_data_resurveyed, 
+  nfi_plot = "nfi_plot",  # Replace with your plot IDs
+  utm_n = "utm_n",    # Replace with your UTM northing
+  utm_e = "utm_e"        # Replace with your UTM easting
+)
+
+nfi_sf <- st_as_sf(nfi_map_data, coords = c("utm_e", "utm_n"), crs = 4269)
+
+ggplot(nfi_sf) +
+  geom_sf() +
+  labs(title = "NFI_plot_map")
+
+install.packages("rnaturalearthhires")
+install.packages("raster")
+provinces <- getData(country="Canada", level=1)
+
+
+```
+```
+

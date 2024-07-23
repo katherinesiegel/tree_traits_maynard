@@ -1,0 +1,79 @@
+---
+title: "functional_diversity_cgcs"
+output: html_document
+date: "2024-07-21"
+---
+
+### resources for calculations
+https://cran.r-project.org/web/packages/fundiversity/vignettes/fundiversity.html 
+# does not work for n > 16 traits
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+### Load packages
+library(tidyverse)
+library(sf)
+library(FD)
+library(data.table)
+install.packages("fundiversity")
+
+data(package = "fundiversity")
+```
+### prep trait data
+```{r}
+### open data
+dat_trait <- read.csv("C:/Users/krist/Downloads/nfi_trait_dat_clean.csv")
+
+### simplify data
+dat_trait_simp <- dat_trait %>%
+  dplyr::select(species,
+                trait_name,
+                try_species_id,
+                try_trait_id,
+                value,
+                unit,
+                value_kind,
+                location) #removed common name, number of observations, orig_ref
+trait_summ <- dat_trait_simp %>%
+  group_by(try_species_id, try_trait_id) %>%
+  summarise(n_surveyed = length(unique(value)))
+
+
+### form species-trait matrix (reshape data)
+trait_wide <- dat_trait_simp %>%
+  dplyr::select(species, trait_name, value)
+
+trait_wide <- trait_wide %>%
+  pivot_wider(names_from = trait_name,
+              values_from = value)
+
+```
+
+### prep site data
+```{r}
+### forms site-species matrix (reshape data)
+site_dat <- read.csv("our_data/biomass_materials/wcan_biomass_total.csv")
+
+site_dat_simp <- site_dat %>%
+  dplyr::select(NFI_species,
+                nfi_plot,
+                meas_date,
+                biomass_composition) #removed utm_n, utm_e
+site_summ <- site_dat_simp %>%
+  group_by(NFI_species, nfi_plot) %>%
+  summarise(n_surveyed = length(unique(biomass_composition)))
+
+site_wide <- site_summ %>%
+  dplyr::select(NFI_species, nfi_plot, n_surveyed)
+
+site_wide <- site_wide %>%
+  pivot_wider(names_from = NFI_species,
+              values_from = n_surveyed)
+
+### change NA ->0
+site_wide[is.na(site_wide)] <- 0
+
+
+```
+
