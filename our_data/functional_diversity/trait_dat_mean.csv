@@ -1,0 +1,1399 @@
+"","vect_sp_codes","try_species_id","trait_name","trait_mean"
+"1","ABIE AMA",30,"bark thickness",14
+"2","ABIE AMA",30,"bud burst timing (mean month)",5
+"3","ABIE AMA",30,"clonal growth form",0
+"4","ABIE AMA",30,"coarse root rooting depth",0
+"5","ABIE AMA",30,"dispersal distance",76
+"6","ABIE AMA",30,"dispersal syndrome",6
+"7","ABIE AMA",30,"earliest bud burst timing (month)",5
+"8","ABIE AMA",30,"foliage type (deciduous or evergreen)",3
+"9","ABIE AMA",30,"latest bud burst timing (month)",5
+"10","ABIE AMA",30,"leaf flammability",1
+"11","ABIE AMA",30,"leaf photosynthetic rate",7.6125
+"12","ABIE AMA",30,"leaf texture (coarseness)",1
+"13","ABIE AMA",30,"maximum height",70
+"14","ABIE AMA",30,"plant height, vegetative",56.7982608695652
+"15","ABIE AMA",30,"resprouting ability",0
+"16","ABIE AMA",30,"specific leaf area",10.5816666666667
+"17","ABIE AMA",30,"wood (or stem-specific) density",0.41
+"18","ABIE AMA",NA,"cold_tolerance",-33.3
+"19","ABIE AMA",NA,"cone serotiny",0
+"20","ABIE AMA",NA,"dispersal syndrome",6
+"21","ABIE AMA",NA,"drought_tolerance",0.83
+"22","ABIE AMA",NA,"fire_resistance",0
+"23","ABIE AMA",NA,"fire_tolerance",0
+"24","ABIE AMA",NA,"leaf dry matter content",0.56665
+"25","ABIE AMA",NA,"leaf force to punch",4.12
+"26","ABIE AMA",NA,"leaf thickness",0.41
+"27","ABIE AMA",NA,"leaf_length",3.2
+"28","ABIE AMA",NA,"plant height, vegetative",62.5
+"29","ABIE AMA",NA,"shade_tolerance",4.21
+"30","ABIE AMA",NA,"specific leaf area",4.74
+"31","ABIE AMA",NA,"waterlogging_tolerance",1
+"32","ABIE AMA",NA,"wood (or stem-specific) density",4e-04
+"33","ABIE BAL",32,"bud burst timing (mean month)",5
+"34","ABIE BAL",32,"clonal growth form",3
+"35","ABIE BAL",32,"coarse root rooting depth",0
+"36","ABIE BAL",32,"cone serotiny",0
+"37","ABIE BAL",32,"earliest bud burst timing (month)",5
+"38","ABIE BAL",32,"foliage type (deciduous or evergreen)",3
+"39","ABIE BAL",32,"latest bud burst timing (month)",5
+"40","ABIE BAL",32,"maximum height",27
+"41","ABIE BAL",32,"specific leaf area",6.20963735717834
+"42","ABIE BAL",32,"water potential at 50% loss of stem hydraulic conductivity",-3.87
+"43","ABIE BAL",32,"xylem conductance",35
+"44","ABIE BAL",NA,"bark thickness",3.73333333333333
+"45","ABIE BAL",NA,"dispersal syndrome",6
+"46","ABIE BAL",NA,"maximum height",25
+"47","ABIE BAL",NA,"plant height, vegetative",18.143999707392
+"48","ABIE BAL",NA,"resprouting ability",0
+"49","ABIE BAL",NA,"specific leaf area",6.20963735717834
+"50","ABIE BAL",NA,"water potential at 50% loss of stem hydraulic conductivity",-3.87
+"51","ABIE GRA",50,"bark thickness",14
+"52","ABIE GRA",50,"bud burst timing (mean month)",5
+"53","ABIE GRA",50,"clonal growth form",0
+"54","ABIE GRA",50,"coarse root rooting depth",1
+"55","ABIE GRA",50,"dispersal distance",75
+"56","ABIE GRA",50,"dispersal syndrome",6
+"57","ABIE GRA",50,"earliest bud burst timing (month)",4
+"58","ABIE GRA",50,"foliage type (deciduous or evergreen)",3
+"59","ABIE GRA",50,"height of lowest branch",1.11555764705882
+"60","ABIE GRA",50,"hydraulic safety margin 50%",1.15
+"61","ABIE GRA",50,"hydraulic safety margin 88%",1.56666666666667
+"62","ABIE GRA",50,"latest bud burst timing (month)",6
+"63","ABIE GRA",50,"leaf mass area",9433.81552705882
+"64","ABIE GRA",50,"leaf texture (coarseness)",1
+"65","ABIE GRA",50,"minimum midday xylem pressure potential",-2.5
+"66","ABIE GRA",50,"plant height, vegetative",28.5660727272727
+"67","ABIE GRA",50,"resprouting ability",0
+"68","ABIE GRA",50,"seed bank longevity",0
+"69","ABIE GRA",50,"slope of vulnerability curve",91.2206704811319
+"70","ABIE GRA",50,"specific leaf area",11.0563714012429
+"71","ABIE GRA",50,"stem conduit diameter (vessels and tracheids)",18.4691027760422
+"72","ABIE GRA",50,"water potential at 12% loss of stem hydraulic conductivity",-3.23459439471605
+"73","ABIE GRA",50,"water potential at 50% loss of stem hydraulic conductivity",-3.65058333333333
+"74","ABIE GRA",50,"water potential at 88% loss of stem hydraulic conductivity",-4.06738151463375
+"75","ABIE GRA",50,"wood (or stem-specific) density",0.42814944488293
+"76","ABIE GRA",NA,"bark thickness",90
+"77","ABIE GRA",NA,"cold_tolerance",-36.1
+"78","ABIE GRA",NA,"cone serotiny",0
+"79","ABIE GRA",NA,"dispersal syndrome",6
+"80","ABIE GRA",NA,"drought_tolerance",2.33
+"81","ABIE GRA",NA,"fire_resistance",1
+"82","ABIE GRA",NA,"fire_tolerance",1
+"83","ABIE GRA",NA,"hydraulic safety margin 50%",1.15
+"84","ABIE GRA",NA,"hydraulic safety margin 88%",-1.25
+"85","ABIE GRA",NA,"leaf_length",5.8
+"86","ABIE GRA",NA,"maximum height",75
+"87","ABIE GRA",NA,"plant height, vegetative",49.4833333333333
+"88","ABIE GRA",NA,"shade_tolerance",4.01
+"89","ABIE GRA",NA,"water potential at 50% loss of stem hydraulic conductivity",-3.65
+"90","ABIE GRA",NA,"waterlogging_tolerance",1.57
+"91","ABIE GRA",NA,"wood (or stem-specific) density",0.00035
+"92","ABIE LAS",56,"bark thickness",6.76206896551724
+"93","ABIE LAS",56,"bud burst timing (mean month)",5
+"94","ABIE LAS",56,"clonal growth form",3
+"95","ABIE LAS",56,"coarse root rooting depth",2
+"96","ABIE LAS",56,"degree of self-pruning",1
+"97","ABIE LAS",56,"dispersal distance",30
+"98","ABIE LAS",56,"dispersal syndrome",5.42857142857143
+"99","ABIE LAS",56,"earliest bud burst timing (month)",5
+"100","ABIE LAS",56,"foliage type (deciduous or evergreen)",3
+"101","ABIE LAS",56,"height of lowest branch",0.986104210526316
+"102","ABIE LAS",56,"hydraulic safety margin 50%",1.83808
+"103","ABIE LAS",56,"hydraulic safety margin 88%",5.6246
+"104","ABIE LAS",56,"latest bud burst timing (month)",5
+"105","ABIE LAS",56,"leaf dry matter content",0.50828275862069
+"106","ABIE LAS",56,"leaf mass area",1956.13066824561
+"107","ABIE LAS",56,"leaf photosynthetic rate",3.96980563642857
+"108","ABIE LAS",56,"leaf texture (coarseness)",1
+"109","ABIE LAS",56,"maximum height",9.28985065528802
+"110","ABIE LAS",56,"minimum midday xylem pressure potential",-1.5
+"111","ABIE LAS",56,"photosynthetic water use efficiency",3.34034924144444
+"112","ABIE LAS",56,"plant height, vegetative",6.14718351409978
+"113","ABIE LAS",56,"resprouting ability",0
+"114","ABIE LAS",56,"slope of vulnerability curve",59.6846743796855
+"115","ABIE LAS",56,"specific leaf area",13.464298882482
+"116","ABIE LAS",56,"specific leaf conductivity",6.21e-05
+"117","ABIE LAS",56,"stem conduit density (vessels and tracheids)",2376.29849782772
+"118","ABIE LAS",56,"stem conduit diameter (vessels and tracheids)",16.8084932640483
+"119","ABIE LAS",56,"stomatal conductance",81
+"120","ABIE LAS",56,"water potential at 12% loss of stem hydraulic conductivity",-2.11417457050638
+"121","ABIE LAS",56,"water potential at 50% loss of stem hydraulic conductivity",-3.40062758864217
+"122","ABIE LAS",56,"water potential at 88% loss of stem hydraulic conductivity",-4.78090042949362
+"123","ABIE LAS",56,"wood (or stem-specific) density",0.345689052855061
+"124","ABIE LAS",NA,"bark thickness",38
+"125","ABIE LAS",NA,"cold_tolerance",-46.1
+"126","ABIE LAS",NA,"cone serotiny",0
+"127","ABIE LAS",NA,"dispersal syndrome",6
+"128","ABIE LAS",NA,"drought_tolerance",2.02
+"129","ABIE LAS",NA,"fire_resistance",0
+"130","ABIE LAS",NA,"fire_tolerance",0
+"131","ABIE LAS",NA,"hydraulic safety margin 50%",1.84
+"132","ABIE LAS",NA,"hydraulic safety margin 88%",-0.75
+"133","ABIE LAS",NA,"leaf_length",4.4
+"134","ABIE LAS",NA,"plant height, vegetative",31.05
+"135","ABIE LAS",NA,"shade_tolerance",4.83
+"136","ABIE LAS",NA,"stem conduit diameter (vessels and tracheids)",12.81
+"137","ABIE LAS",NA,"water potential at 50% loss of stem hydraulic conductivity",-0.66
+"138","ABIE LAS",NA,"waterlogging_tolerance",0.97
+"139","ABIE LAS",NA,"wood (or stem-specific) density",0.00031
+"140","ACER MAC",833,"clonal growth form",1
+"141","ACER MAC",833,"coarse root rooting depth",3
+"142","ACER MAC",833,"dispersal syndrome",6
+"143","ACER MAC",833,"foliage type (deciduous or evergreen)",0
+"144","ACER MAC",833,"leaf texture (coarseness)",1
+"145","ACER MAC",833,"maximum height",20
+"146","ACER MAC",833,"plant height, vegetative",26.5789684210526
+"147","ACER MAC",833,"resprouting ability",1
+"148","ACER MAC",833,"seed bank longevity",0
+"149","ACER MAC",833,"specific leaf area",24.2920986867778
+"150","ACER MAC",833,"stem conduit density (vessels and tracheids)",209.12
+"151","ACER MAC",833,"wood (or stem-specific) density",0.46
+"152","ACER MAC",NA,"bark thickness",16.5
+"153","ACER MAC",NA,"bud burst timing (mean month)",4.5
+"154","ACER MAC",NA,"cold_tolerance",-25.56
+"155","ACER MAC",NA,"cone serotiny",0
+"156","ACER MAC",NA,"dispersal syndrome",6
+"157","ACER MAC",NA,"drought_tolerance",2
+"158","ACER MAC",NA,"earliest bud burst timing (month)",4
+"159","ACER MAC",NA,"fire_tolerance",1
+"160","ACER MAC",NA,"latest bud burst timing (month)",5
+"161","ACER MAC",NA,"leaf dry matter content",0.48756
+"162","ACER MAC",NA,"leaf force to punch",3.26
+"163","ACER MAC",NA,"leaf thickness",0.17
+"164","ACER MAC",NA,"plant height, vegetative",26.9025
+"165","ACER MAC",NA,"seedbank duration",1
+"166","ACER MAC",NA,"shade_tolerance",4.14
+"167","ACER MAC",NA,"specific leaf area",21.17
+"168","ACER MAC",NA,"waterlogging_tolerance",2
+"169","ACER MAC",NA,"wood (or stem-specific) density",0.00043
+"170","ACER NEG",841,"bud burst timing (mean month)",4
+"171","ACER NEG",841,"clonal growth form",1
+"172","ACER NEG",841,"coarse root rooting depth",0
+"173","ACER NEG",841,"dispersal syndrome",6
+"174","ACER NEG",841,"earliest bud burst timing (month)",3
+"175","ACER NEG",841,"foliage type (deciduous or evergreen)",0
+"176","ACER NEG",841,"hydraulic safety margin 50%",0.22
+"177","ACER NEG",841,"hydraulic safety margin 88%",1.61873676203675
+"178","ACER NEG",841,"latest bud burst timing (month)",5
+"179","ACER NEG",841,"leaf dry matter content",0.37943753109079
+"180","ACER NEG",841,"leaf force to punch",3.58111656836188
+"181","ACER NEG",841,"leaf photosynthetic rate",9.5393815260097
+"182","ACER NEG",841,"leaf texture (coarseness)",2
+"183","ACER NEG",841,"leaf toughness",0.116666666666667
+"184","ACER NEG",841,"maximum height",15.24
+"185","ACER NEG",841,"minimum midday xylem pressure potential",-1.12
+"186","ACER NEG",841,"minimum predawn xylem pressure potential",-0.33
+"187","ACER NEG",841,"plant height, vegetative",12.8445094473333
+"188","ACER NEG",841,"resprouting ability",1
+"189","ACER NEG",841,"slope of vulnerability curve",81.3027037835604
+"190","ACER NEG",841,"specific leaf area",24.8750416958266
+"191","ACER NEG",841,"specific leaf conductivity",0.00078
+"192","ACER NEG",841,"stem conduit density (vessels and tracheids)",256.666666666667
+"193","ACER NEG",841,"stem conduit diameter (vessels and tracheids)",34.18
+"194","ACER NEG",841,"stomatal conductance",185
+"195","ACER NEG",841,"water potential at 12% loss of stem hydraulic conductivity",-1.20705123045782
+"196","ACER NEG",841,"water potential at 50% loss of stem hydraulic conductivity",-1.49820761111111
+"197","ACER NEG",841,"water potential at 88% loss of stem hydraulic conductivity",-2.48436838101837
+"198","ACER NEG",841,"wood (or stem-specific) density",0.406699771643325
+"199","ACER NEG",NA,"bark thickness",12
+"200","ACER NEG",NA,"cold_tolerance",-43.33
+"201","ACER NEG",NA,"cone serotiny",0
+"202","ACER NEG",NA,"dispersal syndrome",6
+"203","ACER NEG",NA,"drought_tolerance",3.03
+"204","ACER NEG",NA,"fire_tolerance",0
+"205","ACER NEG",NA,"hydraulic safety margin 50%",0.22
+"206","ACER NEG",NA,"hydraulic safety margin 88%",-0.56
+"207","ACER NEG",NA,"leaf mass area",37.1535229097173
+"208","ACER NEG",NA,"maximum height",25
+"209","ACER NEG",NA,"plant height, vegetative",18.68125
+"210","ACER NEG",NA,"shade_tolerance",3.47
+"211","ACER NEG",NA,"specific leaf area",23.875
+"212","ACER NEG",NA,"stem xylem embolism vulnerability, P50",-2.48093474518804
+"213","ACER NEG",NA,"water potential at 50% loss of stem hydraulic conductivity",-1.34
+"214","ACER NEG",NA,"waterlogging_tolerance",2.75
+"215","ACER NEG",NA,"wood (or stem-specific) density",0.270245
+"216","ACER SPI",869,"dispersal syndrome",6
+"217","ALNU INC",2712,"Leaf texture (sclerophylly, physical strength, toughness)",0
+"218","ALNU INC",2712,"Photosynthesis rate per leaf area",9.77237221
+"219","ALNU INC",2712,"Plant height generative",14.4285714285714
+"220","ALNU INC",2712,"dispersal syndrome",4.42857142857143
+"221","ALNU INC",2712,"leaf dry matter content",0.23805705755
+"222","ALNU INC",2712,"leaf water content",70.88588675
+"223","ALNU INC",2712,"plant height, vegetative",13.7636363636364
+"224","ALNU INC",2712,"water potential at 50% loss of stem hydraulic conductivity",-1.7
+"225","ALNU INC",2712,"wood (or stem-specific) density",510
+"226","ALNU RUB",2726,"bud burst timing (mean month)",3.5
+"227","ALNU RUB",2726,"clonal growth form",4
+"228","ALNU RUB",2726,"coarse root rooting depth",0
+"229","ALNU RUB",2726,"dispersal syndrome",6
+"230","ALNU RUB",2726,"earliest bud burst timing (month)",3
+"231","ALNU RUB",2726,"foliage type (deciduous or evergreen)",0
+"232","ALNU RUB",2726,"latest bud burst timing (month)",4
+"233","ALNU RUB",2726,"leaf flammability",0
+"234","ALNU RUB",2726,"leaf texture (coarseness)",2
+"235","ALNU RUB",2726,"plant height, vegetative",35.4013333333333
+"236","ALNU RUB",2726,"resprouting ability",1
+"237","ALNU RUB",2726,"seedbank duration",4
+"238","ALNU RUB",2726,"slope of vulnerability curve",30.1587301587302
+"239","ALNU RUB",2726,"specific leaf area",14.054346412275
+"240","ALNU RUB",2726,"specific leaf conductivity",0.0001422
+"241","ALNU RUB",2726,"stomatal conductance",300
+"242","ALNU RUB",2726,"water potential at 12% loss of stem hydraulic conductivity",-1.34
+"243","ALNU RUB",2726,"water potential at 50% loss of stem hydraulic conductivity",-2.54
+"244","ALNU RUB",2726,"water potential at 88% loss of stem hydraulic conductivity",-3.8
+"245","ALNU RUB",2726,"wood (or stem-specific) density",0.4
+"246","ALNU RUB",NA,"bark thickness",18.3688191666667
+"247","ALNU RUB",NA,"cold_tolerance",-30
+"248","ALNU RUB",NA,"cone serotiny",0
+"249","ALNU RUB",NA,"dispersal syndrome",6
+"250","ALNU RUB",NA,"drought_tolerance",2.5
+"251","ALNU RUB",NA,"fire_tolerance",1
+"252","ALNU RUB",NA,"leaf dry matter content",0.37591
+"253","ALNU RUB",NA,"leaf force to punch",1.76
+"254","ALNU RUB",NA,"leaf thickness",0.31
+"255","ALNU RUB",NA,"plant height, vegetative",36.9
+"256","ALNU RUB",NA,"shade_tolerance",1.83
+"257","ALNU RUB",NA,"specific leaf area",14.46
+"258","ALNU RUB",NA,"water potential at 50% loss of stem hydraulic conductivity",-2.54
+"259","ALNU RUB",NA,"waterlogging_tolerance",2.56
+"260","ALNU RUB",NA,"wood (or stem-specific) density",0.00037
+"261","AMEL ALN",3173,"dispersal syndrome",2
+"262","AMEL ALN",3173,"water potential at 50% loss of stem hydraulic conductivity",-4.37
+"263","BETU OCC",7354,"clonal growth form",2
+"264","BETU OCC",7354,"coarse root rooting depth",0
+"265","BETU OCC",7354,"dispersal syndrome",6
+"266","BETU OCC",7354,"foliage type (deciduous or evergreen)",0
+"267","BETU OCC",7354,"hydraulic safety margin 50%",0.222
+"268","BETU OCC",7354,"hydraulic safety margin 88%",0.563
+"269","BETU OCC",7354,"leaf texture (coarseness)",1
+"270","BETU OCC",7354,"maximum height",3.04707101493447
+"271","BETU OCC",7354,"minimum midday xylem pressure potential",-1.3
+"272","BETU OCC",7354,"minimum predawn xylem pressure potential",-0.25
+"273","BETU OCC",7354,"plant height, vegetative",17.3348235294118
+"274","BETU OCC",7354,"resprouting ability",1
+"275","BETU OCC",7354,"slope of vulnerability curve",95.9401131505151
+"276","BETU OCC",7354,"specific leaf area",16.15640599
+"277","BETU OCC",7354,"water potential at 12% loss of stem hydraulic conductivity",-0.634777777777778
+"278","BETU OCC",7354,"water potential at 50% loss of stem hydraulic conductivity",-1.37995533333333
+"279","BETU OCC",7354,"water potential at 88% loss of stem hydraulic conductivity",-1.92083333333333
+"280","BETU OCC",NA,"bark thickness",10
+"281","BETU OCC",NA,"cold_tolerance",-52.22
+"282","BETU OCC",NA,"cone serotiny",0
+"283","BETU OCC",NA,"dispersal syndrome",6
+"284","BETU OCC",NA,"drought_tolerance",1.27
+"285","BETU OCC",NA,"fire_tolerance",1
+"286","BETU OCC",NA,"hydraulic safety margin 50%",0.22
+"287","BETU OCC",NA,"hydraulic safety margin 88%",-0.65
+"288","BETU OCC",NA,"plant height, vegetative",11.0425
+"289","BETU OCC",NA,"shade_tolerance",3.28
+"290","BETU OCC",NA,"stem xylem embolism vulnerability, P50",-1.08108466778731
+"291","BETU OCC",NA,"water potential at 50% loss of stem hydraulic conductivity",-1.52
+"292","BETU OCC",NA,"waterlogging_tolerance",2.63
+"293","BETU PAP",7355,"bark thickness",0.853144927536232
+"294","BETU PAP",7355,"bud burst timing (mean month)",4
+"295","BETU PAP",7355,"clonal growth form",1
+"296","BETU PAP",7355,"coarse root rooting depth",0
+"297","BETU PAP",7355,"dispersal distance",63.3333333333333
+"298","BETU PAP",7355,"dispersal syndrome",6
+"299","BETU PAP",7355,"earliest bud burst timing (month)",4
+"300","BETU PAP",7355,"foliage type (deciduous or evergreen)",0
+"301","BETU PAP",7355,"height of lowest branch",2.61531034482759
+"302","BETU PAP",7355,"latest bud burst timing (month)",4
+"303","BETU PAP",7355,"leaf dry matter content",0.40062
+"304","BETU PAP",7355,"leaf force to punch",2.14157633554983
+"305","BETU PAP",7355,"leaf mass area",868.975981932292
+"306","BETU PAP",7355,"leaf photosynthetic rate",11.0992673475843
+"307","BETU PAP",7355,"leaf texture (coarseness)",1
+"308","BETU PAP",7355,"maximum height",20
+"309","BETU PAP",7355,"plant height, vegetative",6.70183926380368
+"310","BETU PAP",7355,"resprouting ability",1
+"311","BETU PAP",7355,"seedbank density",2200000
+"312","BETU PAP",7355,"slope of vulnerability curve",84.0762125641212
+"313","BETU PAP",7355,"specific leaf area",22.3053951470577
+"314","BETU PAP",7355,"specific leaf conductivity",0.00016947
+"315","BETU PAP",7355,"stomata density",84.1708542713568
+"316","BETU PAP",7355,"stomatal conductance",257.821686518994
+"317","BETU PAP",7355,"water potential at 12% loss of stem hydraulic conductivity",-1.302
+"318","BETU PAP",7355,"water potential at 50% loss of stem hydraulic conductivity",-2.18342857142857
+"319","BETU PAP",7355,"water potential at 88% loss of stem hydraulic conductivity",-2.516
+"320","BETU PAP",7355,"wood (or stem-specific) density",0.484642222222222
+"321","BETU PAP",NA,"bark thickness",15
+"322","BETU PAP",NA,"cold_tolerance",-52.22
+"323","BETU PAP",NA,"cone serotiny",0
+"324","BETU PAP",NA,"dispersal syndrome",6
+"325","BETU PAP",NA,"drought_tolerance",2.02
+"326","BETU PAP",NA,"fire_tolerance",1
+"327","BETU PAP",NA,"leaf dry matter content",0.28422
+"328","BETU PAP",NA,"leaf force to punch",1.91
+"329","BETU PAP",NA,"leaf mass area",78.1278718033748
+"330","BETU PAP",NA,"leaf thickness",0.21
+"331","BETU PAP",NA,"plant height, vegetative",23.9925
+"332","BETU PAP",NA,"shade_tolerance",1.54
+"333","BETU PAP",NA,"specific leaf area",26.847
+"334","BETU PAP",NA,"water potential at 50% loss of stem hydraulic conductivity",-2.34
+"335","BETU PAP",NA,"waterlogging_tolerance",1.25
+"336","BETU PAP",NA,"wood (or stem-specific) density",0.00048
+"337","BETU PAP NEO",7355,"bark thickness",0.853144927536232
+"338","BETU PAP NEO",7355,"bud burst timing (mean month)",4
+"339","BETU PAP NEO",7355,"clonal growth form",1
+"340","BETU PAP NEO",7355,"coarse root rooting depth",0
+"341","BETU PAP NEO",7355,"dispersal distance",63.3333333333333
+"342","BETU PAP NEO",7355,"dispersal syndrome",6
+"343","BETU PAP NEO",7355,"earliest bud burst timing (month)",4
+"344","BETU PAP NEO",7355,"foliage type (deciduous or evergreen)",0
+"345","BETU PAP NEO",7355,"height of lowest branch",2.61531034482759
+"346","BETU PAP NEO",7355,"latest bud burst timing (month)",4
+"347","BETU PAP NEO",7355,"leaf dry matter content",0.40062
+"348","BETU PAP NEO",7355,"leaf force to punch",2.14157633554983
+"349","BETU PAP NEO",7355,"leaf mass area",868.975981932292
+"350","BETU PAP NEO",7355,"leaf photosynthetic rate",11.0992673475843
+"351","BETU PAP NEO",7355,"leaf texture (coarseness)",1
+"352","BETU PAP NEO",7355,"maximum height",20
+"353","BETU PAP NEO",7355,"plant height, vegetative",6.70183926380368
+"354","BETU PAP NEO",7355,"resprouting ability",1
+"355","BETU PAP NEO",7355,"seedbank density",2200000
+"356","BETU PAP NEO",7355,"slope of vulnerability curve",84.0762125641212
+"357","BETU PAP NEO",7355,"specific leaf area",22.3053951470577
+"358","BETU PAP NEO",7355,"specific leaf conductivity",0.00016947
+"359","BETU PAP NEO",7355,"stomata density",84.1708542713568
+"360","BETU PAP NEO",7355,"stomatal conductance",257.821686518994
+"361","BETU PAP NEO",7355,"water potential at 12% loss of stem hydraulic conductivity",-1.302
+"362","BETU PAP NEO",7355,"water potential at 50% loss of stem hydraulic conductivity",-2.18342857142857
+"363","BETU PAP NEO",7355,"water potential at 88% loss of stem hydraulic conductivity",-2.516
+"364","BETU PAP NEO",7355,"wood (or stem-specific) density",0.484642222222222
+"365","BETU PAP NEO",NA,"bark thickness",15
+"366","BETU PAP NEO",NA,"cold_tolerance",-52.22
+"367","BETU PAP NEO",NA,"cone serotiny",0
+"368","BETU PAP NEO",NA,"dispersal syndrome",6
+"369","BETU PAP NEO",NA,"drought_tolerance",2.02
+"370","BETU PAP NEO",NA,"fire_tolerance",1
+"371","BETU PAP NEO",NA,"leaf dry matter content",0.28422
+"372","BETU PAP NEO",NA,"leaf force to punch",1.91
+"373","BETU PAP NEO",NA,"leaf mass area",78.1278718033748
+"374","BETU PAP NEO",NA,"leaf thickness",0.21
+"375","BETU PAP NEO",NA,"plant height, vegetative",23.9925
+"376","BETU PAP NEO",NA,"shade_tolerance",1.54
+"377","BETU PAP NEO",NA,"specific leaf area",26.847
+"378","BETU PAP NEO",NA,"water potential at 50% loss of stem hydraulic conductivity",-2.34
+"379","BETU PAP NEO",NA,"waterlogging_tolerance",1.25
+"380","BETU PAP NEO",NA,"wood (or stem-specific) density",0.00048
+"381","BETU PAP PAP",7355,"bark thickness",0.853144927536232
+"382","BETU PAP PAP",7355,"bud burst timing (mean month)",4
+"383","BETU PAP PAP",7355,"clonal growth form",1
+"384","BETU PAP PAP",7355,"coarse root rooting depth",0
+"385","BETU PAP PAP",7355,"dispersal distance",63.3333333333333
+"386","BETU PAP PAP",7355,"dispersal syndrome",6
+"387","BETU PAP PAP",7355,"earliest bud burst timing (month)",4
+"388","BETU PAP PAP",7355,"foliage type (deciduous or evergreen)",0
+"389","BETU PAP PAP",7355,"height of lowest branch",2.61531034482759
+"390","BETU PAP PAP",7355,"latest bud burst timing (month)",4
+"391","BETU PAP PAP",7355,"leaf dry matter content",0.40062
+"392","BETU PAP PAP",7355,"leaf force to punch",2.14157633554983
+"393","BETU PAP PAP",7355,"leaf mass area",868.975981932292
+"394","BETU PAP PAP",7355,"leaf photosynthetic rate",11.0992673475843
+"395","BETU PAP PAP",7355,"leaf texture (coarseness)",1
+"396","BETU PAP PAP",7355,"maximum height",20
+"397","BETU PAP PAP",7355,"plant height, vegetative",6.70183926380368
+"398","BETU PAP PAP",7355,"resprouting ability",1
+"399","BETU PAP PAP",7355,"seedbank density",2200000
+"400","BETU PAP PAP",7355,"slope of vulnerability curve",84.0762125641212
+"401","BETU PAP PAP",7355,"specific leaf area",22.3053951470577
+"402","BETU PAP PAP",7355,"specific leaf conductivity",0.00016947
+"403","BETU PAP PAP",7355,"stomata density",84.1708542713568
+"404","BETU PAP PAP",7355,"stomatal conductance",257.821686518994
+"405","BETU PAP PAP",7355,"water potential at 12% loss of stem hydraulic conductivity",-1.302
+"406","BETU PAP PAP",7355,"water potential at 50% loss of stem hydraulic conductivity",-2.18342857142857
+"407","BETU PAP PAP",7355,"water potential at 88% loss of stem hydraulic conductivity",-2.516
+"408","BETU PAP PAP",7355,"wood (or stem-specific) density",0.484642222222222
+"409","BETU PAP PAP",NA,"bark thickness",15
+"410","BETU PAP PAP",NA,"cold_tolerance",-52.22
+"411","BETU PAP PAP",NA,"cone serotiny",0
+"412","BETU PAP PAP",NA,"dispersal syndrome",6
+"413","BETU PAP PAP",NA,"drought_tolerance",2.02
+"414","BETU PAP PAP",NA,"fire_tolerance",1
+"415","BETU PAP PAP",NA,"leaf dry matter content",0.28422
+"416","BETU PAP PAP",NA,"leaf force to punch",1.91
+"417","BETU PAP PAP",NA,"leaf mass area",78.1278718033748
+"418","BETU PAP PAP",NA,"leaf thickness",0.21
+"419","BETU PAP PAP",NA,"plant height, vegetative",23.9925
+"420","BETU PAP PAP",NA,"shade_tolerance",1.54
+"421","BETU PAP PAP",NA,"specific leaf area",26.847
+"422","BETU PAP PAP",NA,"water potential at 50% loss of stem hydraulic conductivity",-2.34
+"423","BETU PAP PAP",NA,"waterlogging_tolerance",1.25
+"424","BETU PAP PAP",NA,"wood (or stem-specific) density",0.00048
+"425","CHAM NOO",80204,"bud burst timing (mean month)",5
+"426","CHAM NOO",80204,"dispersal distance",120
+"427","CHAM NOO",80204,"dispersal syndrome",6
+"428","CHAM NOO",80204,"earliest bud burst timing (month)",4
+"429","CHAM NOO",80204,"foliage type (deciduous or evergreen)",3
+"430","CHAM NOO",80204,"latest bud burst timing (month)",6
+"431","CHAM NOO",80204,"plant height, vegetative",35.5044705882353
+"432","CHAM NOO",80204,"seed bank longevity",2
+"433","CHAM NOO",80204,"wood (or stem-specific) density",0.44
+"434","CHAM NOO",NA,"bark thickness",15
+"435","CHAM NOO",NA,"cone serotiny",0
+"436","CHAM NOO",NA,"resprouting ability",1
+"437","CORN STO",14597,"dispersal syndrome",2
+"438","CORN STO",14597,"leaf dry matter content",0.6502577232
+"439","JUNI SCO",31590,"bark thickness",6.52708333333333
+"440","JUNI SCO",31590,"bud burst timing (mean month)",4
+"441","JUNI SCO",31590,"clonal growth form",0
+"442","JUNI SCO",31590,"dispersal syndrome",2
+"443","JUNI SCO",31590,"earliest bud burst timing (month)",4
+"444","JUNI SCO",31590,"foliage type (deciduous or evergreen)",3
+"445","JUNI SCO",31590,"latest bud burst timing (month)",4
+"446","JUNI SCO",31590,"leaf dry matter content",0.497576923076923
+"447","JUNI SCO",31590,"leaf texture (coarseness)",1
+"448","JUNI SCO",31590,"plant height, vegetative",14.0278571428571
+"449","JUNI SCO",31590,"resprouting ability",0
+"450","JUNI SCO",31590,"slope of vulnerability curve",62.6584540506667
+"451","JUNI SCO",31590,"specific leaf area",3.90474642857143
+"452","JUNI SCO",31590,"specific leaf conductivity",0.0001661
+"453","JUNI SCO",31590,"stem conduit density (vessels and tracheids)",5407.5929330985
+"454","JUNI SCO",31590,"stem conduit diameter (vessels and tracheids)",12.198499172159
+"455","JUNI SCO",31590,"water potential at 12% loss of stem hydraulic conductivity",-5.54947181384665
+"456","JUNI SCO",31590,"water potential at 50% loss of stem hydraulic conductivity",-7.33494491927825
+"457","JUNI SCO",31590,"water potential at 88% loss of stem hydraulic conductivity",-9.85370239740163
+"458","JUNI SCO",31590,"wood (or stem-specific) density",0.466602777289895
+"459","JUNI SCO",NA,"bark thickness",8
+"460","JUNI SCO",NA,"cold_tolerance",-33.3
+"461","JUNI SCO",NA,"cone serotiny",0
+"462","JUNI SCO",NA,"dispersal syndrome",2
+"463","JUNI SCO",NA,"drought_tolerance",4.97
+"464","JUNI SCO",NA,"fire_resistance",0
+"465","JUNI SCO",NA,"fire_tolerance",0
+"466","JUNI SCO",NA,"leaf_length",0.3
+"467","JUNI SCO",NA,"plant height, vegetative",14.95
+"468","JUNI SCO",NA,"shade_tolerance",1.48
+"469","JUNI SCO",NA,"specific leaf area",2.97
+"470","JUNI SCO",NA,"stem conduit diameter (vessels and tracheids)",9.81
+"471","JUNI SCO",NA,"water potential at 50% loss of stem hydraulic conductivity",-0.9
+"472","JUNI SCO",NA,"waterlogging_tolerance",1.02
+"473","LARI LAR",32371,"relative growth rate",0.0747246301666667
+"474","LARI LYA",32374,"bark thickness",22.86
+"475","LARI LYA",32374,"bud burst timing (mean month)",5
+"476","LARI LYA",32374,"clonal growth form",0
+"477","LARI LYA",32374,"coarse root rooting depth",3
+"478","LARI LYA",32374,"degree of self-pruning",0
+"479","LARI LYA",32374,"earliest bud burst timing (month)",5
+"480","LARI LYA",32374,"foliage type (deciduous or evergreen)",0
+"481","LARI LYA",32374,"latest bud burst timing (month)",5
+"482","LARI LYA",32374,"leaf texture (coarseness)",0
+"483","LARI LYA",32374,"plant height, vegetative",19.5913333333333
+"484","LARI LYA",32374,"resprouting ability",0
+"485","LARI LYA",32374,"specific leaf area",11.185
+"486","LARI LYA",NA,"cold_tolerance",-50
+"487","LARI LYA",NA,"cone serotiny",0
+"488","LARI LYA",NA,"dispersal syndrome",6
+"489","LARI LYA",NA,"drought_tolerance",3
+"490","LARI LYA",NA,"fire_resistance",0
+"491","LARI LYA",NA,"fire_tolerance",0
+"492","LARI LYA",NA,"leaf_length",4
+"493","LARI LYA",NA,"plant height, vegetative",13.6
+"494","LARI LYA",NA,"shade_tolerance",1
+"495","LARI LYA",NA,"waterlogging_tolerance",1
+"496","LARI OCC",32376,"bark thickness",31
+"497","LARI OCC",32376,"bud burst timing (mean month)",3.5
+"498","LARI OCC",32376,"clonal growth form",0
+"499","LARI OCC",32376,"coarse root rooting depth",3
+"500","LARI OCC",32376,"cone serotiny",0
+"501","LARI OCC",32376,"degree of self-pruning",0
+"502","LARI OCC",32376,"dispersal distance",240
+"503","LARI OCC",32376,"dispersal syndrome",6
+"504","LARI OCC",32376,"earliest bud burst timing (month)",3
+"505","LARI OCC",32376,"foliage type (deciduous or evergreen)",0
+"506","LARI OCC",32376,"height of lowest branch",0.961813333333333
+"507","LARI OCC",32376,"hydraulic safety margin 50%",2.80961
+"508","LARI OCC",32376,"hydraulic safety margin 88%",5.67438
+"509","LARI OCC",32376,"latest bud burst timing (month)",4
+"510","LARI OCC",32376,"leaf mass area",667.5606
+"511","LARI OCC",32376,"leaf photosynthetic rate",6.64890347
+"512","LARI OCC",32376,"leaf texture (coarseness)",0
+"513","LARI OCC",32376,"minimum midday xylem pressure potential",-1.5
+"514","LARI OCC",32376,"plant height, vegetative",36.5235304347826
+"515","LARI OCC",32376,"resprouting ability",0.5
+"516","LARI OCC",32376,"seedbank density",147250000
+"517","LARI OCC",32376,"slope of vulnerability curve",42.0194638860677
+"518","LARI OCC",32376,"specific leaf area",11.2606321277278
+"519","LARI OCC",32376,"specific leaf conductivity",0.00010685
+"520","LARI OCC",32376,"stem conduit diameter (vessels and tracheids)",12.558203547216
+"521","LARI OCC",32376,"water potential at 12% loss of stem hydraulic conductivity",-2.68114259567911
+"522","LARI OCC",32376,"water potential at 50% loss of stem hydraulic conductivity",-4.269744
+"523","LARI OCC",32376,"water potential at 88% loss of stem hydraulic conductivity",-6.02896555324067
+"524","LARI OCC",32376,"wood (or stem-specific) density",0.520545246425764
+"525","LARI OCC",NA,"bark thickness",150
+"526","LARI OCC",NA,"cold_tolerance",-41.6
+"527","LARI OCC",NA,"cone serotiny",0
+"528","LARI OCC",NA,"dispersal syndrome",6
+"529","LARI OCC",NA,"drought_tolerance",2.42
+"530","LARI OCC",NA,"fire_resistance",1
+"531","LARI OCC",NA,"fire_tolerance",0
+"532","LARI OCC",NA,"hydraulic safety margin 50%",2.81
+"533","LARI OCC",NA,"hydraulic safety margin 88%",-0.75
+"534","LARI OCC",NA,"leaf dry matter content",0.41186
+"535","LARI OCC",NA,"leaf force to punch",3.22
+"536","LARI OCC",NA,"leaf thickness",0.4
+"537","LARI OCC",NA,"leaf_length",4.5
+"538","LARI OCC",NA,"plant height, vegetative",57.15
+"539","LARI OCC",NA,"shade_tolerance",1.35
+"540","LARI OCC",NA,"specific leaf area",12.36
+"541","LARI OCC",NA,"water potential at 50% loss of stem hydraulic conductivity",-4.31
+"542","LARI OCC",NA,"waterlogging_tolerance",1
+"543","LARI OCC",NA,"wood (or stem-specific) density",0.00048
+"544","PICE ENG",41917,"bark thickness",14
+"545","PICE ENG",41917,"bud burst timing (mean month)",6
+"546","PICE ENG",41917,"clonal growth form",3
+"547","PICE ENG",41917,"coarse root rooting depth",0
+"548","PICE ENG",41917,"dispersal distance",137.5
+"549","PICE ENG",41917,"dispersal syndrome",6
+"550","PICE ENG",41917,"earliest bud burst timing (month)",6
+"551","PICE ENG",41917,"foliage type (deciduous or evergreen)",3
+"552","PICE ENG",41917,"latest bud burst timing (month)",6
+"553","PICE ENG",41917,"leaf photosynthetic rate",5.07859338114286
+"554","PICE ENG",41917,"leaf texture (coarseness)",1
+"555","PICE ENG",41917,"photosynthetic water use efficiency",4.17099578611111
+"556","PICE ENG",41917,"plant height, vegetative",40.6529090909091
+"557","PICE ENG",41917,"resprouting ability",0
+"558","PICE ENG",41917,"slope of vulnerability curve",46.5362765835939
+"559","PICE ENG",41917,"specific leaf area",3.35285714285714
+"560","PICE ENG",41917,"stem conduit density (vessels and tracheids)",2606.28866622405
+"561","PICE ENG",41917,"stem conduit diameter (vessels and tracheids)",18.3060738082902
+"562","PICE ENG",41917,"stomatal conductance",96
+"563","PICE ENG",41917,"water potential at 12% loss of stem hydraulic conductivity",-3.36379602033207
+"564","PICE ENG",41917,"water potential at 50% loss of stem hydraulic conductivity",-5.23538416643378
+"565","PICE ENG",41917,"water potential at 88% loss of stem hydraulic conductivity",-4.99695397966792
+"566","PICE ENG",41917,"wood (or stem-specific) density",0.480781018807513
+"567","PICE ENG",NA,"bark thickness",16
+"568","PICE ENG",NA,"clonal growth form",3
+"569","PICE ENG",NA,"cold_tolerance",-45.5
+"570","PICE ENG",NA,"cone serotiny",0
+"571","PICE ENG",NA,"dispersal syndrome",6
+"572","PICE ENG",NA,"drought_tolerance",2.58
+"573","PICE ENG",NA,"fire_resistance",0
+"574","PICE ENG",NA,"fire_tolerance",0
+"575","PICE ENG",NA,"leaf mass area",309.029543251359
+"576","PICE ENG",NA,"leaf_length",2.6
+"577","PICE ENG",NA,"maximum height",50
+"578","PICE ENG",NA,"plant height, vegetative",36.05
+"579","PICE ENG",NA,"shade_tolerance",4.53
+"580","PICE ENG",NA,"specific leaf area",3.24
+"581","PICE ENG",NA,"stem conduit diameter (vessels and tracheids)",12.83
+"582","PICE ENG",NA,"water potential at 50% loss of stem hydraulic conductivity",-1.63666666666667
+"583","PICE ENG",NA,"waterlogging_tolerance",1.02
+"584","PICE ENG",NA,"wood (or stem-specific) density",0.00033
+"585","PICE ENG GLA",41917,"bark thickness",14
+"586","PICE ENG GLA",41917,"bud burst timing (mean month)",6
+"587","PICE ENG GLA",41917,"clonal growth form",3
+"588","PICE ENG GLA",41917,"coarse root rooting depth",0
+"589","PICE ENG GLA",41917,"dispersal distance",137.5
+"590","PICE ENG GLA",41917,"dispersal syndrome",6
+"591","PICE ENG GLA",41917,"earliest bud burst timing (month)",6
+"592","PICE ENG GLA",41917,"foliage type (deciduous or evergreen)",3
+"593","PICE ENG GLA",41917,"latest bud burst timing (month)",6
+"594","PICE ENG GLA",41917,"leaf photosynthetic rate",5.07859338114286
+"595","PICE ENG GLA",41917,"leaf texture (coarseness)",1
+"596","PICE ENG GLA",41917,"photosynthetic water use efficiency",4.17099578611111
+"597","PICE ENG GLA",41917,"plant height, vegetative",40.6529090909091
+"598","PICE ENG GLA",41917,"resprouting ability",0
+"599","PICE ENG GLA",41917,"slope of vulnerability curve",46.5362765835939
+"600","PICE ENG GLA",41917,"specific leaf area",3.35285714285714
+"601","PICE ENG GLA",41917,"stem conduit density (vessels and tracheids)",2606.28866622405
+"602","PICE ENG GLA",41917,"stem conduit diameter (vessels and tracheids)",18.3060738082902
+"603","PICE ENG GLA",41917,"stomatal conductance",96
+"604","PICE ENG GLA",41917,"water potential at 12% loss of stem hydraulic conductivity",-3.36379602033207
+"605","PICE ENG GLA",41917,"water potential at 50% loss of stem hydraulic conductivity",-5.23538416643378
+"606","PICE ENG GLA",41917,"water potential at 88% loss of stem hydraulic conductivity",-4.99695397966792
+"607","PICE ENG GLA",41917,"wood (or stem-specific) density",0.480781018807513
+"608","PICE ENG GLA",NA,"bark thickness",16
+"609","PICE ENG GLA",NA,"clonal growth form",3
+"610","PICE ENG GLA",NA,"cold_tolerance",-45.5
+"611","PICE ENG GLA",NA,"cone serotiny",0
+"612","PICE ENG GLA",NA,"dispersal syndrome",6
+"613","PICE ENG GLA",NA,"drought_tolerance",2.58
+"614","PICE ENG GLA",NA,"fire_resistance",0
+"615","PICE ENG GLA",NA,"fire_tolerance",0
+"616","PICE ENG GLA",NA,"leaf mass area",309.029543251359
+"617","PICE ENG GLA",NA,"leaf_length",2.6
+"618","PICE ENG GLA",NA,"maximum height",50
+"619","PICE ENG GLA",NA,"plant height, vegetative",36.05
+"620","PICE ENG GLA",NA,"shade_tolerance",4.53
+"621","PICE ENG GLA",NA,"specific leaf area",3.24
+"622","PICE ENG GLA",NA,"stem conduit diameter (vessels and tracheids)",12.83
+"623","PICE ENG GLA",NA,"water potential at 50% loss of stem hydraulic conductivity",-1.63666666666667
+"624","PICE ENG GLA",NA,"waterlogging_tolerance",1.02
+"625","PICE ENG GLA",NA,"wood (or stem-specific) density",0.00033
+"626","PICE GLA",41920,"Plant height generative",21
+"627","PICE GLA",41920,"clonal growth form",0
+"628","PICE GLA",41920,"coarse root rooting depth",0
+"629","PICE GLA",41920,"cone serotiny",0
+"630","PICE GLA",41920,"foliage type (deciduous or evergreen)",3
+"631","PICE GLA",41920,"maximum height",25
+"632","PICE GLA",41920,"plant height, vegetative",30
+"633","PICE GLA",41920,"relative growth rate",0.073882528
+"634","PICE GLA",41920,"specific leaf area",26.7
+"635","PICE GLA",41920,"water potential at 50% loss of stem hydraulic conductivity",-4.3
+"636","PICE GLA",NA,"bark thickness",12.15
+"637","PICE GLA",NA,"dispersal syndrome",6
+"638","PICE GLA",NA,"maximum height",30
+"639","PICE GLA",NA,"plant height, vegetative",30.47999902464
+"640","PICE GLA",NA,"resprouting ability",0
+"641","PICE GLA",NA,"specific leaf area",3.5
+"642","PICE GLA",NA,"water potential at 50% loss of stem hydraulic conductivity",-4.3
+"643","PICE GLA",NA,"wood (or stem-specific) density",0.00033
+"644","PICE MAR",41927,"dispersal syndrome",6
+"645","PICE MAR",41927,"relative growth rate",0.0587861978461538
+"646","PICE MAR",41927,"specific leaf area",19
+"647","PICE SIT",41942,"bark thickness",14
+"648","PICE SIT",41942,"bud burst timing (mean month)",5
+"649","PICE SIT",41942,"clonal growth form",3
+"650","PICE SIT",41942,"coarse root rooting depth",0
+"651","PICE SIT",41942,"dispersal distance",415
+"652","PICE SIT",41942,"dispersal syndrome",6
+"653","PICE SIT",41942,"earliest bud burst timing (month)",5
+"654","PICE SIT",41942,"foliage type (deciduous or evergreen)",3
+"655","PICE SIT",41942,"latest bud burst timing (month)",5
+"656","PICE SIT",41942,"leaf dry matter content",0.376484318684444
+"657","PICE SIT",41942,"leaf force to punch",5.221
+"658","PICE SIT",41942,"leaf photosynthetic rate",9.00852972526731
+"659","PICE SIT",41942,"leaf texture (coarseness)",1
+"660","PICE SIT",41942,"plant height, vegetative",28.3649324324324
+"661","PICE SIT",41942,"resprouting ability",0
+"662","PICE SIT",41942,"seed bank longevity",0
+"663","PICE SIT",41942,"seedbank duration",NA
+"664","PICE SIT",41942,"slope of vulnerability curve",44.7058823529412
+"665","PICE SIT",41942,"specific leaf area",5.91126479856267
+"666","PICE SIT",41942,"stem conduit diameter (vessels and tracheids)",10.8847222222222
+"667","PICE SIT",41942,"stomata density",143.325
+"668","PICE SIT",41942,"stomatal conductance",112.329816632432
+"669","PICE SIT",41942,"water potential at 12% loss of stem hydraulic conductivity",-3
+"670","PICE SIT",41942,"water potential at 50% loss of stem hydraulic conductivity",-3.85
+"671","PICE SIT",41942,"water potential at 88% loss of stem hydraulic conductivity",-4.7
+"672","PICE SIT",41942,"wood (or stem-specific) density",0.361298662211987
+"673","PICE SIT",NA,"bark thickness",20
+"674","PICE SIT",NA,"cold_tolerance",-36.1
+"675","PICE SIT",NA,"cone serotiny",0
+"676","PICE SIT",NA,"dispersal syndrome",6
+"677","PICE SIT",NA,"drought_tolerance",1.52
+"678","PICE SIT",NA,"fire_resistance",0
+"679","PICE SIT",NA,"fire_tolerance",0
+"680","PICE SIT",NA,"leaf mass area",154.881661891248
+"681","PICE SIT",NA,"leaf_length",2.5
+"682","PICE SIT",NA,"maximum height",40
+"683","PICE SIT",NA,"plant height, vegetative",60.75
+"684","PICE SIT",NA,"shade_tolerance",3.85
+"685","PICE SIT",NA,"specific leaf area",4.76
+"686","PICE SIT",NA,"water potential at 50% loss of stem hydraulic conductivity",-3.85
+"687","PICE SIT",NA,"waterlogging_tolerance",1.99
+"688","PICE SIT",NA,"wood (or stem-specific) density",0.000368
+"689","PINU ALB",42092,"bark thickness",31
+"690","PINU ALB",42092,"bud burst timing (mean month)",5.5
+"691","PINU ALB",42092,"clonal growth form",3
+"692","PINU ALB",42092,"coarse root rooting depth",3
+"693","PINU ALB",42092,"dispersal syndrome",2
+"694","PINU ALB",42092,"earliest bud burst timing (month)",5
+"695","PINU ALB",42092,"foliage type (deciduous or evergreen)",3
+"696","PINU ALB",42092,"height of lowest branch",0.98679
+"697","PINU ALB",42092,"hydraulic safety margin 50%",2.08719
+"698","PINU ALB",42092,"hydraulic safety margin 88%",3.9306
+"699","PINU ALB",42092,"latest bud burst timing (month)",6
+"700","PINU ALB",42092,"leaf mass area",1750.84497
+"701","PINU ALB",42092,"leaf texture (coarseness)",1
+"702","PINU ALB",42092,"minimum midday xylem pressure potential",-1.5
+"703","PINU ALB",42092,"plant height, vegetative",13.6372604878049
+"704","PINU ALB",42092,"resprouting ability",0
+"705","PINU ALB",42092,"seed bank longevity",8
+"706","PINU ALB",42092,"slope of vulnerability curve",102.875218595567
+"707","PINU ALB",42092,"specific leaf area",4.175
+"708","PINU ALB",42092,"specific leaf conductivity",0.0001164
+"709","PINU ALB",42092,"stem conduit diameter (vessels and tracheids)",11.3544726428992
+"710","PINU ALB",42092,"water potential at 12% loss of stem hydraulic conductivity",-2.14298140952389
+"711","PINU ALB",42092,"water potential at 50% loss of stem hydraulic conductivity",-3.429626
+"712","PINU ALB",42092,"water potential at 88% loss of stem hydraulic conductivity",-4.44317744285708
+"713","PINU ALB",42092,"wood (or stem-specific) density",0.454386346185192
+"714","PINU ALB",NA,"bark thickness",12
+"715","PINU ALB",NA,"cold_tolerance",-50
+"716","PINU ALB",NA,"cone serotiny",0
+"717","PINU ALB",NA,"dispersal syndrome",2
+"718","PINU ALB",NA,"drought_tolerance",5
+"719","PINU ALB",NA,"fire_resistance",0
+"720","PINU ALB",NA,"fire_tolerance",0
+"721","PINU ALB",NA,"hydraulic safety margin 50%",2.09
+"722","PINU ALB",NA,"hydraulic safety margin 88%",-0.75
+"723","PINU ALB",NA,"leaf_length",6.2
+"724","PINU ALB",NA,"plant height, vegetative",15.05
+"725","PINU ALB",NA,"shade_tolerance",1
+"726","PINU ALB",NA,"water potential at 50% loss of stem hydraulic conductivity",-3.59
+"727","PINU ALB",NA,"waterlogging_tolerance",1
+"728","PINU BAN",42100,"Plant height generative",23.5
+"729","PINU BAN",42100,"relative growth rate",0.0539752377333333
+"730","PINU BAN",42100,"specific leaf area",26.2
+"731","PINU CON",42110,"bark thickness",16
+"732","PINU CON",42110,"bud burst timing (mean month)",5
+"733","PINU CON",42110,"clonal growth form",0
+"734","PINU CON",42110,"coarse root rooting depth",3
+"735","PINU CON",42110,"dispersal distance",40
+"736","PINU CON",42110,"dispersal syndrome",2.52173913043478
+"737","PINU CON",42110,"earliest bud burst timing (month)",5
+"738","PINU CON",42110,"foliage type (deciduous or evergreen)",3
+"739","PINU CON",42110,"hydraulic safety margin 50%",1.97
+"740","PINU CON",42110,"hydraulic safety margin 88%",3.13274
+"741","PINU CON",42110,"latest bud burst timing (month)",5
+"742","PINU CON",42110,"leaf photosynthetic rate",14.3039743367044
+"743","PINU CON",42110,"leaf texture (coarseness)",1
+"744","PINU CON",42110,"minimum midday xylem pressure potential",-1.7
+"745","PINU CON",42110,"plant height, vegetative",25.6857333333333
+"746","PINU CON",42110,"resprouting ability",0.333333333333333
+"747","PINU CON",42110,"seed bank longevity",NA
+"748","PINU CON",42110,"slope of vulnerability curve",82.4093369735283
+"749","PINU CON",42110,"specific leaf area",3.47875
+"750","PINU CON",42110,"specific leaf conductivity",8.445e-05
+"751","PINU CON",42110,"stem conduit density (vessels and tracheids)",1732.05453436533
+"752","PINU CON",42110,"stem conduit diameter (vessels and tracheids)",20.34568253674
+"753","PINU CON",42110,"water potential at 12% loss of stem hydraulic conductivity",-2.61295116647641
+"754","PINU CON",42110,"water potential at 50% loss of stem hydraulic conductivity",-3.42600691555739
+"755","PINU CON",42110,"water potential at 88% loss of stem hydraulic conductivity",-4.43938366681887
+"756","PINU CON",42110,"wood (or stem-specific) density",0.412696171700946
+"757","PINU CON",NA,"bark thickness",15
+"758","PINU CON",NA,"clonal growth form",0
+"759","PINU CON",NA,"cold_tolerance",-56.6
+"760","PINU CON",NA,"cone serotiny",1
+"761","PINU CON",NA,"dispersal syndrome",6
+"762","PINU CON",NA,"drought_tolerance",4.04
+"763","PINU CON",NA,"fire_resistance",0
+"764","PINU CON",NA,"fire_tolerance",0
+"765","PINU CON",NA,"hydraulic safety margin 50%",1.97
+"766","PINU CON",NA,"hydraulic safety margin 88%",-0.85
+"767","PINU CON",NA,"intrinsic water use efficiency",82.505
+"768","PINU CON",NA,"leaf dry matter content",0.55168
+"769","PINU CON",NA,"leaf force to punch",5.23
+"770","PINU CON",NA,"leaf thickness",0.53
+"771","PINU CON",NA,"leaf_length",7.6
+"772","PINU CON",NA,"maximum height",50
+"773","PINU CON",NA,"plant height, vegetative",26.8333333333333
+"774","PINU CON",NA,"shade_tolerance",1.73
+"775","PINU CON",NA,"specific leaf area",2.3
+"776","PINU CON",NA,"stem conduit diameter (vessels and tracheids)",29.278
+"777","PINU CON",NA,"water potential at 50% loss of stem hydraulic conductivity",-1.22333333333333
+"778","PINU CON",NA,"waterlogging_tolerance",2.7
+"779","PINU CON",NA,"wood (or stem-specific) density",0.00038
+"780","PINU CON CON",42110,"bark thickness",16
+"781","PINU CON CON",42110,"bud burst timing (mean month)",5
+"782","PINU CON CON",42110,"clonal growth form",0
+"783","PINU CON CON",42110,"coarse root rooting depth",3
+"784","PINU CON CON",42110,"dispersal distance",40
+"785","PINU CON CON",42110,"dispersal syndrome",2.52173913043478
+"786","PINU CON CON",42110,"earliest bud burst timing (month)",5
+"787","PINU CON CON",42110,"foliage type (deciduous or evergreen)",3
+"788","PINU CON CON",42110,"hydraulic safety margin 50%",1.97
+"789","PINU CON CON",42110,"hydraulic safety margin 88%",3.13274
+"790","PINU CON CON",42110,"latest bud burst timing (month)",5
+"791","PINU CON CON",42110,"leaf photosynthetic rate",14.3039743367044
+"792","PINU CON CON",42110,"leaf texture (coarseness)",1
+"793","PINU CON CON",42110,"minimum midday xylem pressure potential",-1.7
+"794","PINU CON CON",42110,"plant height, vegetative",25.6857333333333
+"795","PINU CON CON",42110,"resprouting ability",0.333333333333333
+"796","PINU CON CON",42110,"seed bank longevity",NA
+"797","PINU CON CON",42110,"slope of vulnerability curve",82.4093369735283
+"798","PINU CON CON",42110,"specific leaf area",3.47875
+"799","PINU CON CON",42110,"specific leaf conductivity",8.445e-05
+"800","PINU CON CON",42110,"stem conduit density (vessels and tracheids)",1732.05453436533
+"801","PINU CON CON",42110,"stem conduit diameter (vessels and tracheids)",20.34568253674
+"802","PINU CON CON",42110,"water potential at 12% loss of stem hydraulic conductivity",-2.61295116647641
+"803","PINU CON CON",42110,"water potential at 50% loss of stem hydraulic conductivity",-3.42600691555739
+"804","PINU CON CON",42110,"water potential at 88% loss of stem hydraulic conductivity",-4.43938366681887
+"805","PINU CON CON",42110,"wood (or stem-specific) density",0.412696171700946
+"806","PINU CON CON",NA,"bark thickness",15
+"807","PINU CON CON",NA,"clonal growth form",0
+"808","PINU CON CON",NA,"cold_tolerance",-56.6
+"809","PINU CON CON",NA,"cone serotiny",1
+"810","PINU CON CON",NA,"dispersal syndrome",6
+"811","PINU CON CON",NA,"drought_tolerance",4.04
+"812","PINU CON CON",NA,"fire_resistance",0
+"813","PINU CON CON",NA,"fire_tolerance",0
+"814","PINU CON CON",NA,"hydraulic safety margin 50%",1.97
+"815","PINU CON CON",NA,"hydraulic safety margin 88%",-0.85
+"816","PINU CON CON",NA,"intrinsic water use efficiency",82.505
+"817","PINU CON CON",NA,"leaf dry matter content",0.55168
+"818","PINU CON CON",NA,"leaf force to punch",5.23
+"819","PINU CON CON",NA,"leaf thickness",0.53
+"820","PINU CON CON",NA,"leaf_length",7.6
+"821","PINU CON CON",NA,"maximum height",50
+"822","PINU CON CON",NA,"plant height, vegetative",26.8333333333333
+"823","PINU CON CON",NA,"shade_tolerance",1.73
+"824","PINU CON CON",NA,"specific leaf area",2.3
+"825","PINU CON CON",NA,"stem conduit diameter (vessels and tracheids)",29.278
+"826","PINU CON CON",NA,"water potential at 50% loss of stem hydraulic conductivity",-1.22333333333333
+"827","PINU CON CON",NA,"waterlogging_tolerance",2.7
+"828","PINU CON CON",NA,"wood (or stem-specific) density",0.00038
+"829","PINU CON LAT",42110,"bark thickness",16
+"830","PINU CON LAT",42110,"bud burst timing (mean month)",5
+"831","PINU CON LAT",42110,"clonal growth form",0
+"832","PINU CON LAT",42110,"coarse root rooting depth",3
+"833","PINU CON LAT",42110,"dispersal distance",40
+"834","PINU CON LAT",42110,"dispersal syndrome",2.52173913043478
+"835","PINU CON LAT",42110,"earliest bud burst timing (month)",5
+"836","PINU CON LAT",42110,"foliage type (deciduous or evergreen)",3
+"837","PINU CON LAT",42110,"hydraulic safety margin 50%",1.97
+"838","PINU CON LAT",42110,"hydraulic safety margin 88%",3.13274
+"839","PINU CON LAT",42110,"latest bud burst timing (month)",5
+"840","PINU CON LAT",42110,"leaf photosynthetic rate",14.3039743367044
+"841","PINU CON LAT",42110,"leaf texture (coarseness)",1
+"842","PINU CON LAT",42110,"minimum midday xylem pressure potential",-1.7
+"843","PINU CON LAT",42110,"plant height, vegetative",25.6857333333333
+"844","PINU CON LAT",42110,"resprouting ability",0.333333333333333
+"845","PINU CON LAT",42110,"seed bank longevity",NA
+"846","PINU CON LAT",42110,"slope of vulnerability curve",82.4093369735283
+"847","PINU CON LAT",42110,"specific leaf area",3.47875
+"848","PINU CON LAT",42110,"specific leaf conductivity",8.445e-05
+"849","PINU CON LAT",42110,"stem conduit density (vessels and tracheids)",1732.05453436533
+"850","PINU CON LAT",42110,"stem conduit diameter (vessels and tracheids)",20.34568253674
+"851","PINU CON LAT",42110,"water potential at 12% loss of stem hydraulic conductivity",-2.61295116647641
+"852","PINU CON LAT",42110,"water potential at 50% loss of stem hydraulic conductivity",-3.42600691555739
+"853","PINU CON LAT",42110,"water potential at 88% loss of stem hydraulic conductivity",-4.43938366681887
+"854","PINU CON LAT",42110,"wood (or stem-specific) density",0.412696171700946
+"855","PINU CON LAT",NA,"bark thickness",15
+"856","PINU CON LAT",NA,"clonal growth form",0
+"857","PINU CON LAT",NA,"cold_tolerance",-56.6
+"858","PINU CON LAT",NA,"cone serotiny",1
+"859","PINU CON LAT",NA,"dispersal syndrome",6
+"860","PINU CON LAT",NA,"drought_tolerance",4.04
+"861","PINU CON LAT",NA,"fire_resistance",0
+"862","PINU CON LAT",NA,"fire_tolerance",0
+"863","PINU CON LAT",NA,"hydraulic safety margin 50%",1.97
+"864","PINU CON LAT",NA,"hydraulic safety margin 88%",-0.85
+"865","PINU CON LAT",NA,"intrinsic water use efficiency",82.505
+"866","PINU CON LAT",NA,"leaf dry matter content",0.55168
+"867","PINU CON LAT",NA,"leaf force to punch",5.23
+"868","PINU CON LAT",NA,"leaf thickness",0.53
+"869","PINU CON LAT",NA,"leaf_length",7.6
+"870","PINU CON LAT",NA,"maximum height",50
+"871","PINU CON LAT",NA,"plant height, vegetative",26.8333333333333
+"872","PINU CON LAT",NA,"shade_tolerance",1.73
+"873","PINU CON LAT",NA,"specific leaf area",2.3
+"874","PINU CON LAT",NA,"stem conduit diameter (vessels and tracheids)",29.278
+"875","PINU CON LAT",NA,"water potential at 50% loss of stem hydraulic conductivity",-1.22333333333333
+"876","PINU CON LAT",NA,"waterlogging_tolerance",2.7
+"877","PINU CON LAT",NA,"wood (or stem-specific) density",0.00038
+"878","PINU MON",42156,"bark thickness",31
+"879","PINU MON",42156,"bud burst timing (mean month)",5.5
+"880","PINU MON",42156,"clonal growth form",0
+"881","PINU MON",42156,"degree of self-pruning",1
+"882","PINU MON",42156,"dispersal distance",460
+"883","PINU MON",42156,"dispersal syndrome",6
+"884","PINU MON",42156,"earliest bud burst timing (month)",5.5
+"885","PINU MON",42156,"foliage type (deciduous or evergreen)",3
+"886","PINU MON",42156,"height of lowest branch",6.29070130569231
+"887","PINU MON",42156,"latest bud burst timing (month)",5.5
+"888","PINU MON",42156,"leaf mass area",11865.2376271795
+"889","PINU MON",42156,"leaf photosynthetic rate",8.23333333333333
+"890","PINU MON",42156,"leaf texture (coarseness)",1
+"891","PINU MON",42156,"plant height, vegetative",32.7330735249474
+"892","PINU MON",42156,"resprouting ability",0
+"893","PINU MON",42156,"seed bank longevity",0
+"894","PINU MON",42156,"specific leaf area",5.00428857715714
+"895","PINU MON",42156,"stomatal conductance",127
+"896","PINU MON",42156,"wood (or stem-specific) density",0.385
+"897","PINU MON",NA,"bark thickness",38
+"898","PINU MON",NA,"cold_tolerance",-36.1
+"899","PINU MON",NA,"cone serotiny",0
+"900","PINU MON",NA,"dispersal syndrome",6
+"901","PINU MON",NA,"drought_tolerance",2.42
+"902","PINU MON",NA,"fire_resistance",0
+"903","PINU MON",NA,"fire_tolerance",0
+"904","PINU MON",NA,"leaf_length",10
+"905","PINU MON",NA,"plant height, vegetative",55.65
+"906","PINU MON",NA,"shade_tolerance",2.97
+"907","PINU MON",NA,"waterlogging_tolerance",1.02
+"908","PINU MON",NA,"wood (or stem-specific) density",0.00035
+"909","PINU PON",42168,"bark thickness",21.6365853658537
+"910","PINU PON",42168,"clonal growth form",0
+"911","PINU PON",42168,"coarse root rooting depth",3
+"912","PINU PON",42168,"degree of self-pruning",0
+"913","PINU PON",42168,"dispersal distance",78.5
+"914","PINU PON",42168,"dispersal syndrome",2.61538461538462
+"915","PINU PON",42168,"foliage type (deciduous or evergreen)",3
+"916","PINU PON",42168,"hydraulic safety margin 50%",0.67
+"917","PINU PON",42168,"leaf dry matter content",0.472504362526669
+"918","PINU PON",42168,"leaf photosynthetic rate",9.71858253969064
+"919","PINU PON",42168,"leaf texture (coarseness)",1
+"920","PINU PON",42168,"minimum midday xylem pressure potential",-2.004
+"921","PINU PON",42168,"minimum predawn xylem pressure potential",-1.24920272727273
+"922","PINU PON",42168,"plant height, vegetative",44.1991489361702
+"923","PINU PON",42168,"resprouting ability",0
+"924","PINU PON",42168,"seed bank longevity",7
+"925","PINU PON",42168,"slope of vulnerability curve",41.0281689079264
+"926","PINU PON",42168,"specific leaf area",4.42904676942201
+"927","PINU PON",42168,"specific leaf conductivity",0.000781344827586207
+"928","PINU PON",42168,"stem conduit diameter (vessels and tracheids)",15.8783639613035
+"929","PINU PON",42168,"stomatal conductance",187.180490196078
+"930","PINU PON",42168,"water potential at 12% loss of stem hydraulic conductivity",-1.39038776333458
+"931","PINU PON",42168,"water potential at 50% loss of stem hydraulic conductivity",-2.50378403508772
+"932","PINU PON",42168,"water potential at 88% loss of stem hydraulic conductivity",-3.74885391541557
+"933","PINU PON",42168,"wood (or stem-specific) density",0.440103928112226
+"934","PINU PON",NA,"bark thickness",100
+"935","PINU PON",NA,"bud burst timing (mean month)",5
+"936","PINU PON",NA,"clonal growth form",0
+"937","PINU PON",NA,"cold_tolerance",-37.7
+"938","PINU PON",NA,"cone serotiny",0
+"939","PINU PON",NA,"dispersal syndrome",6
+"940","PINU PON",NA,"drought_tolerance",4.32
+"941","PINU PON",NA,"earliest bud burst timing (month)",5
+"942","PINU PON",NA,"fire_resistance",1
+"943","PINU PON",NA,"fire_tolerance",1
+"944","PINU PON",NA,"hydraulic safety margin 50%",0.67
+"945","PINU PON",NA,"latest bud burst timing (month)",5
+"946","PINU PON",NA,"leaf dry matter content",0.53309
+"947","PINU PON",NA,"leaf force to punch",4
+"948","PINU PON",NA,"leaf mass area",316.227766016838
+"949","PINU PON",NA,"leaf photosynthetic rate",3070000
+"950","PINU PON",NA,"leaf thickness",0.64
+"951","PINU PON",NA,"leaf toughness",0.0685666666666667
+"952","PINU PON",NA,"leaf_length",28
+"953","PINU PON",NA,"maximum height",72
+"954","PINU PON",NA,"plant height, vegetative",55
+"955","PINU PON",NA,"shade_tolerance",1.64
+"956","PINU PON",NA,"specific leaf area",7.12
+"957","PINU PON",NA,"stem xylem embolism vulnerability, P50",-2.72
+"958","PINU PON",NA,"stomatal conductance",54.9
+"959","PINU PON",NA,"water potential at 50% loss of stem hydraulic conductivity",-3.45
+"960","PINU PON",NA,"waterlogging_tolerance",1.02
+"961","PINU PON",NA,"wood (or stem-specific) density",0.00038
+"962","POPU BAL",43495,"bark thickness",100
+"963","POPU BAL",43495,"clonal growth form",0
+"964","POPU BAL",43495,"dispersal syndrome",6
+"965","POPU BAL",43495,"foliage type (deciduous or evergreen)",0
+"966","POPU BAL",43495,"hydraulic safety margin 50%",0.554332939078487
+"967","POPU BAL",43495,"hydraulic safety margin 88%",2
+"968","POPU BAL",43495,"leaf dry matter content",0.393
+"969","POPU BAL",43495,"leaf force to punch",4.19252671417976
+"970","POPU BAL",43495,"leaf photosynthetic rate",12.865
+"971","POPU BAL",43495,"leaf texture (coarseness)",1
+"972","POPU BAL",43495,"minimum midday xylem pressure potential",-0.7
+"973","POPU BAL",43495,"minimum predawn xylem pressure potential",-0.1
+"974","POPU BAL",43495,"plant height, vegetative",24.0129142857143
+"975","POPU BAL",43495,"resprouting ability",1
+"976","POPU BAL",43495,"slope of vulnerability curve",48.513481948996
+"977","POPU BAL",43495,"specific leaf area",20.3096092085817
+"978","POPU BAL",43495,"stem conduit density (vessels and tracheids)",363.81
+"979","POPU BAL",43495,"stem conduit diameter (vessels and tracheids)",36.65
+"980","POPU BAL",43495,"stomatal conductance",378.241880277778
+"981","POPU BAL",43495,"water potential at 12% loss of stem hydraulic conductivity",-0.925
+"982","POPU BAL",43495,"water potential at 50% loss of stem hydraulic conductivity",-1.63930555555556
+"983","POPU BAL",43495,"water potential at 88% loss of stem hydraulic conductivity",-2.505
+"984","POPU BAL",43495,"wood (or stem-specific) density",0.2700775
+"985","POPU BAL",NA,"cold_tolerance",-61.67
+"986","POPU BAL",NA,"cone serotiny",0
+"987","POPU BAL",NA,"dispersal syndrome",6
+"988","POPU BAL",NA,"drought_tolerance",1.77
+"989","POPU BAL",NA,"fire_tolerance",1
+"990","POPU BAL",NA,"hydraulic safety margin 50%",0.55
+"991","POPU BAL",NA,"hydraulic safety margin 88%",-0.35
+"992","POPU BAL",NA,"leaf dry matter content",0.49186
+"993","POPU BAL",NA,"leaf force to punch",2.7
+"994","POPU BAL",NA,"leaf mass area",83.1469185202787
+"995","POPU BAL",NA,"leaf thickness",0.27
+"996","POPU BAL",NA,"maximum height",30
+"997","POPU BAL",NA,"plant height, vegetative",28.86
+"998","POPU BAL",NA,"shade_tolerance",1.27
+"999","POPU BAL",NA,"specific leaf area",11.5023333333333
+"1000","POPU BAL",NA,"water potential at 50% loss of stem hydraulic conductivity",-1.8
+"1001","POPU BAL",NA,"waterlogging_tolerance",2.63
+"1002","POPU BAL",NA,"wood (or stem-specific) density",0.182715
+"1003","POPU BAL BAL",43495,"bark thickness",100
+"1004","POPU BAL BAL",43495,"clonal growth form",0
+"1005","POPU BAL BAL",43495,"dispersal syndrome",6
+"1006","POPU BAL BAL",43495,"foliage type (deciduous or evergreen)",0
+"1007","POPU BAL BAL",43495,"hydraulic safety margin 50%",0.554332939078487
+"1008","POPU BAL BAL",43495,"hydraulic safety margin 88%",2
+"1009","POPU BAL BAL",43495,"leaf dry matter content",0.393
+"1010","POPU BAL BAL",43495,"leaf force to punch",4.19252671417976
+"1011","POPU BAL BAL",43495,"leaf photosynthetic rate",12.865
+"1012","POPU BAL BAL",43495,"leaf texture (coarseness)",1
+"1013","POPU BAL BAL",43495,"minimum midday xylem pressure potential",-0.7
+"1014","POPU BAL BAL",43495,"minimum predawn xylem pressure potential",-0.1
+"1015","POPU BAL BAL",43495,"plant height, vegetative",24.0129142857143
+"1016","POPU BAL BAL",43495,"resprouting ability",1
+"1017","POPU BAL BAL",43495,"slope of vulnerability curve",48.513481948996
+"1018","POPU BAL BAL",43495,"specific leaf area",20.3096092085817
+"1019","POPU BAL BAL",43495,"stem conduit density (vessels and tracheids)",363.81
+"1020","POPU BAL BAL",43495,"stem conduit diameter (vessels and tracheids)",36.65
+"1021","POPU BAL BAL",43495,"stomatal conductance",378.241880277778
+"1022","POPU BAL BAL",43495,"water potential at 12% loss of stem hydraulic conductivity",-0.925
+"1023","POPU BAL BAL",43495,"water potential at 50% loss of stem hydraulic conductivity",-1.63930555555556
+"1024","POPU BAL BAL",43495,"water potential at 88% loss of stem hydraulic conductivity",-2.505
+"1025","POPU BAL BAL",43495,"wood (or stem-specific) density",0.2700775
+"1026","POPU BAL BAL",NA,"cold_tolerance",-61.67
+"1027","POPU BAL BAL",NA,"cone serotiny",0
+"1028","POPU BAL BAL",NA,"dispersal syndrome",6
+"1029","POPU BAL BAL",NA,"drought_tolerance",1.77
+"1030","POPU BAL BAL",NA,"fire_tolerance",1
+"1031","POPU BAL BAL",NA,"hydraulic safety margin 50%",0.55
+"1032","POPU BAL BAL",NA,"hydraulic safety margin 88%",-0.35
+"1033","POPU BAL BAL",NA,"leaf dry matter content",0.49186
+"1034","POPU BAL BAL",NA,"leaf force to punch",2.7
+"1035","POPU BAL BAL",NA,"leaf mass area",83.1469185202787
+"1036","POPU BAL BAL",NA,"leaf thickness",0.27
+"1037","POPU BAL BAL",NA,"maximum height",30
+"1038","POPU BAL BAL",NA,"plant height, vegetative",28.86
+"1039","POPU BAL BAL",NA,"shade_tolerance",1.27
+"1040","POPU BAL BAL",NA,"specific leaf area",11.5023333333333
+"1041","POPU BAL BAL",NA,"water potential at 50% loss of stem hydraulic conductivity",-1.8
+"1042","POPU BAL BAL",NA,"waterlogging_tolerance",2.63
+"1043","POPU BAL BAL",NA,"wood (or stem-specific) density",0.182715
+"1044","POPU TRE",43533,"bark thickness",2.07084444444444
+"1045","POPU TRE",43533,"clonal growth form",2
+"1046","POPU TRE",43533,"coarse root rooting depth",0
+"1047","POPU TRE",43533,"dispersal syndrome",6
+"1048","POPU TRE",43533,"foliage type (deciduous or evergreen)",0
+"1049","POPU TRE",43533,"hydraulic safety margin 50%",0.73
+"1050","POPU TRE",43533,"hydraulic safety margin 88%",2.527
+"1051","POPU TRE",43533,"leaf dry matter content",0.38844192786744
+"1052","POPU TRE",43533,"leaf force to punch",3.52112662696278
+"1053","POPU TRE",43533,"leaf photosynthetic rate",14.2482808459476
+"1054","POPU TRE",43533,"leaf texture (coarseness)",1
+"1055","POPU TRE",43533,"maximum height",12
+"1056","POPU TRE",43533,"minimum midday xylem pressure potential",-2.01
+"1057","POPU TRE",43533,"photosynthetic water use efficiency",2.39713844011111
+"1058","POPU TRE",43533,"plant height, vegetative",7.39997902097902
+"1059","POPU TRE",43533,"resprouting ability",1
+"1060","POPU TRE",43533,"seed bank longevity",2
+"1061","POPU TRE",43533,"slope of vulnerability curve",20.8240496100773
+"1062","POPU TRE",43533,"specific leaf area",16.9766755613791
+"1063","POPU TRE",43533,"specific leaf conductivity",5.48e-05
+"1064","POPU TRE",43533,"stomatal conductance",332.09555356871
+"1065","POPU TRE",43533,"water potential at 12% loss of stem hydraulic conductivity",-0.8135
+"1066","POPU TRE",43533,"water potential at 50% loss of stem hydraulic conductivity",-1.800625
+"1067","POPU TRE",43533,"water potential at 88% loss of stem hydraulic conductivity",-4.0045
+"1068","POPU TRE",43533,"wood (or stem-specific) density",0.397354434614688
+"1069","POPU TRE",NA,"bud burst timing (mean month)",5.5
+"1070","POPU TRE",NA,"cold_tolerance",-56.67
+"1071","POPU TRE",NA,"cone serotiny",0
+"1072","POPU TRE",NA,"dispersal syndrome",6
+"1073","POPU TRE",NA,"drought_tolerance",1.77
+"1074","POPU TRE",NA,"earliest bud burst timing (month)",5
+"1075","POPU TRE",NA,"fire_tolerance",1
+"1076","POPU TRE",NA,"hydraulic safety margin 50%",0.73
+"1077","POPU TRE",NA,"hydraulic safety margin 88%",-1.005
+"1078","POPU TRE",NA,"latest bud burst timing (month)",6
+"1079","POPU TRE",NA,"leaf dry matter content",0.35029
+"1080","POPU TRE",NA,"leaf force to punch",5.56
+"1081","POPU TRE",NA,"leaf mass area",82.1902187275229
+"1082","POPU TRE",NA,"leaf thickness",0.16
+"1083","POPU TRE",NA,"plant height, vegetative",18.7175
+"1084","POPU TRE",NA,"shade_tolerance",1.21
+"1085","POPU TRE",NA,"specific leaf area",19.126
+"1086","POPU TRE",NA,"stem conduit diameter (vessels and tracheids)",23.6778846153846
+"1087","POPU TRE",NA,"stem xylem embolism vulnerability, P50",-2.50672782874618
+"1088","POPU TRE",NA,"water potential at 50% loss of stem hydraulic conductivity",-2.74
+"1089","POPU TRE",NA,"waterlogging_tolerance",1.77
+"1090","POPU TRE",NA,"wood (or stem-specific) density",0.00036
+"1091","PRUN VIR",44440,"clonal growth form",0
+"1092","PRUN VIR",44440,"coarse root rooting depth",3
+"1093","PRUN VIR",44440,"dispersal syndrome",2
+"1094","PRUN VIR",44440,"foliage type (deciduous or evergreen)",0
+"1095","PRUN VIR",44440,"leaf force to punch",2.86881119796936
+"1096","PRUN VIR",44440,"leaf texture (coarseness)",1
+"1097","PRUN VIR",44440,"plant height, vegetative",14.0796285714286
+"1098","PRUN VIR",44440,"resprouting ability",1
+"1099","PRUN VIR",44440,"specific leaf area",23.2787175050968
+"1100","PRUN VIR",44440,"stem conduit density (vessels and tracheids)",112
+"1101","PRUN VIR",44440,"water potential at 50% loss of stem hydraulic conductivity",-3.8
+"1102","PRUN VIR",44440,"wood (or stem-specific) density",0.00036
+"1103","PRUN VIR",NA,"cone serotiny",0
+"1104","PRUN VIR",NA,"leaf mass area",83.1763771102671
+"1105","PRUN VIR",NA,"maximum height",15
+"1106","PRUN VIR",NA,"plant height, vegetative",7.905
+"1107","PRUN VIR",NA,"water potential at 50% loss of stem hydraulic conductivity",-3.8
+"1108","PSEU MEN",44567,"bark thickness",14.7887096774194
+"1109","PSEU MEN",44567,"clonal growth form",0
+"1110","PSEU MEN",44567,"coarse root rooting depth",3
+"1111","PSEU MEN",44567,"dispersal distance",1033.33333333333
+"1112","PSEU MEN",44567,"dispersal syndrome",3.5
+"1113","PSEU MEN",44567,"foliage type (deciduous or evergreen)",3
+"1114","PSEU MEN",44567,"leaf dry matter content",0.523224137931035
+"1115","PSEU MEN",44567,"leaf photosynthetic rate",9.30570566068332
+"1116","PSEU MEN",44567,"leaf texture (coarseness)",1
+"1117","PSEU MEN",44567,"maximum height",61
+"1118","PSEU MEN",44567,"minimum midday xylem pressure potential",-2.09285714285714
+"1119","PSEU MEN",44567,"minimum predawn xylem pressure potential",-1.234805
+"1120","PSEU MEN",44567,"plant height, vegetative",58.9959244444444
+"1121","PSEU MEN",44567,"resprouting ability",0
+"1122","PSEU MEN",44567,"seed bank longevity",1
+"1123","PSEU MEN",44567,"slope of vulnerability curve",38.6650300052431
+"1124","PSEU MEN",44567,"specific leaf area",10.5233977437812
+"1125","PSEU MEN",44567,"specific leaf conductivity",3.87333333333333e-05
+"1126","PSEU MEN",44567,"stem conduit diameter (vessels and tracheids)",16.6092840388346
+"1127","PSEU MEN",44567,"stomatal conductance",114.74556
+"1128","PSEU MEN",44567,"water potential at 12% loss of stem hydraulic conductivity",-2.1185254994092
+"1129","PSEU MEN",44567,"water potential at 50% loss of stem hydraulic conductivity",-3.7663165
+"1130","PSEU MEN",44567,"water potential at 88% loss of stem hydraulic conductivity",-4.85056335248641
+"1131","PSEU MEN",44567,"wood (or stem-specific) density",0.459740668065246
+"1132","PSEU MEN",NA,"bark thickness",300
+"1133","PSEU MEN",NA,"bud burst timing (mean month)",5.25
+"1134","PSEU MEN",NA,"cold_tolerance",-36.1
+"1135","PSEU MEN",NA,"cone serotiny",0
+"1136","PSEU MEN",NA,"dispersal syndrome",6
+"1137","PSEU MEN",NA,"drought_tolerance",2.62
+"1138","PSEU MEN",NA,"earliest bud burst timing (month)",4.75
+"1139","PSEU MEN",NA,"fire_resistance",1
+"1140","PSEU MEN",NA,"fire_tolerance",0
+"1141","PSEU MEN",NA,"latest bud burst timing (month)",5.75
+"1142","PSEU MEN",NA,"leaf dry matter content",0.43418
+"1143","PSEU MEN",NA,"leaf force to punch",2.31
+"1144","PSEU MEN",NA,"leaf mass area",138.038426460289
+"1145","PSEU MEN",NA,"leaf thickness",0.54
+"1146","PSEU MEN",NA,"leaf_length",3.2
+"1147","PSEU MEN",NA,"maximum height",40
+"1148","PSEU MEN",NA,"plant height, vegetative",61.7166666666666
+"1149","PSEU MEN",NA,"shade_tolerance",2.78
+"1150","PSEU MEN",NA,"specific leaf area",6.36533333333333
+"1151","PSEU MEN",NA,"stem xylem embolism vulnerability, P50",-3.19
+"1152","PSEU MEN",NA,"stomatal conductance",23.6333333333333
+"1153","PSEU MEN",NA,"waterlogging_tolerance",1.79
+"1154","PSEU MEN",NA,"wood (or stem-specific) density",0.0004405
+"1155","PSEU MEN GLA",44567,"bark thickness",14.7887096774194
+"1156","PSEU MEN GLA",44567,"clonal growth form",0
+"1157","PSEU MEN GLA",44567,"coarse root rooting depth",3
+"1158","PSEU MEN GLA",44567,"dispersal distance",1033.33333333333
+"1159","PSEU MEN GLA",44567,"dispersal syndrome",3.5
+"1160","PSEU MEN GLA",44567,"foliage type (deciduous or evergreen)",3
+"1161","PSEU MEN GLA",44567,"leaf dry matter content",0.523224137931035
+"1162","PSEU MEN GLA",44567,"leaf photosynthetic rate",9.30570566068332
+"1163","PSEU MEN GLA",44567,"leaf texture (coarseness)",1
+"1164","PSEU MEN GLA",44567,"maximum height",61
+"1165","PSEU MEN GLA",44567,"minimum midday xylem pressure potential",-2.09285714285714
+"1166","PSEU MEN GLA",44567,"minimum predawn xylem pressure potential",-1.234805
+"1167","PSEU MEN GLA",44567,"plant height, vegetative",58.9959244444444
+"1168","PSEU MEN GLA",44567,"resprouting ability",0
+"1169","PSEU MEN GLA",44567,"seed bank longevity",1
+"1170","PSEU MEN GLA",44567,"slope of vulnerability curve",38.6650300052431
+"1171","PSEU MEN GLA",44567,"specific leaf area",10.5233977437812
+"1172","PSEU MEN GLA",44567,"specific leaf conductivity",3.87333333333333e-05
+"1173","PSEU MEN GLA",44567,"stem conduit diameter (vessels and tracheids)",16.6092840388346
+"1174","PSEU MEN GLA",44567,"stomatal conductance",114.74556
+"1175","PSEU MEN GLA",44567,"water potential at 12% loss of stem hydraulic conductivity",-2.1185254994092
+"1176","PSEU MEN GLA",44567,"water potential at 50% loss of stem hydraulic conductivity",-3.7663165
+"1177","PSEU MEN GLA",44567,"water potential at 88% loss of stem hydraulic conductivity",-4.85056335248641
+"1178","PSEU MEN GLA",44567,"wood (or stem-specific) density",0.459740668065246
+"1179","PSEU MEN GLA",NA,"bark thickness",300
+"1180","PSEU MEN GLA",NA,"bud burst timing (mean month)",5.25
+"1181","PSEU MEN GLA",NA,"cold_tolerance",-36.1
+"1182","PSEU MEN GLA",NA,"cone serotiny",0
+"1183","PSEU MEN GLA",NA,"dispersal syndrome",6
+"1184","PSEU MEN GLA",NA,"drought_tolerance",2.62
+"1185","PSEU MEN GLA",NA,"earliest bud burst timing (month)",4.75
+"1186","PSEU MEN GLA",NA,"fire_resistance",1
+"1187","PSEU MEN GLA",NA,"fire_tolerance",0
+"1188","PSEU MEN GLA",NA,"latest bud burst timing (month)",5.75
+"1189","PSEU MEN GLA",NA,"leaf dry matter content",0.43418
+"1190","PSEU MEN GLA",NA,"leaf force to punch",2.31
+"1191","PSEU MEN GLA",NA,"leaf mass area",138.038426460289
+"1192","PSEU MEN GLA",NA,"leaf thickness",0.54
+"1193","PSEU MEN GLA",NA,"leaf_length",3.2
+"1194","PSEU MEN GLA",NA,"maximum height",40
+"1195","PSEU MEN GLA",NA,"plant height, vegetative",61.7166666666666
+"1196","PSEU MEN GLA",NA,"shade_tolerance",2.78
+"1197","PSEU MEN GLA",NA,"specific leaf area",6.36533333333333
+"1198","PSEU MEN GLA",NA,"stem xylem embolism vulnerability, P50",-3.19
+"1199","PSEU MEN GLA",NA,"stomatal conductance",23.6333333333333
+"1200","PSEU MEN GLA",NA,"waterlogging_tolerance",1.79
+"1201","PSEU MEN GLA",NA,"wood (or stem-specific) density",0.0004405
+"1202","PSEU MEN MEN",44567,"bark thickness",14.7887096774194
+"1203","PSEU MEN MEN",44567,"clonal growth form",0
+"1204","PSEU MEN MEN",44567,"coarse root rooting depth",3
+"1205","PSEU MEN MEN",44567,"dispersal distance",1033.33333333333
+"1206","PSEU MEN MEN",44567,"dispersal syndrome",3.5
+"1207","PSEU MEN MEN",44567,"foliage type (deciduous or evergreen)",3
+"1208","PSEU MEN MEN",44567,"leaf dry matter content",0.523224137931035
+"1209","PSEU MEN MEN",44567,"leaf photosynthetic rate",9.30570566068332
+"1210","PSEU MEN MEN",44567,"leaf texture (coarseness)",1
+"1211","PSEU MEN MEN",44567,"maximum height",61
+"1212","PSEU MEN MEN",44567,"minimum midday xylem pressure potential",-2.09285714285714
+"1213","PSEU MEN MEN",44567,"minimum predawn xylem pressure potential",-1.234805
+"1214","PSEU MEN MEN",44567,"plant height, vegetative",58.9959244444444
+"1215","PSEU MEN MEN",44567,"resprouting ability",0
+"1216","PSEU MEN MEN",44567,"seed bank longevity",1
+"1217","PSEU MEN MEN",44567,"slope of vulnerability curve",38.6650300052431
+"1218","PSEU MEN MEN",44567,"specific leaf area",10.5233977437812
+"1219","PSEU MEN MEN",44567,"specific leaf conductivity",3.87333333333333e-05
+"1220","PSEU MEN MEN",44567,"stem conduit diameter (vessels and tracheids)",16.6092840388346
+"1221","PSEU MEN MEN",44567,"stomatal conductance",114.74556
+"1222","PSEU MEN MEN",44567,"water potential at 12% loss of stem hydraulic conductivity",-2.1185254994092
+"1223","PSEU MEN MEN",44567,"water potential at 50% loss of stem hydraulic conductivity",-3.7663165
+"1224","PSEU MEN MEN",44567,"water potential at 88% loss of stem hydraulic conductivity",-4.85056335248641
+"1225","PSEU MEN MEN",44567,"wood (or stem-specific) density",0.459740668065246
+"1226","PSEU MEN MEN",NA,"bark thickness",300
+"1227","PSEU MEN MEN",NA,"bud burst timing (mean month)",5.25
+"1228","PSEU MEN MEN",NA,"cold_tolerance",-36.1
+"1229","PSEU MEN MEN",NA,"cone serotiny",0
+"1230","PSEU MEN MEN",NA,"dispersal syndrome",6
+"1231","PSEU MEN MEN",NA,"drought_tolerance",2.62
+"1232","PSEU MEN MEN",NA,"earliest bud burst timing (month)",4.75
+"1233","PSEU MEN MEN",NA,"fire_resistance",1
+"1234","PSEU MEN MEN",NA,"fire_tolerance",0
+"1235","PSEU MEN MEN",NA,"latest bud burst timing (month)",5.75
+"1236","PSEU MEN MEN",NA,"leaf dry matter content",0.43418
+"1237","PSEU MEN MEN",NA,"leaf force to punch",2.31
+"1238","PSEU MEN MEN",NA,"leaf mass area",138.038426460289
+"1239","PSEU MEN MEN",NA,"leaf thickness",0.54
+"1240","PSEU MEN MEN",NA,"leaf_length",3.2
+"1241","PSEU MEN MEN",NA,"maximum height",40
+"1242","PSEU MEN MEN",NA,"plant height, vegetative",61.7166666666666
+"1243","PSEU MEN MEN",NA,"shade_tolerance",2.78
+"1244","PSEU MEN MEN",NA,"specific leaf area",6.36533333333333
+"1245","PSEU MEN MEN",NA,"stem xylem embolism vulnerability, P50",-3.19
+"1246","PSEU MEN MEN",NA,"stomatal conductance",23.6333333333333
+"1247","PSEU MEN MEN",NA,"waterlogging_tolerance",1.79
+"1248","PSEU MEN MEN",NA,"wood (or stem-specific) density",0.0004405
+"1249","QUER MAC",45424,"bark thickness",15
+"1250","QUER MAC",45424,"clonal growth form",1
+"1251","QUER MAC",45424,"coarse root rooting depth",3
+"1252","QUER MAC",45424,"foliage type (deciduous or evergreen)",0
+"1253","QUER MAC",45424,"maximum height",30
+"1254","QUER MAC",45424,"seed bank longevity",0.5
+"1255","QUER MAC",45424,"specific leaf area",13.0480167014614
+"1256","QUER MAC",NA,"bark thickness",42.78
+"1257","QUER MAC",NA,"dispersal syndrome",2
+"1258","QUER MAC",NA,"plant height, vegetative",32.79749951232
+"1259","QUER MAC",NA,"resprouting ability",1
+"1260","QUER MAC",NA,"specific leaf area",13.0480167014614
+"1261","SALI SCO",47928,"dispersal syndrome",4
+"1262","TAXU BRE",53527,"bark thickness",64
+"1263","TAXU BRE",53527,"clonal growth form",3
+"1264","TAXU BRE",53527,"dispersal syndrome",2
+"1265","TAXU BRE",53527,"foliage type (deciduous or evergreen)",3
+"1266","TAXU BRE",53527,"leaf photosynthetic rate",3.9
+"1267","TAXU BRE",53527,"leaf texture (coarseness)",0
+"1268","TAXU BRE",53527,"plant height, vegetative",15.5789473684211
+"1269","TAXU BRE",53527,"resprouting ability",0
+"1270","TAXU BRE",53527,"slope of vulnerability curve",22.9302811647464
+"1271","TAXU BRE",53527,"specific leaf area",12.0782090880476
+"1272","TAXU BRE",53527,"stem conduit diameter (vessels and tracheids)",10.8698657829674
+"1273","TAXU BRE",53527,"water potential at 12% loss of stem hydraulic conductivity",-4.78249920409463
+"1274","TAXU BRE",53527,"water potential at 50% loss of stem hydraulic conductivity",-6.439875
+"1275","TAXU BRE",53527,"water potential at 88% loss of stem hydraulic conductivity",-8.09700079590537
+"1276","TAXU BRE",53527,"wood (or stem-specific) density",0.657874017374884
+"1277","TAXU BRE",NA,"bark thickness",7
+"1278","TAXU BRE",NA,"clonal growth form",3
+"1279","TAXU BRE",NA,"cold_tolerance",-27.7
+"1280","TAXU BRE",NA,"cone serotiny",0
+"1281","TAXU BRE",NA,"dispersal syndrome",2
+"1282","TAXU BRE",NA,"drought_tolerance",2.5
+"1283","TAXU BRE",NA,"fire_resistance",0
+"1284","TAXU BRE",NA,"fire_tolerance",0
+"1285","TAXU BRE",NA,"leaf_length",2.6
+"1286","TAXU BRE",NA,"plant height, vegetative",15.15
+"1287","TAXU BRE",NA,"shade_tolerance",4.86
+"1288","TAXU BRE",NA,"water potential at 50% loss of stem hydraulic conductivity",-6.44
+"1289","TAXU BRE",NA,"waterlogging_tolerance",1
+"1290","TAXU BRE",NA,"wood (or stem-specific) density",6e-04
+"1291","THUJ PLI",54208,"bark thickness",19
+"1292","THUJ PLI",54208,"clonal growth form",3
+"1293","THUJ PLI",54208,"coarse root rooting depth",0
+"1294","THUJ PLI",54208,"dispersal distance",100
+"1295","THUJ PLI",54208,"dispersal syndrome",6
+"1296","THUJ PLI",54208,"foliage type (deciduous or evergreen)",3
+"1297","THUJ PLI",54208,"height of lowest branch",2.64332936170213
+"1298","THUJ PLI",54208,"leaf mass area",14036.4966178723
+"1299","THUJ PLI",54208,"leaf texture (coarseness)",0
+"1300","THUJ PLI",54208,"plant height, vegetative",26.1198739726027
+"1301","THUJ PLI",54208,"resprouting ability",0
+"1302","THUJ PLI",54208,"seed bank longevity",0
+"1303","THUJ PLI",54208,"slope of vulnerability curve",22.1780235141056
+"1304","THUJ PLI",54208,"specific leaf area",8.64750592187778
+"1305","THUJ PLI",54208,"specific leaf conductivity",3.39778e-05
+"1306","THUJ PLI",54208,"stem conduit diameter (vessels and tracheids)",11.7513524221515
+"1307","THUJ PLI",54208,"water potential at 12% loss of stem hydraulic conductivity",-2.79645929607341
+"1308","THUJ PLI",54208,"water potential at 50% loss of stem hydraulic conductivity",-4.8448863208
+"1309","THUJ PLI",54208,"water potential at 88% loss of stem hydraulic conductivity",-6.32021368076541
+"1310","THUJ PLI",54208,"wood (or stem-specific) density",0.463649590575119
+"1311","THUJ PLI",NA,"bark thickness",19
+"1312","THUJ PLI",NA,"cold_tolerance",-36.1
+"1313","THUJ PLI",NA,"cone serotiny",0
+"1314","THUJ PLI",NA,"dispersal syndrome",6
+"1315","THUJ PLI",NA,"drought_tolerance",2.23
+"1316","THUJ PLI",NA,"fire_resistance",0
+"1317","THUJ PLI",NA,"fire_tolerance",0
+"1318","THUJ PLI",NA,"leaf_length",0.3
+"1319","THUJ PLI",NA,"maximum height",40
+"1320","THUJ PLI",NA,"plant height, vegetative",47.9
+"1321","THUJ PLI",NA,"shade_tolerance",4.73
+"1322","THUJ PLI",NA,"water potential at 50% loss of stem hydraulic conductivity",-5.27
+"1323","THUJ PLI",NA,"waterlogging_tolerance",1.01
+"1324","THUJ PLI",NA,"wood (or stem-specific) density",0.00031
+"1325","TSUG HET",55323,"bark thickness",14
+"1326","TSUG HET",55323,"clonal growth form",3
+"1327","TSUG HET",55323,"dispersal distance",1123.33333333333
+"1328","TSUG HET",55323,"dispersal syndrome",6
+"1329","TSUG HET",55323,"foliage type (deciduous or evergreen)",3
+"1330","TSUG HET",55323,"leaf photosynthetic rate",7.59333333333333
+"1331","TSUG HET",55323,"leaf texture (coarseness)",0
+"1332","TSUG HET",55323,"plant height, vegetative",50.2575757575758
+"1333","TSUG HET",55323,"resprouting ability",0
+"1334","TSUG HET",55323,"seed bank longevity",0
+"1335","TSUG HET",55323,"seedbank duration",2
+"1336","TSUG HET",55323,"specific leaf area",15.0360549450549
+"1337","TSUG HET",55323,"specific leaf conductivity",1.26e-05
+"1338","TSUG HET",55323,"stomatal conductance",200
+"1339","TSUG HET",55323,"wood (or stem-specific) density",0.445
+"1340","TSUG HET",NA,"bark thickness",33
+"1341","TSUG HET",NA,"cold_tolerance",-30.5
+"1342","TSUG HET",NA,"cone serotiny",0
+"1343","TSUG HET",NA,"dispersal syndrome",6
+"1344","TSUG HET",NA,"drought_tolerance",1.17
+"1345","TSUG HET",NA,"fire_resistance",0
+"1346","TSUG HET",NA,"fire_tolerance",0
+"1347","TSUG HET",NA,"leaf dry matter content",0.43481
+"1348","TSUG HET",NA,"leaf force to punch",2.91
+"1349","TSUG HET",NA,"leaf thickness",0.33
+"1350","TSUG HET",NA,"leaf_length",2
+"1351","TSUG HET",NA,"maximum height",35
+"1352","TSUG HET",NA,"plant height, vegetative",58.75
+"1353","TSUG HET",NA,"shade_tolerance",4.96
+"1354","TSUG HET",NA,"specific leaf area",8.21
+"1355","TSUG HET",NA,"waterlogging_tolerance",0.95
+"1356","TSUG HET",NA,"wood (or stem-specific) density",0.00042
+"1357","TSUG MER",55325,"bark thickness",14
+"1358","TSUG MER",55325,"clonal growth form",3
+"1359","TSUG MER",55325,"coarse root rooting depth",0
+"1360","TSUG MER",55325,"foliage type (deciduous or evergreen)",3
+"1361","TSUG MER",55325,"leaf texture (coarseness)",0
+"1362","TSUG MER",55325,"plant height, vegetative",46.8666666666667
+"1363","TSUG MER",55325,"resprouting ability",0
+"1364","TSUG MER",55325,"specific leaf area",4.32
+"1365","TSUG MER",55325,"wood (or stem-specific) density",0.465
+"1366","TSUG MER",NA,"bark thickness",37
+"1367","TSUG MER",NA,"cold_tolerance",-27.7
+"1368","TSUG MER",NA,"cone serotiny",0
+"1369","TSUG MER",NA,"dispersal syndrome",6
+"1370","TSUG MER",NA,"drought_tolerance",1
+"1371","TSUG MER",NA,"fire_resistance",0
+"1372","TSUG MER",NA,"fire_tolerance",0
+"1373","TSUG MER",NA,"leaf_length",2.5
+"1374","TSUG MER",NA,"plant height, vegetative",36.55
+"1375","TSUG MER",NA,"shade_tolerance",4.48
+"1376","TSUG MER",NA,"waterlogging_tolerance",0.95
+"1377","TSUG MER",NA,"wood (or stem-specific) density",0.00042
+"1378","TSUG MER HET",55325,"bark thickness",14
+"1379","TSUG MER HET",55325,"clonal growth form",3
+"1380","TSUG MER HET",55325,"coarse root rooting depth",0
+"1381","TSUG MER HET",55325,"foliage type (deciduous or evergreen)",3
+"1382","TSUG MER HET",55325,"leaf texture (coarseness)",0
+"1383","TSUG MER HET",55325,"plant height, vegetative",46.8666666666667
+"1384","TSUG MER HET",55325,"resprouting ability",0
+"1385","TSUG MER HET",55325,"specific leaf area",4.32
+"1386","TSUG MER HET",55325,"wood (or stem-specific) density",0.465
+"1387","TSUG MER HET",NA,"bark thickness",37
+"1388","TSUG MER HET",NA,"cold_tolerance",-27.7
+"1389","TSUG MER HET",NA,"cone serotiny",0
+"1390","TSUG MER HET",NA,"dispersal syndrome",6
+"1391","TSUG MER HET",NA,"drought_tolerance",1
+"1392","TSUG MER HET",NA,"fire_resistance",0
+"1393","TSUG MER HET",NA,"fire_tolerance",0
+"1394","TSUG MER HET",NA,"leaf_length",2.5
+"1395","TSUG MER HET",NA,"plant height, vegetative",36.55
+"1396","TSUG MER HET",NA,"shade_tolerance",4.48
+"1397","TSUG MER HET",NA,"waterlogging_tolerance",0.95
+"1398","TSUG MER HET",NA,"wood (or stem-specific) density",0.00042

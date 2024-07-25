@@ -50,18 +50,7 @@ trait_wide <- trait_wide %>%
               values_from = value)
 
 ### make dispersal syndrome numeric
-dispersal <- filter(nfi_trait_dat_clean, trait_name == "dispersal syndrome") 
-unique(dispersal$value) # lists unique dispersal syndrome methods
 
-X$dispersal syndrome[X$dispersal syndrome == "animals, general"] <- 2
-X$dispersal syndrome[X$dispersal syndrome == "birds"] <- 2
-X$dispersal syndrome[X$dispersal syndrome == "mammals"] <- 2
-X$dispersal syndrome[X$dispersal syndrome == "human"] <- 2
-X$dispersal syndrome[X$dispersal syndrome == "water"] <- 3
-X$dispersal syndrome[X$dispersal syndrome == "wind and water"] <- 4
-X$dispersal syndrome[X$dispersal syndrome == "wind"] <- 6
-X$dispersal syndrome <- as.numeric(X$dispersal syndrome)
-# where X is the trait file name <- inputted once edited file is pulled
 
 
 ```
@@ -122,9 +111,12 @@ wcan_dat <- wcan_dat %>%
                             ifelse(meas_date == max_year & n_surveyed == 2, "t2",
                                    ifelse(meas_date == max_year & n_surveyed == 3, "t3", 
                                           "t2"))))
+wcan_dat <- wcan_dat %>%
+  mutate(meas_year = year(ymd(wcan_dat$meas_date)))
+
 ### df of time step and plots
 wcan_time_step <- wcan_dat %>%
-  dplyr::select(nfi_plot, meas_date, time_step) %>%
+  dplyr::select(nfi_plot, meas_date, time_step, meas_year) %>%
   distinct()
 write.csv(wcan_time_step, "wcan_time_step.csv")
 
@@ -137,7 +129,8 @@ wcan_t1 <- wcan_t1 %>%
                 meas_date,
                 NFI_species,
                 time_step,
-                biomass_composition)
+                biomass_composition,
+                meas_year)
 
 ### total biomass per plot
 plot_biomass_tot <- wcan_t1 %>%
@@ -156,8 +149,105 @@ wcan_t1 <- wcan_t1 %>%
 write.csv(wcan_t1, "wcan_t1.csv")
 ```
 
-### add traits
+### reformat traits
 ```{r}
+### open nfi traits file
+trait_dat_clean_sp <- read.csv("C:/Users/krist/Downloads/nfi_trait_dat_clean_sp.csv")
+
+### select necessary columns
+trait_dat <- trait_dat_clean_sp %>%
+  dplyr::select(vect_sp_codes, try_species_id,
+                trait_name, try_trait_id,
+                value
+                )
+unique(trait_dat$trait_name)
+
+### make dispersal syndrome numeric
+dispersal <- filter(trait_dat, trait_name == "dispersal syndrome") 
+unique(dispersal$value) # lists unique dispersal syndrome methods
+
+trait_dat$value[trait_dat$value == "animals, general"] <- 2
+trait_dat$value[trait_dat$value == "birds"] <- 2
+trait_dat$value[trait_dat$value == "mammals"] <- 2
+trait_dat$value[trait_dat$value == "human"] <- 2
+trait_dat$value[trait_dat$value == "water"] <- 3
+trait_dat$value[trait_dat$value == "wind and water"] <- 4
+trait_dat$value[trait_dat$value == "wind"] <- 6
+
+### make leaf texture (coarseness) numeric
+trait_dat$value[trait_dat$value == "fine"] <- 0
+trait_dat$value[trait_dat$value == "medium"] <- 1
+trait_dat$value[trait_dat$value == "coarse"] <- 2
+
+### make Leaf texture (sclerophylly, physical strength, toughness) numeric
+trait_dat$value[trait_dat$value == "always mesomorphic"] <- 0
+
+### make foliage type (deciduous or evergreen) numeric
+trait_dat$value[trait_dat$value == "evergreen"] <- 3
+trait_dat$value[trait_dat$value == "evergreen but drought deciduous"] <- 2
+trait_dat$value[trait_dat$value == "semi-evergreen"] <- 1
+trait_dat$value[trait_dat$value == "deciduous"] <- 0
+
+### make coarse root rooting depth numeric
+trait_dat$value[trait_dat$value == "shallow"] <- 0
+trait_dat$value[trait_dat$value == "shallow_moderate"] <- 1
+trait_dat$value[trait_dat$value == "varying"] <- 2
+trait_dat$value[trait_dat$value == "deep"] <- 3
+
+### make clonal growth numeric
+trait_dat$value[trait_dat$value == "underground"] <- 3
+trait_dat$value[trait_dat$value == "basal"] <- 2
+trait_dat$value[trait_dat$value == "abovegound"] <- 1
+trait_dat$value[trait_dat$value == "none"] <- 0
+
+### make cone serotiny numeric
+trait_dat$value[trait_dat$value == "non-serotinous"] <- 0
+trait_dat$value[trait_dat$value == "variable"] <- 1
+trait_dat$value[trait_dat$value == "serotinous and semi-serotinous"] <- 2
+trait_dat$value[trait_dat$value == "serotinous"] <- 3
+
+### make clonal growth form numeric
+trait_dat$value[trait_dat$value =="roots with adventitious buds"] <- 0
+trait_dat$value[trait_dat$value == "root suckers"] <- 2
+trait_dat$value[trait_dat$value == "root crown, root suckers"] <- 1
+trait_dat$value[trait_dat$value == "root crown"] <- 1
+trait_dat$value[trait_dat$value == "layering, rooting of fallen branches, fallen trunks"] <- 3
+trait_dat$value[trait_dat$value == "layering, root collar"] <- 3
+trait_dat$value[trait_dat$value == "layering, branches, stems"] <- 3
+trait_dat$value[trait_dat$value == "layering"] <- 3
+trait_dat$value[trait_dat$value == "epicormic shoots (coppice shoots)"] <- 4
+trait_dat$value[trait_dat$value == "basal sprouts"] <- 2
+
+### make degress of self-pruning numeric
+trait_dat$value[trait_dat$value == "moderate"] <- 0
+trait_dat$value[trait_dat$value == "high"] <- 1
+
+### make fire_tolerance numeric
+trait_dat$value[trait_dat$value == "low"] <- 0
+trait_dat$value[trait_dat$value == "moderate"] <- 1
+trait_dat$value[trait_dat$value == "high"] <- 2
+
+### make leaf flammability numeric
+trait_dat$value[trait_dat$value == "low"] <- 0
+trait_dat$value[trait_dat$value == "moderate"] <- 1
+trait_dat$value[trait_dat$value == "high"] <- 2
+
+### make seed bank longevity numeric
+trait_dat$value[trait_dat$value == "0.25-1"] <- 0
+trait_dat$value[trait_dat$value == "< 1"] <- 0
+trait_dat$value[trait_dat$value == "1-5"] <- 1
+trait_dat$value[trait_dat$value == "3-5"] <- 2
+trait_dat$value[trait_dat$value == ">5"] <- 3
+
+trait_dat$value <- as.numeric(trait_dat$value)
+
+write.csv(trait_dat, "trait_dat_num.csv")
+
+### collect the mean values of each trait per species
+trait_dat_mean <- trait_dat %>%
+  group_by(vect_sp_codes, try_species_id, trait_name) %>%
+  summarise(trait_mean = mean(value))
+write.csv(trait_dat_mean, "trait_dat_mean.csv")
 
 
 ```
