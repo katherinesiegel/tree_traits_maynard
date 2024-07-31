@@ -21,39 +21,6 @@ install.packages("fundiversity")
 data(package = "fundiversity")
 ```
 
-### prep trait data
-```{r}
-### open data
-dat_trait <- read.csv("C:/Users/krist/Downloads/nfi_trait_dat_clean.csv")
-
-### simplify data
-dat_trait_simp <- dat_trait %>%
-  dplyr::select(species,
-                trait_name,
-                try_species_id,
-                try_trait_id,
-                value,
-                unit,
-                value_kind,
-                location) #removed common name, number of observations, orig_ref
-trait_summ <- dat_trait_simp %>%
-  group_by(try_species_id, try_trait_id) %>%
-  summarise(n_surveyed = length(unique(value)))
-
-
-### form species-trait matrix (reshape data)
-trait_wide <- dat_trait_simp %>%
-  dplyr::select(species, trait_name, value)
-
-trait_wide <- trait_wide %>%
-  pivot_wider(names_from = trait_name,
-              values_from = value)
-
-### make dispersal syndrome numeric
-
-
-
-```
 
 ### prep time data
 ```{r}
@@ -175,69 +142,69 @@ trait_dat$value[trait_dat$value == "wind and water"] <- 4
 trait_dat$value[trait_dat$value == "wind"] <- 6
 
 ### make leaf texture (coarseness) numeric
-trait_dat$value[trait_dat$value == "fine"] <- 0
-trait_dat$value[trait_dat$value == "medium"] <- 1
-trait_dat$value[trait_dat$value == "coarse"] <- 2
+trait_dat$value[trait_dat$value == "fine"] <- 1
+trait_dat$value[trait_dat$value == "medium"] <- 2
+trait_dat$value[trait_dat$value == "coarse"] <- 3
 
 ### make Leaf texture (sclerophylly, physical strength, toughness) numeric
-trait_dat$value[trait_dat$value == "always mesomorphic"] <- 0
+trait_dat$value[trait_dat$value == "always mesomorphic"] <- 1
 
 ### make foliage type (deciduous or evergreen) numeric
-trait_dat$value[trait_dat$value == "evergreen"] <- 3
-trait_dat$value[trait_dat$value == "evergreen but drought deciduous"] <- 2
-trait_dat$value[trait_dat$value == "semi-evergreen"] <- 1
-trait_dat$value[trait_dat$value == "deciduous"] <- 0
+trait_dat$value[trait_dat$value == "evergreen"] <- 4
+trait_dat$value[trait_dat$value == "evergreen but drought deciduous"] <- 3
+trait_dat$value[trait_dat$value == "semi-evergreen"] <- 2
+trait_dat$value[trait_dat$value == "deciduous"] <- 1
 
 ### make coarse root rooting depth numeric
-trait_dat$value[trait_dat$value == "shallow"] <- 0
-trait_dat$value[trait_dat$value == "shallow_moderate"] <- 1
-trait_dat$value[trait_dat$value == "varying"] <- 2
-trait_dat$value[trait_dat$value == "deep"] <- 3
+trait_dat$value[trait_dat$value == "shallow"] <- 1
+trait_dat$value[trait_dat$value == "shallow_moderate"] <- 2
+trait_dat$value[trait_dat$value == "varying"] <- 3
+trait_dat$value[trait_dat$value == "deep"] <- 4
 
 ### make clonal growth numeric
-trait_dat$value[trait_dat$value == "underground"] <- 3
-trait_dat$value[trait_dat$value == "basal"] <- 2
-trait_dat$value[trait_dat$value == "abovegound"] <- 1
-trait_dat$value[trait_dat$value == "none"] <- 0
+trait_dat$value[trait_dat$value == "underground"] <- 4
+trait_dat$value[trait_dat$value == "basal"] <- 3
+trait_dat$value[trait_dat$value == "abovegound"] <- 2
+trait_dat$value[trait_dat$value == "none"] <- 1
 
 ### make cone serotiny numeric
-trait_dat$value[trait_dat$value == "non-serotinous"] <- 0
-trait_dat$value[trait_dat$value == "variable"] <- 1
-trait_dat$value[trait_dat$value == "serotinous and semi-serotinous"] <- 2
-trait_dat$value[trait_dat$value == "serotinous"] <- 3
+trait_dat$value[trait_dat$value == "non-serotinous"] <- 1
+trait_dat$value[trait_dat$value == "variable"] <- 2
+trait_dat$value[trait_dat$value == "serotinous and semi-serotinous"] <- 3
+trait_dat$value[trait_dat$value == "serotinous"] <- 4
 
 ### make clonal growth form numeric
-trait_dat$value[trait_dat$value =="roots with adventitious buds"] <- 0
-trait_dat$value[trait_dat$value == "root suckers"] <- 2
-trait_dat$value[trait_dat$value == "root crown, root suckers"] <- 1
-trait_dat$value[trait_dat$value == "root crown"] <- 1
-trait_dat$value[trait_dat$value == "layering, rooting of fallen branches, fallen trunks"] <- 3
-trait_dat$value[trait_dat$value == "layering, root collar"] <- 3
-trait_dat$value[trait_dat$value == "layering, branches, stems"] <- 3
-trait_dat$value[trait_dat$value == "layering"] <- 3
-trait_dat$value[trait_dat$value == "epicormic shoots (coppice shoots)"] <- 4
-trait_dat$value[trait_dat$value == "basal sprouts"] <- 2
+trait_dat$value[trait_dat$value =="roots with adventitious buds"] <- 1
+trait_dat$value[trait_dat$value == "root suckers"] <- 3
+trait_dat$value[trait_dat$value == "root crown, root suckers"] <- 2
+trait_dat$value[trait_dat$value == "root crown"] <- 2
+trait_dat$value[trait_dat$value == "layering, rooting of fallen branches, fallen trunks"] <- 4
+trait_dat$value[trait_dat$value == "layering, root collar"] <- 4
+trait_dat$value[trait_dat$value == "layering, branches, stems"] <- 4
+trait_dat$value[trait_dat$value == "layering"] <- 4
+trait_dat$value[trait_dat$value == "epicormic shoots (coppice shoots)"] <- 5
+trait_dat$value[trait_dat$value == "basal sprouts"] <- 3
 
 ### make degress of self-pruning numeric
-trait_dat$value[trait_dat$value == "moderate"] <- 0
-trait_dat$value[trait_dat$value == "high"] <- 1
+trait_dat$value[trait_dat$value == "moderate"] <- 1
+trait_dat$value[trait_dat$value == "high"] <- 2
 
 ### make fire_tolerance numeric
-trait_dat$value[trait_dat$value == "low"] <- 0
-trait_dat$value[trait_dat$value == "moderate"] <- 1
-trait_dat$value[trait_dat$value == "high"] <- 2
+trait_dat$value[trait_dat$value == "low"] <- 1
+trait_dat$value[trait_dat$value == "moderate"] <- 2
+trait_dat$value[trait_dat$value == "high"] <- 3
 
 ### make leaf flammability numeric
-trait_dat$value[trait_dat$value == "low"] <- 0
-trait_dat$value[trait_dat$value == "moderate"] <- 1
-trait_dat$value[trait_dat$value == "high"] <- 2
+trait_dat$value[trait_dat$value == "low"] <- 1
+trait_dat$value[trait_dat$value == "moderate"] <- 2
+trait_dat$value[trait_dat$value == "high"] <- 3
 
 ### make seed bank longevity numeric
-trait_dat$value[trait_dat$value == "0.25-1"] <- 0
-trait_dat$value[trait_dat$value == "< 1"] <- 0
-trait_dat$value[trait_dat$value == "1-5"] <- 1
-trait_dat$value[trait_dat$value == "3-5"] <- 2
-trait_dat$value[trait_dat$value == ">5"] <- 3
+trait_dat$value[trait_dat$value == "0.25-1"] <- 1
+trait_dat$value[trait_dat$value == "< 1"] <- 1
+trait_dat$value[trait_dat$value == "1-5"] <- 2
+trait_dat$value[trait_dat$value == "3-5"] <- 3
+trait_dat$value[trait_dat$value == ">5"] <- 4
 
 trait_dat$value <- as.numeric(trait_dat$value)
 
@@ -253,28 +220,195 @@ write.csv(trait_dat_mean, "trait_dat_mean.csv")
 ```
 
 
+### add trait data 
 ```{r}
+### open data
+dat_trait <- read.csv("our_data/functional_diversity/trait_dat_mean.csv")
+
+### simplify data
+dat_trait_simp <- dat_trait %>%
+  dplyr::select(vect_sp_codes,
+                trait_name,
+                trait_mean)
+
+### fix repeated values due to NA try species id
+dat_trait_simp <- dat_trait_simp %>%
+  group_by(vect_sp_codes, trait_name) %>%
+  summarise(trait_mean = mean(trait_mean))
+
+### write trait data into matrix form
+trait_wide <- dat_trait_simp %>%
+  pivot_wider(names_from = trait_name,
+              values_from = trait_mean)
+### filter out LARI LAR because there is no trait data
+trait_wide <- trait_wide %>%
+  filter(!vect_sp_codes == "LARI LAR")
+
+
+### save trait data as csv
+write.csv(trait_wide, "trait_matrix.csv")
+
+### merge with t1 data
+t1_traits_dat <- merge(x = wcan_t1, 
+                       y = trait_wide,
+                       by.x = "NFI_species",
+                       by.y = "vect_sp_codes",
+                       all.x = TRUE)
+t1_traits_dat$...1 <- NULL
+
+### save t1 and traits as csv
+write.csv(t1_traits_dat, "t1_traits_dat.csv")
+
+```
+
+
 ### forms site-species matrix (reshape data)
-site_dat <- read.csv("our_data/biomass_materials/wcan_biomass_total.csv")
+```{r}
+### create the matrix so that the rows are nfi plots and the columns are species, with values identifying biomass composition within each plot per species
+t1_site_dat <- read.csv("our_data/functional_diversity/wcan_t1.csv")
 
-site_dat_simp <- site_dat %>%
-  dplyr::select(NFI_species,
-                nfi_plot,
-                meas_date,
-                biomass_composition) #removed utm_n, utm_e
-site_summ <- site_dat_simp %>%
-  group_by(NFI_species, nfi_plot) %>%
-  summarise(n_surveyed = length(unique(biomass_composition)))
+t1_site_simp <- t1_site_dat %>%
+  dplyr::select(nfi_plot,
+                NFI_species,
+                biomass_composition)
 
-site_wide <- site_summ %>%
-  dplyr::select(NFI_species, nfi_plot, n_surveyed)
+### filter out LARI LAR because there is no trait data
+t1_site_simp <- t1_site_simp %>%
+  filter(!NFI_species == "LARI LAR")
+### filter out ACER SPI because there it is not present
+t1_site_simp <- t1_site_simp %>%
+  filter(!NFI_species == "ACER SPI")
 
-site_wide <- site_wide %>%
+t1_site_wide <- t1_site_simp %>%
   pivot_wider(names_from = NFI_species,
-              values_from = n_surveyed)
+              values_from = biomass_composition)
 
-### change NA ->0
-site_wide[is.na(site_wide)] <- 0
+
+### change NA <- 0
+t1_site_wide[is.na(t1_site_wide)] <- 0
+
+### which sites have no species
+t1_site_no <- t1_site_wide %>%
+  mutate(rowSums(t1_site_wide[, c(2:50)]))
+
+rowSums(t1_site_no[, c(2:50)])
+
+### save as csv
+write.csv(t1_site_wide, "t1_site_matrix.csv")
+
+```
+
+### format datasets so that each matrix has the same set of species, names, and order
+```{r}
+### filter out sites without trees (biomass = 0)
+no_biomass <- c("1039166", "1101001", "1101411", "1128496", "1142211", "1231676", "1280191", "1362476", "1396931")
+site_fd <- t1_site_wide %>%
+  filter(!nfi_plot %in% no_biomass)
+site_fd <- site_fd[, c(colnames(t1_site_wide) %in% trait_wide$vect_sp_codes)]
+                              
+site_fd <- site_fd[,order(colnames(site_fd))]
+
+
+### list of species in matrix
+species <- colnames(site_fd)
+
+trait_fd <- trait_wide %>%
+  filter(vect_sp_codes %in% species)
+trait_fd <- trait_fd[order(trait_fd$vect_sp_codes), ]
+trait_fd <- trait_fd %>% remove_rownames %>%
+  column_to_rownames(var = "vect_sp_codes")
+trait_fd[is.na(trait_fd)] <- 0
+
+```
+
+### recheck which plots have 0 trees
+```{r}
+### figure out which plot has no trees
+site_check <- site_fd 
+site_check <- site_check %>%
+  rowid_to_column()
+site_check$sum_trees <- rowSums(site_check) - site_check$rowid 
+site_check <- site_check %>%
+  filter(sum_trees < 1)
+# rowid: 204, 371, 381, 383, 393
+drop <- c("204", "371", "381", "383", "393")
+site_fd[!(row.names(site_fd) %in% drop), ]
+
+### check again
+site_fd <- site_fd %>% 
+  filter_all(any_vars(. != 0))
+
+### save trait and site data as csv
+write.csv(site_fd, "t1_site_fd.csv")
+write.csv(trait_fd, "t1_trait_fd.csv")
+```
+
+### calculating functional diversity
+```{r}
+### syntax: dbFD(trait_matrix, species_matrix, corr = c("corr_method"))
+FD_calc <- dbFD(trait_fd, 
+                site_fd,
+                
+                ### add calculations
+                calc.FRic = TRUE,
+                calc.FDiv = TRUE,
+                calc.CWM = TRUE,
+                
+                ## weight by sp abund
+                w.abun = TRUE,
+                
+                ## correction for distance matrix
+                corr = "cailliez") 
+
+### warning from input
+#Warning in is.euclid(x.dist) : Zero distance(s)
+#Warning in is.euclid(x.dist) : Zero distance(s)
+#FEVe: Could not be calculated for communities with <3 functionally singular species. 
+#FDis: Equals 0 in communities with only one functionally singular species. 
+#FRic: To respect s > t, FRic could not be calculated for communities with <3 functionally singular species. 
+#FRic: Dimensionality reduction was required. The last 29 PCoA axes (out of 31 in total) were removed. 
+#Warning in is.euclid(x.dist) : Zero distance(s)
+#FRic: Quality of the reduced-space representation = 0.3432491 
+#Warning in is.euclid(x.dist) : Zero distance(s)
+#Warning in is.euclid(x.dist) : Zero distance(s)
+#FDiv: Could not be calculated for communities with <3 functionally singular species. 
+
+### Extract outputs to datafram
+
+### extract evenness to dataframe
+feven_t1 <- as.data.frame(FD_calc[["FEve"]]) 
+
+### extract diversity to dataframe
+fdiv_t1 <- as.data.frame(FD_calc[["FDiv"]]) 
+
+### extract richness to dataframe
+fric_t1 <- as.data.frame(FD_calc[["FRic"]]) 
+
+### extract community weighted means to dataframe
+fcwm_t1 <- as.data.frame(FD_calc[["CWM"]])
+
+# ### extract Rao's Q to dataframe
+frao_t1 <- as.data.frame(FD_calc[["RQao"]]) 
+
+# ### extract functional group richness to dataframe
+fgr_t1 <- as.data.frame(FD_calc[["FGR"]]) 
+
+### extract dissimilarity to dataframe
+fdis_t1 <- as.data.frame(FD_calc[["FDis"]])
+
+### Combine outputs into single data table
+df_list <- c(feven_t1, fdiv_t1, fric_t1, fdis_t1, fcwm_t1)
+fd_metrics <- as.data.table(df_list)
+
+### ERROR PAST THIS POINT!!
+fd_metrics <- fd_metrics %>% 
+  remove_rownames %>% 
+  column_to_rownames(var = "Row.names") %>%
+  rename('fdiv' = "FD_calc[[\"FDiv\"]]",
+         'feven' = "FD_calc[[\"FEve\"]]",
+         'fric' = "FD_calc[[\"FRic\"]]",
+         'fdis' = "FD_calc[[\"FDis\"]]")
+fd_metrics$plot_state <- row.names(fdis)
 
 
 ```
