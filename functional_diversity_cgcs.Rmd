@@ -27,6 +27,8 @@ data(package = "fundiversity")
 ### number of time-period observations per plot
 install.packages("lubridate")
 
+wcan_biomass_total <- read.csv("our_data/biomass_materials/wcan_biomass_total.csv")
+
 trait_summ <- wcan_biomass_total %>%
   group_by(nfi_plot) %>%
   summarise(n_surveyed = length(unique(meas_date)))
@@ -81,12 +83,17 @@ wcan_dat <- wcan_dat %>%
 wcan_dat <- wcan_dat %>%
   mutate(meas_year = year(ymd(wcan_dat$meas_date)))
 
+write.csv(wcan_dat, "wcan_dat.csv")
+
 ### df of time step and plots
 wcan_time_step <- wcan_dat %>%
   dplyr::select(nfi_plot, meas_date, time_step, meas_year) %>%
   distinct()
 write.csv(wcan_time_step, "wcan_time_step.csv")
+```
 
+### t1 plots
+```{r}
 ### make df for t1 plots
 wcan_t1 <- wcan_dat %>%
   filter(time_step == "t1")
@@ -240,10 +247,13 @@ dat_trait_simp <- dat_trait_simp %>%
 trait_wide <- dat_trait_simp %>%
   pivot_wider(names_from = trait_name,
               values_from = trait_mean)
+
+### save trait data before alterations
+write.csv(trait_wide, "trait_wide.csv")
+
 ### filter out LARI LAR because there is no trait data
 trait_wide <- trait_wide %>%
   filter(!vect_sp_codes == "LARI LAR")
-
 
 ### save trait data as csv
 write.csv(trait_wide, "trait_matrix.csv")
@@ -337,17 +347,19 @@ site_fd[!(row.names(site_fd) %in% drop), ]
 ### check again
 site_fd <- site_fd %>% 
   filter_all(any_vars(. != 0))
+site_fd$...1 <- NULL
+
 
 ### save trait and site data as csv
 write.csv(site_fd, "t1_site_fd.csv")
 write.csv(trait_fd, "t1_trait_fd.csv")
 ```
 
-### calculating functional diversity
+### calculating functional diversity (t1)
 ```{r}
 ### syntax: dbFD(trait_matrix, species_matrix, corr = c("corr_method"))
-FD_calc <- dbFD(trait_fd, 
-                site_fd,
+FD_calc <- dbFD(t1_trait_fd, 
+                t1_site_fd,
                 
                 ### add calculations
                 calc.FRic = TRUE,
@@ -412,4 +424,109 @@ fd_metrics$plot_state <- row.names(fdis)
 
 
 ```
+### t2 plots
+```{r}
+### make df for t2 plots
+wcan_t2 <- wcan_dat %>%
+  filter(time_step == "t2")
 
+wcan_t2 <- wcan_t2 %>%
+  dplyr::select(nfi_plot,
+                meas_date,
+                NFI_species,
+                time_step,
+                biomass_composition,
+                meas_year)
+
+### total biomass per plot
+plot_biomass_tot_t2 <- wcan_t2 %>%
+  group_by(nfi_plot, meas_date) %>%
+  summarise(total_biomass_plot = sum(biomass_composition))
+
+### merge 
+wcan_t2 <- merge(wcan_t2, plot_biomass_tot_t2,
+                 by = c("nfi_plot", "meas_date"))
+
+### percent biomass (per plot)
+wcan_t2 <- wcan_t2 %>%
+  mutate(pct_biomass = biomass_composition/total_biomass_plot)
+
+### save as csv
+write.csv(wcan_t2, "wcan_t2.csv")
+
+```
+
+### add traits
+```{r}
+### open trait data 
+trait_wide_t2 <- read.csv("our_data/functional_diversity/trait_wide.csv")
+
+### merge with t2 data
+t2_traits_dat <- merge(x = wcan_t2, 
+                       y = trait_wide_t2,
+                       by.x = "NFI_species",
+                       by.y = "vect_sp_codes",
+                       all.x = TRUE)
+
+
+### save t2 and traits as csv
+write.csv(t2_traits_dat, "t2_traits_dat.csv")
+
+
+```
+
+### forms site-species matrix (reshape data)
+```{r}
+### create the matrix so that the rows are nfi plots and the columns are species, with values identifying biomass composition within each plot per species
+t2_site_dat <- read.csv("our_data/functional_diversity/wcan_t2.csv")
+
+t2_site_simp <- t2_site_dat %>%
+  dplyr::select(nfi_plot,
+                NFI_species,
+                biomass_composition)
+
+t2_site_wide <- t2_site_simp %>%
+  pivot_wider(names_from = NFI_species,
+              values_from = biomass_composition)
+
+### change NA <- 0
+t2_site_wide[is.na(t2_site_wide)] <- 0
+
+### save as csv
+write.csv(t2_site_wide, "t2_site_matrix.csv")
+
+### format datasets so each matrix has the same species and order
+t2_site_fd <- t2_site_wide[, c(colnames(t2_site_wide) %in% trait_wide$vect_sp_codes)]
+t2_site_fd <- t2_site_fd[,order(colnames(t2_site_fd))]
+
+
+### list of species in matrix
+species <- colnames(t2_site_fd)
+
+t2_trait_fd <- trait_wide_t2 %>%
+  filter(vect_sp_codes %in% species)
+t2_trait_fd <- t2_trait_fd[order(t2_trait_fd$vect_sp_codes), ]
+t2_trait_fd <- t2_trait_fd %>% remove_rownames %>%
+  column_to_rownames(var = "vect_sp_codes")
+t2_trait_fd[is.na(t2_trait_fd)] <- 0
+
+### figure out which plot has no trees
+t2_site_check <- t2_site_fd 
+t2_site_check <- t2_site_check %>%
+  rowid_to_column()
+t2_site_check$sum_trees <- rowSums(t2_site_check) - t2_site_check$rowid 
+t2_site_fd <- t2_site_check %>%
+  filter(sum_trees > 1)
+
+### check again
+t2_site_fd <- t2_site_fd %>% 
+  filter_all(any_vars(. != 0))
+
+
+### save trait and site data as csv
+t2_trait_fd <- write.csv(t2_trait_fd, "t2_trait_fd.csv")
+t2_site_fd <- write.csv(t2_site_fd, "t2_site_fd.csv")
+
+```
+
+### calculating functional diversity (t2)
