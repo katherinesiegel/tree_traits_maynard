@@ -1,0 +1,77 @@
+---
+title: "testing mapping"
+output: html_document
+date: "2024-07-17"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### resources for mapping
+https://rpubs.com/jdlecy/making_maps_in_r 
+https://methodenlehre.github.io/intro-to-rstats/plotting-with-ggplot2.html 
+  ## good option for plotting functional diversity
+  
+### testing mapping 
+```{r}
+library(ggplot2)
+library(sf)
+
+wcan_biomass_map <- read.csv("our_data/biomass_materials/wcan_biomass_total.csv")
+
+### test 1
+
+spat_wcan <- st_as_sf(wcan_biomass_map,
+                    coords = c(5:6),
+                    crs = 4269)
+
+wcan_plots <- spat_wcan %>%
+  dplyr::select(nfi_plot,
+                geometry) %>%
+  distinct()
+wcan_plots %>%
+  ggplot() +
+  geom_sf() # x_start not found
+
+### test 2
+
+wcan_plots <- data.frame(
+  lon = wcan_biomass_map$utm_e,
+  lat = wcan_biomass_map$utm_n,
+  name = wcan_biomass_map$nfi_plot
+)
+
+# Convert to sf object
+wcan_plots <- st_as_sf(wcan_plots, coords = c("lon", "lat"), crs = 4269) %>%
+  distinct()
+
+ggplot(data = wcan_plots) +
+  geom_sf() +
+  ggtitle("Map of Sites") +
+  theme_minimal()
+# Warning in st_is_longlat(x) : bounding box has potentially an invalid value range for longlat data
+# Error: Invalid index: field name 'x_start' not found
+
+### test 3
+canada <- map_data("world", region = "Canada")
+
+library(lattice)
+install.packages("leafpop")
+library(leafpop)
+install.packages("mapview")
+library(mapview)
+
+map_plot <- sf::st_as_sf(wcan_biomass_map, coords = c("utm_e", "utm_n"), crs = 4269)
+
+wcan_sf <- read.sf("map_plot")
+
+# plot for visual inspection
+mapview::mapview(map_plot)
+mapview(map_plot)
+# plots an interactive map but without the plot sites
+
+```
+
+
+

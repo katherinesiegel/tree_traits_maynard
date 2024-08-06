@@ -31,15 +31,18 @@ Note that the `echo = FALSE` parameter was added to the code chunk to prevent pr
 ```{r}
 library("ggplot2")
 install.packages("phyloseq")
-library("plyr")
+library("dplyr")
 library("vegan")
 
 ```
+
 ```{r}
 MB_ord_biomass <- read.csv("C:/Users/krist/OneDrive/Desktop/R/tree_traits_maynard/our_data/biomass_materials/MB_biomass_total.csv")
 
 taxa <- unique(MB_ord_biomass$species)
 samples <- sort(unique(MB_ord_biomass$nfi_plot))
+
+MB_ord_matrix <- MB_ord_biomass
 
 data1 <- matrix(nrow = length(samples), ncol = length(taxa), dimnames = list (samples, taxa))
 
@@ -54,4 +57,25 @@ for(r in 1:nrow(MB_ord_biomass)){
 https://www.rpubs.com/RGrieger/533895 
 https://cran.r-project.org/web/packages/vegan/vignettes/intro-vegan.pdf
 https://ourcodingclub.github.io/tutorials/ordination/
+
+### western canada ordination plot
+```{r}
+wcan_ord_biomass <- read.csv("our_data/functional_diversity/wcan_t1.csv")
+
+### simplify data
+wcan_ord_biomass <- wcan_ord_biomass %>%
+  dplyr::select(nfi_plot,
+                NFI_species,
+                biomass_composition)
+as.numeric(wcan_ord_biomass$nfi_plot)
+
+pca <- rda(wcan_ord_biomass)
+
+# Extract scores for plotting
+scores <- scores(pca, display = "sites")
+
+# Plot PCA
+plot(scores, type = "n")
+text(scores)
+```
 
