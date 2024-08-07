@@ -7,14 +7,64 @@ date: "2024-07-16"
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 
+### open packages
 library(tidyverse)
 library(sf)
 library(terra)
+
+### don't allow scientific notation
+options(scipen = 999)
 ```
 ### resources for mapping
 https://rpubs.com/jdlecy/making_maps_in_r 
 https://methodenlehre.github.io/intro-to-rstats/plotting-with-ggplot2.html 
   ## good option for plotting functional diversity
+
+## fix map issue
+```{r}
+### open biomass csv
+wcan_biomass <- read.csv("our_data/biomass_materials/wcan_biomass_total.csv")
+
+### get 1 row per plot
+wcan_biomass <- wcan_biomass %>%
+  dplyr::select(-X, -meas_date, 
+                -NFI_species, 
+                -biomass_composition) %>%
+  distinct()
+
+### make df spatial
+spat_wcan <- st_as_sf(wcan_biomass,
+                      coords = c("utm_n", "utm_e"),
+                      crs = 26914)
+
+### visualize
+spat_wcan %>%
+  ggplot() +
+  geom_sf()
+
+st_write(spat_wcan, "our_data/biomass_materials/test_pts_4.shp")
+
+### test 2
+
+wcan_plots <- data.frame(
+  lon = wcan_biomass_map$utm_e,
+  lat = wcan_biomass_map$utm_n,
+  name = wcan_biomass_map$nfi_plot
+)
+
+# Convert to sf object
+wcan_plots <- st_as_sf(wcan_plots, coords = c("lon", "lat"), crs = 4269) %>%
+  distinct()
+
+ggplot(data = wcan_plots) +
+  geom_sf() +
+  ggtitle("Map of Sites") +
+  theme_minimal()
+# Warning in st_is_longlat(x) : bounding box has potentially an invalid value range for longlat data
+# Error: Invalid index: field name 'x_start' not found
+```
+
+
 
 ## demo british columbia - KS
 ```{r}
