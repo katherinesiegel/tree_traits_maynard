@@ -313,7 +313,8 @@ write.csv(t1_site_wide, "t1_site_matrix.csv")
 ### filter out sites without trees (biomass = 0)
 no_biomass <- c("1039166", "1101001", "1101411", "1128496", "1142211", "1231676", "1280191", "1362476", "1396931")
 site_fd <- t1_site_wide %>%
-  filter(!nfi_plot %in% no_biomass)
+  filter(!nfi_plot %in% no_biomass) %>%
+  column_to_rownames(var = "nfi_plot")
 site_fd <- site_fd[, c(colnames(t1_site_wide) %in% trait_wide$vect_sp_codes)]
                               
 site_fd <- site_fd[,order(colnames(site_fd))]
@@ -357,6 +358,15 @@ write.csv(trait_fd, "t1_trait_fd.csv")
 
 ### calculating functional diversity (t1)
 ```{r}
+### drop extra column
+t1_site_fd <- read.csv("our_data/functional_diversity/t1_site_fd.csv")
+t1_site_fd$X <- NULL
+
+t1_trait_fd <- read.csv("our_data/functional_diversity/t1_trait_fd.csv")
+
+### make species row name
+t1_trait_fd <- t1_trait_fd %>% column_to_rownames(var = "X")
+
 ### syntax: dbFD(trait_matrix, species_matrix, corr = c("corr_method"))
 FD_calc <- dbFD(t1_trait_fd, 
                 t1_site_fd,
@@ -412,18 +422,26 @@ fdis_t1 <- as.data.frame(FD_calc[["FDis"]])
 df_list <- c(feven_t1, fdiv_t1, fric_t1, fdis_t1, fcwm_t1)
 fd_metrics <- as.data.table(df_list)
 
-### ERROR PAST THIS POINT!!
+### combine into single table
 fd_metrics <- fd_metrics %>% 
-  remove_rownames %>% 
-  column_to_rownames(var = "Row.names") %>%
+  #remove_rownames %>% 
+  #column_to_rownames(var = "Row.names") %>%
   rename('fdiv' = "FD_calc[[\"FDiv\"]]",
          'feven' = "FD_calc[[\"FEve\"]]",
          'fric' = "FD_calc[[\"FRic\"]]",
          'fdis' = "FD_calc[[\"FDis\"]]")
-fd_metrics$plot_state <- row.names(fdis)
+#fd_metrics$plot_state <- row.names(fdis)
 
+write_csv(fd_metrics, "t1_fd_metrics.csv")
+
+### CWM
+fcwm_t1 <- fcwm_t1 %>%
+  rownames_to_column()
+
+write_csv(fcwm_t1, "t1_cwm.csv")
 
 ```
+
 ### t2 plots
 ```{r}
 ### make df for t2 plots
@@ -530,3 +548,966 @@ t2_site_fd <- write.csv(t2_site_fd, "t2_site_fd.csv")
 ```
 
 ### calculating functional diversity (t2)
+```{r}
+### remove additional site columns
+t2_site_fd$rowid <- NULL
+t2_site_fd$...1 <- NULL
+t2_site_fd$sum_trees <- NULL
+
+### change col to rownames
+t2_trait_fd <- t2_trait_fd %>% column_to_rownames(var = "...1")
+t2_trait_fd$X <- NULL
+
+### syntax: dbFD(trait_matrix, species_matrix, corr = c("corr_method"))
+FD_calc_t2 <- dbFD(t2_trait_fd, 
+                t2_site_fd,
+                
+                ### add calculations
+                calc.FRic = TRUE,
+                calc.FDiv = TRUE,
+                calc.CWM = TRUE,
+                
+                ## weight by sp abund
+                w.abun = TRUE,
+                
+                ## correction for distance matrix
+                corr = "cailliez") 
+
+#Warning in is.euclid(x.dist) : Zero distance(s)
+#Warning in is.euclid(x.dist) : Zero distance(s)
+#FEVe: Could not be calculated for communities with <3 functionally singular species. 
+#FDis: Equals 0 in communities with only one functionally singular species. 
+#FRic: To respect s > t, FRic could not be calculated for communities with <3 functionally singular species. 
+#FRic: Dimensionality reduction was required. The last 9 PCoA axes (out of 11 in total) were removed. 
+#Warning in is.euclid(x.dist) : Zero distance(s)
+#FRic: Quality of the reduced-space representation = 0.5738699 
+#Warning in is.euclid(x.dist) : Zero distance(s)
+#Warning in is.euclid(x.dist) : Zero distance(s)
+#FDiv: Could not be calculated for communities with <3 functionally singular species. 
+
+### Extract outputs to datafram
+
+### extract evenness to dataframe
+feven_t2 <- as.data.frame(FD_calc_t2[["FEve"]]) 
+
+### extract diversity to dataframe
+fdiv_t2 <- as.data.frame(FD_calc_t2[["FDiv"]]) 
+
+### extract richness to dataframe
+fric_t2 <- as.data.frame(FD_calc_t2[["FRic"]]) 
+
+### extract community weighted means to dataframe
+fcwm_t2 <- as.data.frame(FD_calc_t2[["CWM"]])
+
+# ### extract Rao's Q to dataframe
+frao_t2 <- as.data.frame(FD_calc_t2[["RQao"]]) 
+
+# ### extract functional group richness to dataframe
+fgr_t2 <- as.data.frame(FD_calc_t2[["FGR"]]) 
+
+### extract dissimilarity to dataframe
+fdis_t2 <- as.data.frame(FD_calc_t2[["FDis"]])
+
+### Combine outputs into single data table
+df_list <- c(feven_t2, fdiv_t2, fric_t2, fdis_t2, fcwm_t2)
+fd_metrics_t2 <- as.data.table(df_list)
+
+### combine into single table
+fd_metrics_t2 <- fd_metrics_t2 %>% 
+  #remove_rownames %>% 
+  #column_to_rownames(var = "Row.names") %>%
+  rename('fdiv' = "FD_calc_t2[[\"FDiv\"]]",
+         'feven' = "FD_calc_t2[[\"FEve\"]]",
+         'fric' = "FD_calc_t2[[\"FRic\"]]",
+         'fdis' = "FD_calc_t2[[\"FDis\"]]")
+#fd_metrics$plot_state <- row.names(fdis)
+
+write_csv(fd_metrics_t2, "t2_fd_metrics.csv")
+
+### CWM
+fcwm_t2 <- fcwm_t2 %>%
+  rownames_to_column()
+
+write_csv(fcwm_t2, "t2_cwm.csv")
+```
+
+### CWM trends over time
+```{r}
+### open cwm files for t1 & t2
+cwm_t1 <- read.csv("our_data/functional_diversity/t1_cwm.csv") %>%
+  mutate(time_step = "t1")
+cwm_t2 <- read.csv("our_data/functional_diversity/t2_cwm.csv") %>%
+  mutate(time_step = "t2")
+
+### rbind files
+tot_cwm <- rbind(cwm_t1, cwm_t2)
+
+### rename traits
+tot_cwm <- tot_cwm %>%
+  dplyr::select(bark_thickness = bark.thickness,
+                bud_burst_mean = bud.burst.timing..mean.month.,
+                clonal_growth_form = clonal.growth.form,
+                coarse_root_depth = coarse.root.rooting.depth,
+                cold_tolerance,
+                cone_serotiny = cone.serotiny,
+                dispersal_distance = dispersal.distance,
+                dispersal_syndrome = dispersal.syndrome,
+                drought_tolerance,
+                bud_burst_early = earliest.bud.burst.timing..month.,
+                fire_resistance,
+                fire_tolerance,
+                foliage = foliage.type..deciduous.or.evergreen.,
+                bud_burst_late = latest.bud.burst.timing..month.,
+                leaf_dry_matter_content = leaf.dry.matter.content,
+                leaf_flammability = leaf.flammability,
+                leaf_force_punch = leaf.force.to.punch,
+                leaf_photosyn_rate = leaf.photosynthetic.rate,
+                leaf_text_coarse = leaf.texture..coarseness.,
+                leaf_thickness = leaf.thickness,
+                leaf_length,
+                max_height = maximum.height,
+                plant_height_veg = plant.height..vegetative,
+                resprout_ability = resprouting.ability,
+                shade_tolerance,
+                specific_leaf_area = specific.leaf.area,
+                waterlogging_tolerance,
+                wood_density = wood..or.stem.specific..density,
+                 water_potential_50_loss_stem = water.potential.at.50..loss.of.stem.hydraulic.conductivity,
+                xylem_conductance = xylem.conductance,
+                low_branch_height = height.of.lowest.branch,
+                hydraulic_safety_margin_50 = hydraulic.safety.margin.50.,
+                hydraulic_safety_margin_88 = hydraulic.safety.margin.88.,
+                leaf_mass_area = leaf.mass.area,
+                min_midday_xylem = minimum.midday.xylem.pressure.potential,
+                seed_bank_longevity = seed.bank.longevity,
+                slope_vulnerability_curve = slope.of.vulnerability.curve,
+                stem_conduit_diam = stem.conduit.diameter..vessels.and.tracheids.,
+                water_potential_12_loss_stem = water.potential.at.12..loss.of.stem.hydraulic.conductivity,
+                water_potential_88_loss_stem = water.potential.at.88..loss.of.stem.hydraulic.conductivity,
+                deg_self_pruning = degree.of.self.pruning,
+                photosynth_water_effic = photosynthetic.water.use.efficiency,
+                specific_leaf_conduct = specific.leaf.conductivity,
+                stem_conduit_dens = stem.conduit.density..vessels.and.tracheids.,
+                stomatal_conductance = stomatal.conductance,
+                seedbank_duration = seedbank.duration,
+                leaf_toughness = leaf.toughness,
+                min_predawn_xylem = minimum.predawn.xylem.pressure.potential,
+                stem_xylem_vulnerability_p50 = stem.xylem.embolism.vulnerability..P50,
+                leaf_texture = Leaf.texture..sclerophylly..physical.strength..toughness.,
+                photosyn_rate_per_leaf_area = Photosynthesis.rate.per.leaf.area,
+                plant_height_gen = Plant.height.generative,
+                leaf_water_content = leaf.water.content,
+                seedbank_density = seedbank.density,
+                stomata_density = stomata.density,
+                relative_growth_rate = relative.growth.rate,
+                water_use_effic = intrinsic.water.use.efficiency,
+                time_step)
+
+### write as csv
+write_csv(tot_cwm, "cwm_total.csv")
+
+### make cwm long
+long_cwm <- tot_cwm %>%
+  pivot_longer(cols = bark_thickness:water_use_effic)
+
+### change NA <- 0
+long_cwm[is.na(long_cwm)] <- 0
+
+### get trait means
+cwm_summ <- long_cwm %>%
+  group_by(time_step, name) %>%
+  summarise(mean_trait_val = mean(value,
+                                  na.rm = TRUE),
+            sd_trait_val = sd(value,
+                              na.rm = TRUE))
+### write as csv
+write_csv(cwm_summ, "cwm_mean_trait_values.csv")
+
+### time steps
+cwm_summ$time_step <- as.factor(cwm_summ$time_step)
+
+### visualize bud burst
+cwm_bud_burst <- cwm_summ %>%
+  filter(name %in% c("bud_burst_mean",
+                      "bud_burst_early",
+                      "bud_burst_late")) %>%
+  ggplot() +
+  geom_point(aes(x = time_step,
+                 y = mean_trait_val)) +
+  geom_errorbar(aes(x = time_step,
+                    ymin = mean_trait_val - sd_trait_val,
+                    ymax = mean_trait_val + sd_trait_val),
+                width = 0.1) +
+  xlab("Time step") +
+  ylab("Bud burst timing (month)") +
+  facet_wrap(~name,
+             scales = "free")
+
+ggsave("cwm_bbt_time.png",
+       width = 10, height = 7)
+
+### visualize bark & leaf thickness
+cwm_bud_burst <- cwm_summ %>%
+  filter(name %in% c("bark_thickness",
+                     "leaf_thickness")) %>%
+  ggplot() +
+  geom_point(aes(x = time_step,
+                 y = mean_trait_val)) +
+  geom_errorbar(aes(x = time_step,
+                    ymin = mean_trait_val - sd_trait_val,
+                    ymax = mean_trait_val + sd_trait_val),
+                width = 0.1) +
+  xlab("Time step") +
+  ylab("Mean bark thickness (mm)") +
+  facet_wrap(~name,
+             scales = "free")
+
+ggsave("cwm_thick_time.png",
+       width = 10, height = 7)
+
+### visualize plant height gen, veg
+cwm_plant_height <- cwm_summ %>%
+  filter(name %in% c("plant_height_veg",
+                     "plant_height_gen",
+                     "low_branch_height",
+                     "max_height")) %>%
+  ggplot() +
+  geom_point(aes(x = time_step,
+                 y = mean_trait_val)) +
+  geom_errorbar(aes(x = time_step,
+                    ymin = mean_trait_val - sd_trait_val,
+                    ymax = mean_trait_val + sd_trait_val),
+                width = 0.1) +
+  xlab("Time step") +
+  ylab("Plant height (m)") +
+  facet_wrap(~name,
+             scales = "free")
+
+ggsave("cwm_plant_height_time.png",
+       width = 10, height = 7)
+
+### visualize leaf length
+cwm_leaf_length <- cwm_summ %>%
+  filter(name %in% c("leaf_length")) %>%
+  ggplot() +
+  geom_point(aes(x = time_step,
+                 y = mean_trait_val)) +
+  geom_errorbar(aes(x = time_step,
+                    ymin = mean_trait_val - sd_trait_val,
+                    ymax = mean_trait_val + sd_trait_val),
+                width = 0.1) +
+  xlab("Time step") +
+  ylab("Leaf length") +
+  facet_wrap(~name,
+             scales = "free")
+
+ggsave("cwm_leaf_length_time.png",
+       width = 10, height = 7)
+
+### visualize water loss & safety margin
+cwm_MPa <- cwm_summ %>%
+  filter(name %in% c("water_potential_50_loss_stem",
+                     "water_potential_88_loss_stem",
+                     "water_potential_12_loss_stem",
+                     "hydraulic_safety_margin_50",
+                     "hydraulic_safety_margin_88",
+                     "stem_xylem_vulnerability_p50")) %>%
+  ggplot() +
+  geom_point(aes(x = time_step,
+                 y = mean_trait_val)) +
+  geom_errorbar(aes(x = time_step,
+                    ymin = mean_trait_val - sd_trait_val,
+                    ymax = mean_trait_val + sd_trait_val),
+                width = 0.1) +
+  xlab("Time step") +
+  ylab("MPa") +
+  facet_wrap(~name,
+             scales = "free")
+
+ggsave("cwm_MPa_time.png",
+       width = 10, height = 7)
+
+ ### visualize photosynthesis
+cwm_photosyn <- cwm_summ %>%
+  filter(name %in% c("photosyn_rate_per_leaf_area",
+                     "leaf_photosyn_rate")) %>%
+  ggplot() +
+  geom_point(aes(x = time_step,
+                 y = mean_trait_val)) +
+  geom_errorbar(aes(x = time_step,
+                    ymin = mean_trait_val - sd_trait_val,
+                    ymax = mean_trait_val + sd_trait_val),
+                width = 0.1) +
+  xlab("Time step") +
+  ylab("micromol/m2/s") +
+  facet_wrap(~name,
+             scales = "free")
+
+ggsave("cwm_photosyn_time.png",
+       width = 10, height = 7)
+
+### visualize seedbank
+cwm_seedbank <- cwm_summ %>%
+  filter(name %in% c("seedbank_density",
+                     "seedbank_duration")) %>%
+  ggplot() +
+  geom_point(aes(x = time_step,
+                 y = mean_trait_val)) +
+  geom_errorbar(aes(x = time_step,
+                    ymin = mean_trait_val - sd_trait_val,
+                    ymax = mean_trait_val + sd_trait_val),
+                width = 0.1) +
+  xlab("Time step") +
+  ylab("years") +
+  facet_wrap(~name,
+             scales = "free")
+
+ggsave("cwm_seedbank_time.png",
+       width = 10, height = 7)
+
+### visualize density - stem conduit & stomata
+cwm_dens <- cwm_summ %>%
+  filter(name %in% c("stem_conduit_dens",
+                    "stomata_density")) %>%
+  ggplot() +
+  geom_point(aes(x = time_step,
+                 y = mean_trait_val)) +
+  geom_errorbar(aes(x = time_step,
+                    ymin = mean_trait_val - sd_trait_val,
+                    ymax = mean_trait_val + sd_trait_val),
+                width = 0.1) +
+  xlab("Time step") +
+  ylab("per mm2") +
+  facet_wrap(~name,
+             scales = "free")
+
+ggsave("cwm_per_mm2_time.png",
+       width = 10, height = 7)
+
+### visualize xylem conductance
+cwm_xy_cond <- cwm_summ %>%
+  filter(name %in% c("xylem_conductance")) %>%
+  ggplot() +
+  geom_point(aes(x = time_step,
+                 y = mean_trait_val)) +
+  geom_errorbar(aes(x = time_step,
+                    ymin = mean_trait_val - sd_trait_val,
+                    ymax = mean_trait_val + sd_trait_val),
+                width = 0.1) +
+  xlab("Time step") +
+  ylab("(mu)1 hr-I mm- 2") +
+  facet_wrap(~name,
+             scales = "free")
+
+ggsave("cwm_xylem_conductance.png",
+       width = 10, height = 7)
+
+### visualize leaf dry matter
+cwm_leaf_dry <- cwm_summ %>%
+  filter(name %in% c("leaf_dry_matter_content")) %>%
+  ggplot() +
+  geom_point(aes(x = time_step,
+                 y = mean_trait_val)) +
+  geom_errorbar(aes(x = time_step,
+                    ymin = mean_trait_val - sd_trait_val,
+                    ymax = mean_trait_val + sd_trait_val),
+                width = 0.1) +
+  xlab("Time step") +
+  ylab("g/g") +
+  facet_wrap(~name,
+             scales = "free")
+
+ggsave("cwm_leaf_dry.png",
+       width = 10, height = 7)
+
+### visualize relative growth rate
+cwm_rgr <- cwm_summ %>%
+  filter(name %in% c("relative_growth_rate")) %>%
+  ggplot() +
+  geom_point(aes(x = time_step,
+                 y = mean_trait_val)) +
+  geom_errorbar(aes(x = time_step,
+                    ymin = mean_trait_val - sd_trait_val,
+                    ymax = mean_trait_val + sd_trait_val),
+                width = 0.1) +
+  xlab("Time step") +
+  ylab("g/g/d") +
+  facet_wrap(~name,
+             scales = "free")
+
+ggsave("cwm_rgr.png",
+       width = 10, height = 7)
+
+### visualize leaf mass area
+cwm_lma <- cwm_summ %>%
+  filter(name %in% c("leaf_mass_area")) %>%
+  ggplot() +
+  geom_point(aes(x = time_step,
+                 y = mean_trait_val)) +
+  geom_errorbar(aes(x = time_step,
+                    ymin = mean_trait_val - sd_trait_val,
+                    ymax = mean_trait_val + sd_trait_val),
+                width = 0.1) +
+  xlab("Time step") +
+  ylab("g/m2") +
+  facet_wrap(~name,
+             scales = "free")
+
+ggsave("cwm_leaf_m_a.png",
+       width = 10, height = 7)
+
+### visualize leaf water content
+cwm_lwc <- cwm_summ %>%
+  filter(name %in% c("leaf_water_content")) %>%
+  ggplot() +
+  geom_point(aes(x = time_step,
+                 y = mean_trait_val)) +
+  geom_errorbar(aes(x = time_step,
+                    ymin = mean_trait_val - sd_trait_val,
+                    ymax = mean_trait_val + sd_trait_val),
+                width = 0.1) +
+  xlab("Time step") +
+  ylab("gr H2O / FW*100") +
+  facet_wrap(~name,
+             scales = "free")
+
+ggsave("cwm_leaf_water_cont.png",
+       width = 10, height = 7)
+
+### visualize leaf toughness
+cwm_leaf_tough <- cwm_summ %>%
+  filter(name %in% c("leaf_toughness")) %>%
+  ggplot() +
+  geom_point(aes(x = time_step,
+                 y = mean_trait_val)) +
+  geom_errorbar(aes(x = time_step,
+                    ymin = mean_trait_val - sd_trait_val,
+                    ymax = mean_trait_val + sd_trait_val),
+                width = 0.1) +
+  xlab("Time step") +
+  ylab("kg") +
+  facet_wrap(~name,
+             scales = "free")
+
+ggsave("cwm_leaf_tough.png",
+       width = 10, height = 7)
+
+### visualize leaf conductivity
+cwm_l_cond <- cwm_summ %>%
+  filter(name %in% c("specific_leaf_conduct")) %>%
+  ggplot() +
+  geom_point(aes(x = time_step,
+                 y = mean_trait_val)) +
+  geom_errorbar(aes(x = time_step,
+                    ymin = mean_trait_val - sd_trait_val,
+                    ymax = mean_trait_val + sd_trait_val),
+                width = 0.1) +
+  xlab("Time step") +
+  ylab("kg/m/s/MPa") +
+  facet_wrap(~name,
+             scales = "free")
+
+ggsave("cwm_leaf_conduct.png",
+       width = 10, height = 7)
+
+### visualize wood density
+cwm_wood_dens <- cwm_summ %>%
+  filter(name %in% c("wood_density")) %>%
+  ggplot() +
+  geom_point(aes(x = time_step,
+                 y = mean_trait_val)) +
+  geom_errorbar(aes(x = time_step,
+                    ymin = mean_trait_val - sd_trait_val,
+                    ymax = mean_trait_val + sd_trait_val),
+                width = 0.1) +
+  xlab("Time step") +
+  ylab("kg/m3") +
+  facet_wrap(~name,
+             scales = "free")
+
+ggsave("cwm_wood_dens.png",
+       width = 10, height = 7)
+
+### visualize dispersal distance
+cwm_disp_dist <- cwm_summ %>%
+  filter(name %in% c("dispersal_distance")) %>%
+  ggplot() +
+  geom_point(aes(x = time_step,
+                 y = mean_trait_val)) +
+  geom_errorbar(aes(x = time_step,
+                    ymin = mean_trait_val - sd_trait_val,
+                    ymax = mean_trait_val + sd_trait_val),
+                width = 0.1) +
+  xlab("Time step") +
+  ylab("m") +
+  facet_wrap(~name,
+             scales = "free")
+
+ggsave("cwm_dispers_dist.png",
+       width = 10, height = 7)
+
+### visualize stem conduit diameter
+cwm_stem_cond_diam <- cwm_summ %>%
+  filter(name %in% c("stem_conduit_diam")) %>%
+  ggplot() +
+  geom_point(aes(x = time_step,
+                 y = mean_trait_val)) +
+  geom_errorbar(aes(x = time_step,
+                    ymin = mean_trait_val - sd_trait_val,
+                    ymax = mean_trait_val + sd_trait_val),
+                width = 0.1) +
+  xlab("Time step") +
+  ylab("microm") +
+  facet_wrap(~name,
+             scales = "free")
+
+ggsave("cwm_stem_conduit_diam.png",
+       width = 10, height = 7)
+
+### visualize water use efficiency
+cwm_water_effic <- cwm_summ %>%
+  filter(name %in% c("water_use_effic")) %>%
+  ggplot() +
+  geom_point(aes(x = time_step,
+                 y = mean_trait_val)) +
+  geom_errorbar(aes(x = time_step,
+                    ymin = mean_trait_val - sd_trait_val,
+                    ymax = mean_trait_val + sd_trait_val),
+                width = 0.1) +
+  xlab("Time step") +
+  ylab("micromol/mol") +
+  facet_wrap(~name,
+             scales = "free")
+
+ggsave("cwm_water_effic.png",
+       width = 10, height = 7)
+
+### visualize SLA
+cwm_sla <- cwm_summ %>%
+  filter(name %in% c("specific_leaf_area")) %>%
+  ggplot() +
+  geom_point(aes(x = time_step,
+                 y = mean_trait_val)) +
+  geom_errorbar(aes(x = time_step,
+                    ymin = mean_trait_val - sd_trait_val,
+                    ymax = mean_trait_val + sd_trait_val),
+                width = 0.1) +
+  xlab("Time step") +
+  ylab("mm2/mg") +
+  facet_wrap(~name,
+             scales = "free")
+
+ggsave("cwm_sla.png",
+       width = 10, height = 7)
+
+### visualize stomatal conductance
+cwm_stom_conduc <- cwm_summ %>%
+  filter(name %in% c("stomatal_conductance")) %>%
+  ggplot() +
+  geom_point(aes(x = time_step,
+                 y = mean_trait_val)) +
+  geom_errorbar(aes(x = time_step,
+                    ymin = mean_trait_val - sd_trait_val,
+                    ymax = mean_trait_val + sd_trait_val),
+                width = 0.1) +
+  xlab("Time step") +
+  ylab("mmol/m2/s") +
+  facet_wrap(~name,
+             scales = "free")
+
+ggsave("cwm_stom_conduc.png",
+       width = 10, height = 7)
+
+### visualize xylem pressure potential
+cwm_xylem_press_pot <- cwm_summ %>%
+  filter(name %in% c("min_midday_xylem",
+                     "min_predawn_xylem")) %>%
+  ggplot() +
+  geom_point(aes(x = time_step,
+                 y = mean_trait_val)) +
+  geom_errorbar(aes(x = time_step,
+                    ymin = mean_trait_val - sd_trait_val,
+                    ymax = mean_trait_val + sd_trait_val),
+                width = 0.1) +
+  xlab("Time step") +
+  ylab("MPa") +
+  facet_wrap(~name,
+             scales = "free")
+
+ggsave("cwm_xylem_press_pot.png",
+       width = 10, height = 7)
+
+### visualize leaf force to punch
+cwm_punch <- cwm_summ %>%
+  filter(name %in% c("leaf_force_punch")) %>%
+  ggplot() +
+  geom_point(aes(x = time_step,
+                 y = mean_trait_val)) +
+  geom_errorbar(aes(x = time_step,
+                    ymin = mean_trait_val - sd_trait_val,
+                    ymax = mean_trait_val + sd_trait_val),
+                width = 0.1) +
+  xlab("Time step") +
+  ylab("N/mm2") +
+  facet_wrap(~name,
+             scales = "free")
+
+ggsave("cwm_leaf_force_punch.png",
+       width = 10, height = 7)
+
+### visualize seedbank density
+cwm_seedb_dens <- cwm_summ %>%
+  filter(name %in% c("seedbank_density")) %>%
+  ggplot() +
+  geom_point(aes(x = time_step,
+                 y = mean_trait_val)) +
+  geom_errorbar(aes(x = time_step,
+                    ymin = mean_trait_val - sd_trait_val,
+                    ymax = mean_trait_val + sd_trait_val),
+                width = 0.1) +
+  xlab("Time step") +
+  ylab("seeds/acre") +
+  facet_wrap(~name,
+             scales = "free")
+
+ggsave("cwm_seedbank_dens.png",
+       width = 10, height = 7)
+
+### visualize foliage type
+cwm_foliage <- cwm_summ %>%
+  filter(name %in% c("foliage")) %>%
+  ggplot() +
+  geom_point(aes(x = time_step,
+                 y = mean_trait_val)) +
+  geom_errorbar(aes(x = time_step,
+                    ymin = mean_trait_val - sd_trait_val,
+                    ymax = mean_trait_val + sd_trait_val),
+                width = 0.1) +
+  xlab("Time step") +
+  ylab("foliage type") +
+  facet_wrap(~name,
+             scales = "free")
+
+ggsave("cwm_foliage.png",
+       width = 10, height = 7)
+
+### visualize cone serotiny
+cwm_cone_serot <- cwm_summ %>%
+  filter(name %in% c("cone_serotiny")) %>%
+  ggplot() +
+  geom_point(aes(x = time_step,
+                 y = mean_trait_val)) +
+  geom_errorbar(aes(x = time_step,
+                    ymin = mean_trait_val - sd_trait_val,
+                    ymax = mean_trait_val + sd_trait_val),
+                width = 0.1) +
+  xlab("Time step") +
+  ylab("serotiny type") +
+  facet_wrap(~name,
+             scales = "free")
+
+ggsave("cwm_cone_serot.png",
+       width = 10, height = 7)
+
+### visualize photosynthetic water use efficiency
+cwm_phot_water_effic <- cwm_summ %>%
+  filter(name %in% c("photosynth_water_effic")) %>%
+  ggplot() +
+  geom_point(aes(x = time_step,
+                 y = mean_trait_val)) +
+  geom_errorbar(aes(x = time_step,
+                    ymin = mean_trait_val - sd_trait_val,
+                    ymax = mean_trait_val + sd_trait_val),
+                width = 0.1) +
+  xlab("Time step") +
+  ylab("umol/mmol") +
+  facet_wrap(~name,
+             scales = "free")
+
+ggsave("cwm_photosyn_water_effic.png",
+       width = 10, height = 7)
+
+### visualize dispersal syndrome
+cwm_disp_syndrome <- cwm_summ %>%
+  filter(name %in% c("dispersal_syndrome")) %>%
+  ggplot() +
+  geom_point(aes(x = time_step,
+                 y = mean_trait_val)) +
+  geom_errorbar(aes(x = time_step,
+                    ymin = mean_trait_val - sd_trait_val,
+                    ymax = mean_trait_val + sd_trait_val),
+                width = 0.1) +
+  xlab("Time step") +
+  ylab("dispersal vector") +
+  facet_wrap(~name,
+             scales = "free")
+
+ggsave("cwm_disp_syndrome.png",
+       width = 10, height = 7)
+
+### visualize coarse rooting depth
+cwm_root_depth <- cwm_summ %>%
+  filter(name %in% c("coarse_root_depth")) %>%
+  ggplot() +
+  geom_point(aes(x = time_step,
+                 y = mean_trait_val)) +
+  geom_errorbar(aes(x = time_step,
+                    ymin = mean_trait_val - sd_trait_val,
+                    ymax = mean_trait_val + sd_trait_val),
+                width = 0.1) +
+  xlab("Time step") +
+  ylab("rooting depth") +
+  facet_wrap(~name,
+             scales = "free")
+
+ggsave("cwm_coarse_root_depth.png",
+       width = 10, height = 7)
+
+### visualize cone serotiny
+cwm_cone_serotiny <- cwm_summ %>%
+  filter(name %in% c("cone_serotiny")) %>%
+  ggplot() +
+  geom_point(aes(x = time_step,
+                 y = mean_trait_val)) +
+  geom_errorbar(aes(x = time_step,
+                    ymin = mean_trait_val - sd_trait_val,
+                    ymax = mean_trait_val + sd_trait_val),
+                width = 0.1) +
+  xlab("Time step") +
+  ylab("serotiny type") +
+  facet_wrap(~name,
+             scales = "free")
+
+ggsave("cwm_cone_serotiny.png",
+       width = 10, height = 7)
+
+### visualize cold tolerance
+cwm_cold_tol <- cwm_summ %>%
+  filter(name %in% c("cold_tolerance")) %>%
+  ggplot() +
+  geom_point(aes(x = time_step,
+                 y = mean_trait_val)) +
+  geom_errorbar(aes(x = time_step,
+                    ymin = mean_trait_val - sd_trait_val,
+                    ymax = mean_trait_val + sd_trait_val),
+                width = 0.1) +
+  xlab("Time step") +
+  ylab("tolerance") +
+  facet_wrap(~name,
+             scales = "free")
+
+ggsave("cwm_cold_tolerance.png",
+       width = 10, height = 7)
+
+### visualize fire tolerance
+cwm_fire_tol <- cwm_summ %>%
+  filter(name %in% c("fire_tolerance")) %>%
+  ggplot() +
+  geom_point(aes(x = time_step,
+                 y = mean_trait_val)) +
+  geom_errorbar(aes(x = time_step,
+                    ymin = mean_trait_val - sd_trait_val,
+                    ymax = mean_trait_val + sd_trait_val),
+                width = 0.1) +
+  xlab("Time step") +
+  ylab("tolerance") +
+  facet_wrap(~name,
+             scales = "free")
+
+ggsave("cwm_fire_tolerance.png",
+       width = 10, height = 7)
+
+### visualize leaf texture (coarseness)
+cwm_leaf_text <- cwm_summ %>%
+  filter(name %in% c("leaf_text_coarse")) %>%
+  ggplot() +
+  geom_point(aes(x = time_step,
+                 y = mean_trait_val)) +
+  geom_errorbar(aes(x = time_step,
+                    ymin = mean_trait_val - sd_trait_val,
+                    ymax = mean_trait_val + sd_trait_val),
+                width = 0.1) +
+  xlab("Time step") +
+  ylab("texture") +
+  facet_wrap(~name,
+             scales = "free")
+
+ggsave("cwm_leaf_texture_coarse.png",
+       width = 10, height = 7)
+
+### visualize fire resistance
+cwm_fire_resist <- cwm_summ %>%
+  filter(name %in% c("fire_resistance")) %>%
+  ggplot() +
+  geom_point(aes(x = time_step,
+                 y = mean_trait_val)) +
+  geom_errorbar(aes(x = time_step,
+                    ymin = mean_trait_val - sd_trait_val,
+                    ymax = mean_trait_val + sd_trait_val),
+                width = 0.1) +
+  xlab("Time step") +
+  ylab("resistance") +
+  facet_wrap(~name,
+             scales = "free")
+
+ggsave("cwm_fire_resistance.png",
+       width = 10, height = 7)
+
+### visualize leaf flammability
+cwm_leaf_flamm <- cwm_summ %>%
+  filter(name %in% c("leaf_flammability")) %>%
+  ggplot() +
+  geom_point(aes(x = time_step,
+                 y = mean_trait_val)) +
+  geom_errorbar(aes(x = time_step,
+                    ymin = mean_trait_val - sd_trait_val,
+                    ymax = mean_trait_val + sd_trait_val),
+                width = 0.1) +
+  xlab("Time step") +
+  ylab("flammability") +
+  facet_wrap(~name,
+             scales = "free")
+
+ggsave("cwm_leaf_flamm.png",
+       width = 10, height = 7)
+
+### visualize resprouting ability
+cwm_resprout <- cwm_summ %>%
+  filter(name %in% c("resprout_ability")) %>%
+  ggplot() +
+  geom_point(aes(x = time_step,
+                 y = mean_trait_val)) +
+  geom_errorbar(aes(x = time_step,
+                    ymin = mean_trait_val - sd_trait_val,
+                    ymax = mean_trait_val + sd_trait_val),
+                width = 0.1) +
+  xlab("Time step") +
+  ylab("resprouting ability") +
+  facet_wrap(~name,
+             scales = "free")
+
+ggsave("cwm_resprout.png",
+       width = 10, height = 7)
+
+### visualize clonal growth form
+cwm_clonal_growth <- cwm_summ %>%
+  filter(name %in% c("clonal_growth_form")) %>%
+  ggplot() +
+  geom_point(aes(x = time_step,
+                 y = mean_trait_val)) +
+  geom_errorbar(aes(x = time_step,
+                    ymin = mean_trait_val - sd_trait_val,
+                    ymax = mean_trait_val + sd_trait_val),
+                width = 0.1) +
+  xlab("Time step") +
+  ylab("clonal growth form") +
+  facet_wrap(~name,
+             scales = "free")
+
+ggsave("cwm_clonal growth.png",
+       width = 10, height = 7)
+
+### visualize shade tolerance
+cwm_shade_tol <- cwm_summ %>%
+  filter(name %in% c("shade_tolerance")) %>%
+  ggplot() +
+  geom_point(aes(x = time_step,
+                 y = mean_trait_val)) +
+  geom_errorbar(aes(x = time_step,
+                    ymin = mean_trait_val - sd_trait_val,
+                    ymax = mean_trait_val + sd_trait_val),
+                width = 0.1) +
+  xlab("Time step") +
+  ylab("shade tolerance") +
+  facet_wrap(~name,
+             scales = "free")
+
+ggsave("cwm_shade_tol.png",
+       width = 10, height = 7)
+
+### visualize water logging tolerance
+cwm_water_log_tol <- cwm_summ %>%
+  filter(name %in% c("waterlogging_tolerance")) %>%
+  ggplot() +
+  geom_point(aes(x = time_step,
+                 y = mean_trait_val)) +
+  geom_errorbar(aes(x = time_step,
+                    ymin = mean_trait_val - sd_trait_val,
+                    ymax = mean_trait_val + sd_trait_val),
+                width = 0.1) +
+  xlab("Time step") +
+  ylab("waterlogging tolerance") +
+  facet_wrap(~name,
+             scales = "free")
+
+ggsave("cwm_waterlog_tol.png",
+       width = 10, height = 7)
+
+### visualize drought tolerance
+cwm_drought_tol <- cwm_summ %>%
+  filter(name %in% c("drought_tolerance")) %>%
+  ggplot() +
+  geom_point(aes(x = time_step,
+                 y = mean_trait_val)) +
+  geom_errorbar(aes(x = time_step,
+                    ymin = mean_trait_val - sd_trait_val,
+                    ymax = mean_trait_val + sd_trait_val),
+                width = 0.1) +
+  xlab("Time step") +
+  ylab("drought_tolerance") +
+  facet_wrap(~name,
+             scales = "free")
+
+ggsave("cwm_drought_tol.png",
+       width = 10, height = 7)
+
+### visualize degree of self-pruning
+cwm_self_pruning <- cwm_summ %>%
+  filter(name %in% c("deg_self_pruning")) %>%
+  ggplot() +
+  geom_point(aes(x = time_step,
+                 y = mean_trait_val)) +
+  geom_errorbar(aes(x = time_step,
+                    ymin = mean_trait_val - sd_trait_val,
+                    ymax = mean_trait_val + sd_trait_val),
+                width = 0.1) +
+  xlab("Time step") +
+  ylab("degree of self pruning") +
+  facet_wrap(~name,
+             scales = "free")
+
+ggsave("cwm_self_pruning.png",
+       width = 10, height = 7)
+
+### visualize leaf texture ... toughness
+cwm_leaf_text <- cwm_summ %>%
+  filter(name %in% c("leaf_texture")) %>%
+  ggplot() +
+  geom_point(aes(x = time_step,
+                 y = mean_trait_val)) +
+  geom_errorbar(aes(x = time_step,
+                    ymin = mean_trait_val - sd_trait_val,
+                    ymax = mean_trait_val + sd_trait_val),
+                width = 0.1) +
+  xlab("Time step") +
+  ylab("leaf texture") +
+  facet_wrap(~name,
+             scales = "free")
+
+ggsave("cwm_leaf_texture.png",
+       width = 10, height = 7)
+
+
+```
+
+### find trait units
+```{r}
+trait_unit <- read.csv("our_data/nfi_trait_dat_clean_sp.csv")
+
+trait_unit <- trait_unit %>%
+  dplyr::select(trait_name, unit) %>%
+  distinct()
+trait_unit <- trait_unit %>%
+  duplicated(trait_unit)
+```
+
