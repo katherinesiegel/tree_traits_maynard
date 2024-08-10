@@ -1286,7 +1286,8 @@ cwm_cold_tol <- cwm_summ %>%
   filter(name %in% c("cold_tolerance")) %>%
   ggplot() +
   geom_point(aes(x = time_step,
-                 y = mean_trait_val)) +
+                 y = mean_trait_val),
+             size = 3) +
   geom_errorbar(aes(x = time_step,
                     ymin = mean_trait_val - sd_trait_val,
                     ymax = mean_trait_val + sd_trait_val),
@@ -1304,7 +1305,8 @@ cwm_fire_tol <- cwm_summ %>%
   filter(name %in% c("fire_tolerance")) %>%
   ggplot() +
   geom_point(aes(x = time_step,
-                 y = mean_trait_val)) +
+                 y = mean_trait_val),
+             size = 3) +
   geom_errorbar(aes(x = time_step,
                     ymin = mean_trait_val - sd_trait_val,
                     ymax = mean_trait_val + sd_trait_val),
@@ -1340,7 +1342,8 @@ cwm_fire_resist <- cwm_summ %>%
   filter(name %in% c("fire_resistance")) %>%
   ggplot() +
   geom_point(aes(x = time_step,
-                 y = mean_trait_val)) +
+                 y = mean_trait_val),
+             size = 3) +
   geom_errorbar(aes(x = time_step,
                     ymin = mean_trait_val - sd_trait_val,
                     ymax = mean_trait_val + sd_trait_val),
@@ -1448,7 +1451,8 @@ cwm_drought_tol <- cwm_summ %>%
   filter(name %in% c("drought_tolerance")) %>%
   ggplot() +
   geom_point(aes(x = time_step,
-                 y = mean_trait_val)) +
+                 y = mean_trait_val),
+             size = 3) +
   geom_errorbar(aes(x = time_step,
                     ymin = mean_trait_val - sd_trait_val,
                     ymax = mean_trait_val + sd_trait_val),
@@ -1484,7 +1488,8 @@ cwm_leaf_text <- cwm_summ %>%
   filter(name %in% c("leaf_texture")) %>%
   ggplot() +
   geom_point(aes(x = time_step,
-                 y = mean_trait_val)) +
+                 y = mean_trait_val),
+             size = 3) +
   geom_errorbar(aes(x = time_step,
                     ymin = mean_trait_val - sd_trait_val,
                     ymax = mean_trait_val + sd_trait_val),
