@@ -1516,3 +1516,109 @@ trait_unit <- trait_unit %>%
   duplicated(trait_unit)
 ```
 
+### make a boxplot
+```{r}
+### install packages for boxplot
+install.packages("gridExtra")
+library(gridExtra)
+
+### open fd metrics files
+t1_fd_all <- read.csv("our_data/functional_diversity/t1_fd_metrics.csv")
+
+t2_fd_all <- read.csv("our_data/functional_diversity/t2_fd_metrics.csv")
+
+### RICHNESS
+# create files
+t1_fric <- t1_fd_all %>%
+  dplyr::select(fric) %>%
+  mutate(time_step = "t1")
+
+t2_fric <- t2_fd_all %>%
+  dplyr::select(fric) %>%
+  mutate(time_step = "t2")
+
+fric_all <- rbind(t1_fric, t2_fric)
+
+ggplot(fric_all, aes(x = time_step, y = fric, fill = time_step)) +
+  geom_boxplot() +
+  #theme(panel.background = element_rect(fill = grey)) +
+  #facet_wrap(~ time_step) +
+  theme_bw() +
+  labs(x = "Time Step",
+       y = "Functional Richness") +
+  scale_fill_manual(values = c("lightblue", "lightgreen"))
+
+ggsave("boxplot_fric.png",
+       width = 10, height = 7)
+
+### DISSIMILARITY
+t1_fdis <- t1_fd_all %>%
+  dplyr::select(fdis) %>%
+  mutate(time_step = "t1")
+
+t2_fdis <- t2_fd_all %>%
+  dplyr::select(fdis) %>%
+  mutate(time_step = "t2")
+
+fdis_all <- rbind(t1_fdis, t2_fdis)
+
+ggplot(fdis_all, aes(x = time_step, y = fdis, fill = time_step)) +
+  geom_boxplot() +
+  #theme(panel.background = element_rect(fill = grey)) +
+  #facet_wrap(~ time_step) +
+  theme_bw() +
+  labs(x = "Time Step",
+       y = "Functional Dissimilarity") +
+  scale_fill_manual(values = c("lightblue", "lightgreen"))
+
+ggsave("boxplot_fdis.png",
+       width = 10, height = 7)
+
+### DIVERSITY
+t1_fdiv <- t1_fd_all %>%
+  dplyr::select(fdiv) %>%
+  mutate(time_step = "t1")
+
+t2_fdiv <- t2_fd_all %>%
+  dplyr::select(fdiv) %>%
+  mutate(time_step= "t2")
+
+fdiv_all <- rbind(t1_fdiv, t2_fdiv)
+
+ggplot(fdiv_all, aes(x = time_step, y = fdiv, fill = time_step)) +
+  geom_boxplot() +
+  #theme(panel.background = element_rect(fill = grey)) +
+  #facet_wrap(~ time_step) +
+  theme_bw() +
+  labs(x = "Time Step",
+       y = "Functional Diversity") +
+  scale_fill_manual(values = c("lightblue", "lightgreen"))
+
+ggsave("boxplot_fdiv.png",
+       width = 10, height = 7)
+
+### EVENNESS
+t1_feven <- t1_fd_all %>%
+  dplyr::select(feven) %>%
+  mutate(time_step = "t1")
+
+t2_feven <- t2_fd_all %>%
+  dplyr::select(feven) %>%
+  mutate(time_step= "t2")
+
+feven_all <- rbind(t1_feven, t2_feven)
+
+ggplot(feven_all, aes(x = time_step, y = feven, fill = time_step)) +
+  geom_boxplot() +
+  #theme(panel.background = element_rect(fill = grey)) +
+  #facet_wrap(~ time_step) +
+  theme_bw() +
+  labs(x = "Time Step",
+       y = "Functional Evenness") +
+  scale_fill_manual(values = c("lightblue", "lightgreen"))
+
+ggsave("boxplot_feven.png",
+       width = 10, height = 7)
+
+```
+
